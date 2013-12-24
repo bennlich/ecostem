@@ -1,67 +1,58 @@
+var WaterModel = function() {
+    var DataSet = ABM.DataSet;
+    var Util = ABM.util;
 
-var WaterModel = ABM.Model;
-var DataSet = ABM.DataSet;
-var Util = ABM.util;
+    ABM.Model.prototype.startup = function() {
+        this.elevation = DataSet.importAscDataSet("data/nldroplets.asc", function(ds) {
+            var slopeAndAspect = ds.slopeAndAspect();
+            this.slope = slopeAndAspect[0];
+            this.aspect = slopeAndAspect[1];
+        }.bind(this));
+    };
 
-WaterModel.prototype.startup = function() {
-    this.elevation = DataSet.importAscDataSet("data/nldroplets.asc", function(ds) {
-        var slopeAndAspect = ds.slopeAndAspect();
-        this.slope = slopeAndAspect[0];
-        this.aspect = slopeAndAspect[1];
-    }.bind(this));
-};
+    ABM.Model.prototype.setup = function() {
+        this.refreshPatches = false;
+        this.refreshLinks = false;
 
-WaterModel.prototype.setup = function() {
-    this.refreshPatches = false;
-    this.refreshLinks = false;
+        this.vision = 1;
+        this.speed = 0.25;
 
-    // this.patches.own("elevation slope aspect");
+        this.agents.setDefault("shape", "square");
+        this.agents.setDefault("size", 0.5);
+        this.agents.setDefault("color", [100, 100, 150]);
 
-    this.vision = 1;
-    this.speed = 0.25;
-    // this.useAspect = true;
-    // this.lastMoved = this.patches.length;
+        this.img = this.elevation.toDrawing();
 
-    this.agents.setDefault("shape", "square");
-    this.agents.setDefault("size", 0.5);
-    this.agents.setDefault("color", [100, 100, 150]);
-    //this.patches.cacheRect(this.vision, false);
+        this.patches.forEach(function(p) {
+            p.sprout(1);
+        });
 
-    this.img = this.elevation.toDrawing();
+        this.movedAtLastStep = 0;
+    };
 
-    this.patches.forEach(function(p) {
-        p.sprout(1);
-    });
+    ABM.Model.prototype.step = function() {
+        var moved = 0;
+        this.agents.forEach(function(agent) {
+            var elevation = this.elevation.patchSample(agent.x, agent.y);
+            var neighborElevations = this.elevation.neighborhood(agent.x, agent.y);
 
-    this.movedAtLastStep = 0;
-};
+            var minElevation = Util.minOneOf(neighborElevations, function(x) { return x; });
+            if (minElevation !== elevation) {
+                agent.heading = this.aspect.patchSample(agent.x, agent.y);
+                agent.forward(this.speed);
+                moved += 1;
+            }
+        }.bind(this));
 
-WaterModel.prototype.step = function() {
-    var moved = 0;
-    this.agents.forEach(function(agent) {
-        //console.log(agent.x, agent.y);
-        var elevation = this.elevation.patchSample(agent.x, agent.y);
-        var neighborElevations = this.elevation.neighborhood(agent.x, agent.y);
+        console.log(moved + ' agents moved.');
 
-        var minElevation = Util.minOneOf(neighborElevations, function(x) { return x; });
-        if (minElevation !== elevation) {
-            agent.heading = this.aspect.patchSample(agent.x, agent.y);
-            agent.forward(this.speed);
-            moved += 1;
+        if (moved === this.movedAtLastStep) {
+            this.stop();
         }
-    }.bind(this));
+        if (this.anim.ticks % 100 === 0) {
+            this.movedAtLastStep = moved;
+        }
+    };
 
-    console.log(moved + ' agents moved.');
-
-    if (moved === this.movedAtLastStep) {
-        this.stop();
-    }
-    if (this.anim.ticks % 100 === 0) {
-        this.movedAtLastStep = moved;
-    }
-};
-
-var model;
-function initialize() {
-    model = new WaterModel("layers", 6, 0, 80, 0, 80).debug().start();
-}
+    return ABM.Model;
+}();

@@ -1,0 +1,80 @@
+<html>
+  <head>
+    <title>Droplets Model</title>
+    <script src="lib/agentscript.js"></script>
+    <script src="lib/data.js"></script>
+    <script src="lib/underscore.js"></script>
+    <script src="lib/jquery-1.10.2.js"></script>
+    <script src="water_patches.js"></script>
+    <script>
+      var model;
+      $(document).ready(function() {
+        var patchSize = 8;
+        var sizeX = 120;
+        var sizeY = 80;
+
+        model = new WaterPatchesModel('layers', patchSize, 0, sizeX, 0, sizeY).debug().start();
+
+        $('.popup').hide();
+
+        $('.rect').css('width', patchSize)
+                  .css('height', patchSize)
+                  .hide();
+
+        $('#layers').mousemove(function(evt,x,y) {
+
+          var patchX = Math.floor(evt.offsetX / patchSize);
+          var patchY = sizeY - Math.floor(evt.offsetY / patchSize);
+
+          var patchTop = (sizeY - patchY) * patchSize;
+          var patchLeft = patchX * patchSize;
+
+          var patch = model.patches.patchXY(patchX, patchY);
+
+          $('.rect').css('top', patchTop)
+                    .css('left', patchLeft)
+                    .show();
+
+          $('.popup').html('x: ' + patch.x + '<br/>'
+                         + 'y: ' + patch.y + '<br/>'
+                         + 'volume: ' + patch.volume + '<br/>'
+                         + 'capacity: ' + patch.capacity + '<br/>'
+                         + 'elevation: ' + patch.elevation + '<br/>'
+                         + 'color: ' + patch.color + '<br/>')
+                     .css('top', patchTop + patchSize)
+                     .css('left', patchLeft + patchSize)
+                     .show();
+        });
+
+        $('#layers').mouseout(function() {
+          $('.popup').hide();
+          $('.rect').hide();
+        });
+      });
+    </script>
+    <style>
+      .container {
+        position: relative;
+      }
+      .popup {
+        position: absolute; 
+        background-color: rgba(255,255,255,0.85);
+        border: 1px solid #eee;
+        font-family: helvetica;
+        font-size: 13px;
+        padding: 2px;
+      }
+      .rect {
+        position: absolute; 
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="layers" style="margin: 0"></div>
+      <div class="popup"></div>
+      <div class="rect"></div>
+    </div>
+  </body>
+</html>

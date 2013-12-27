@@ -23,13 +23,12 @@
 
         $('#layers').mousemove(function(evt,x,y) {
 
-          var patchX = Math.floor(evt.offsetX / patchSize);
-          var patchY = sizeY - Math.floor(evt.offsetY / patchSize);
+          var patchXY = model.patches.pixelXYtoPatchXY(evt.offsetX, evt.offsetY),
+              patch = model.patches.patch(patchXY[0], patchXY[1]);
 
-          var patchTop = (sizeY - patchY) * patchSize;
-          var patchLeft = patchX * patchSize;
-
-          var patch = model.patches.patchXY(patchX, patchY);
+          var patchCoords = model.patches.patchXYtoPixelXY(patch.x, patch.y),
+              patchTop = patchCoords[1] - patchSize/2,
+              patchLeft = patchCoords[0] - patchSize/2;
 
           $('.rect').css('top', patchTop)
                     .css('left', patchLeft)

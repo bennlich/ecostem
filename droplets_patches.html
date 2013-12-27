@@ -9,11 +9,15 @@
     <script>
       var model;
       $(document).ready(function() {
-        var patchSize = 8;
-        var sizeX = 120;
-        var sizeY = 80;
+        var patchSize = 6;
+        var maxX = 180;
+        var maxY = 120;
 
-        model = new WaterPatchesModel('layers', patchSize, 0, sizeX, 0, sizeY).debug().start();
+        $('#image').css('width', patchSize * (maxX+1)).css('height', patchSize * (maxY+1));
+
+        model = WaterPatchesModel.initialize(
+          'layers', 'image', patchSize, 0, maxX, 0, maxY
+        );
 
         $('.popup').hide();
 
@@ -21,8 +25,8 @@
                   .css('height', patchSize)
                   .hide();
 
-        $('#layers').mousemove(function(evt,x,y) {
 
+        $('#layers').click(function(evt) {
           var patchXY = model.patches.pixelXYtoPatchXY(evt.offsetX, evt.offsetY),
               patch = model.patches.patch(patchXY[0], patchXY[1]);
 
@@ -45,7 +49,7 @@
                      .show();
         });
 
-        $('#layers').mouseout(function() {
+        $('#layers').mousemove(function() {
           $('.popup').hide();
           $('.rect').hide();
         });
@@ -62,16 +66,25 @@
         font-family: helvetica;
         font-size: 13px;
         padding: 2px;
+        z-index: 1000;
       }
       .rect {
         position: absolute; 
         background-color: red;
+        z-index: 1000;
       }
     </style>
   </head>
   <body>
+    <div>
+      <button onclick="model.stop()">Pause</button>
+      <button onclick="model.start()">Go</button>
+    </div>
     <div class="container">
-      <div id="layers" style="margin: 0"></div>
+      <div style="position: absolute;">
+        <canvas id="image" style="z-index: 0"></canvas>
+      </div>
+      <div id="layers" style="z-index: 999;"></div>
       <div class="popup"></div>
       <div class="rect"></div>
     </div>

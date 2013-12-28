@@ -18,7 +18,7 @@ var WaterPatchesModel = function() {
 
         //this.anim.setRate();
 
-        var volumePerCell = 20;
+        var volumePerCell = 800;
 
         this.patches.own('volume elevation');
         this.patches.setDefault('volume', 0);
@@ -29,11 +29,18 @@ var WaterPatchesModel = function() {
         var img = this.elevation.toImage();
         this.patches.installDrawing(img, backgroundImgCtx);
 
-        for (var i = 70; i < 120; ++i) {
-            for (var j = 70; j < 100; ++j) {
+        for (var i = 100; i < 110; ++i) {
+            for (var j = 60; j < 70; ++j) {
                 this.patches.patchXY(i,j).volume = volumePerCell;
             }
         }
+
+        for (i = 160; i < 170; ++i) {
+            for (j = 100; j < 110; ++j) {
+                this.patches.patchXY(i,j).volume = volumePerCell;
+            }
+        }
+
         _.each(this.patches, function(patch) {
             patch.elevation = Math.floor(patch.elevation);
             this.drawPatch(patch);
@@ -42,10 +49,7 @@ var WaterPatchesModel = function() {
 
     ABM.Model.prototype.drawPatch = function(patch) {
         var alpha = patch.volume / 80;
-        if (alpha > 1)
-            alpha = 1;
-        if (patch.volume !== 0 && alpha < 0.1)
-            alpha = 0.1;
+        if (alpha > 1) alpha = 1;
         patch.color = [100,100,150,alpha];
     };
 

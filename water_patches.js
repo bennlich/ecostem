@@ -21,7 +21,7 @@ var WaterPatchesModel = function() {
         var volumePerCell = 20;
 
         this.patches.own('volume elevation');
-        this.patches.setDefault('volume', volumePerCell);
+        this.patches.setDefault('volume', 0);
         this.patches.setDefault('color', [100,100,150,0.01]);
         this.elevation.toPatchVar('elevation');
 
@@ -29,9 +29,22 @@ var WaterPatchesModel = function() {
         var img = this.elevation.toImage();
         this.patches.installDrawing(img, backgroundImgCtx);
 
+        for (var i = 70; i < 120; ++i) {
+            for (var j = 70; j < 100; ++j) {
+                this.patches.patchXY(i,j).volume = volumePerCell;
+            }
+        }
         _.each(this.patches, function(patch) {
             patch.elevation = Math.floor(patch.elevation);
-        });
+            this.drawPatch(patch);
+        }.bind(this));
+    };
+
+    ABM.Model.prototype.drawPatch = function(patch) {
+        var alpha = patch.volume / 80;
+        if (alpha > 1)
+            alpha = 1;
+        patch.color = [100,100,150,alpha];
     };
 
     ABM.Model.prototype.step = function() {
@@ -56,13 +69,10 @@ var WaterPatchesModel = function() {
                     minNeighbor.volume += transferVolume;
                 }
 
-                var alpha = patch.volume / 100;
-                if (alpha > 1)
-                    alpha = 1;
-                patch.color = [100,100,150,alpha];
+                this.drawPatch(patch);
                 moved++;
             }
-        });
+        }.bind(this));
 
         if (moved === 0) {
             this.stop();
@@ -71,7 +81,8 @@ var WaterPatchesModel = function() {
 
     function initialize(asDiv, imgDiv, patchSize, xMin, xMax, yMin, yMax) {
         backgroundImgCtx = document.getElementById(imgDiv).getContext("2d");
-        return new ABM.Model(asDiv, patchSize, xMin, xMax, yMin, yMax).debug().start();
+        var model = new ABM.Model(asDiv, patchSize, xMin, xMax, yMin, yMax).start();
+        return model;
     }
 
     return {

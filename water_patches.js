@@ -44,6 +44,8 @@ var WaterPatchesModel = function() {
         var alpha = patch.volume / 80;
         if (alpha > 1)
             alpha = 1;
+        if (alpha < 0.4)
+            alpha = 0.4;
         patch.color = [100,100,150,alpha];
     };
 

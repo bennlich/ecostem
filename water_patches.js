@@ -4,11 +4,19 @@ var WaterPatchesModel = function() {
     var backgroundImgCtx = null;
 
     ABM.Model.prototype.startup = function() {
-        //this.elevation = DataSet.importAscDataSet("data/nldroplets.asc", function(ds) {
-        this.elevation = DataSet.importAscDataSet("data/elevation640x480.asc", function(ds) {
+        this.elevation = DataSet.importAscDataSet("data/nldroplets.asc", function(ds) {
+        //this.elevation = DataSet.importAscDataSet("data/elevation640x480.asc", function(ds) {
             var slopeAndAspect = ds.slopeAndAspect();
             this.slope = slopeAndAspect[0];
             this.aspect = slopeAndAspect[1];
+        }.bind(this));
+    };
+
+    ABM.Model.prototype.dropWaterInRect = function(x1,x2,y1,y2,volumePerCell) {
+        _.each(_.range(x1,x2), function(i) {
+            _.each(_.range(y1,y2), function(j) {
+                this.patches.patchXY(i,j).volume = volumePerCell;
+            }.bind(this));
         }.bind(this));
     };
 
@@ -16,73 +24,55 @@ var WaterPatchesModel = function() {
         this.refreshPatches = true;
         this.refreshLinks = false;
 
-        //this.anim.setRate();
+        var volumePerCell = 50;
 
-        var volumePerCell = 800;
-
-        this.patches.own('volume elevation');
+        this.patches.own('volume elevation waterHeight');
         this.patches.setDefault('volume', 0);
         this.patches.setDefault('color', [100,100,150,0.01]);
         this.elevation.toPatchVar('elevation');
+
+        this.patches.setDefault('waterHeight', function() {
+            return this.volume + this.elevation;
+        });
 
         /* draw the elevation map into the background canvas */
         var img = this.elevation.toImage();
         this.patches.installDrawing(img, backgroundImgCtx);
 
-        for (var i = 100; i < 110; ++i) {
-            for (var j = 60; j < 70; ++j) {
-                this.patches.patchXY(i,j).volume = volumePerCell;
-            }
-        }
-
-        for (i = 160; i < 170; ++i) {
-            for (j = 100; j < 110; ++j) {
-                this.patches.patchXY(i,j).volume = volumePerCell;
-            }
-        }
-
-        _.each(this.patches, function(patch) {
-            patch.elevation = Math.floor(patch.elevation);
-            this.drawPatch(patch);
-        }.bind(this));
+        this.dropWaterInRect(100,111,60,71,volumePerCell);
+        this.dropWaterInRect(160,171,100,111,volumePerCell);
     };
 
     ABM.Model.prototype.drawPatch = function(patch) {
-        var alpha = patch.volume / 80;
-        if (alpha > 1) alpha = 1;
+        var alpha = patch.volume/2;
+
+        if (alpha > 1) 
+            alpha = 1;
+
         patch.color = [100,100,150,alpha];
     };
 
     ABM.Model.prototype.step = function() {
-        var moved = 0;
+        var waterPatches = _.filter(this.patches, function(patch) { 
+            return patch.volume > 0; 
+        });
 
-        _.each(this.patches, function(patch) {
-            if (patch.volume > 0) {
-                var minNeighbor = _.min(patch.n, function(neighbor) {
-                    return neighbor.elevation + neighbor.volume;
-                });
+        _.each(waterPatches, function(patch) {
+            var minNeighbor = _.min(patch.n, function(neighbor) {
+                return neighbor.waterHeight();
+            });
 
-                var minNeighborVolume = minNeighbor.volume;
+            var transferVolumeBalancePoint = (minNeighbor.waterHeight() + patch.waterHeight()) / 2;
+            var transferVolume = patch.volume - (transferVolumeBalancePoint - patch.elevation);
 
-                if (minNeighbor !== patch) {
-                    var transferVolumeBalancePoint = 
-                            (minNeighbor.elevation + minNeighbor.volume
-                             + patch.elevation + patch.volume) / 2;
-                    var transferVolume = patch.volume - (transferVolumeBalancePoint - patch.elevation);
-                    if (transferVolume > patch.volume)
-                        transferVolume = patch.volume;
-                    patch.volume -= transferVolume;
-                    minNeighbor.volume += transferVolume;
-                }
+            if (transferVolume > patch.volume)
+                transferVolume = patch.volume;
 
-                this.drawPatch(patch);
-                moved++;
-            }
+            patch.volume -= transferVolume;
+            minNeighbor.volume += transferVolume;
+
+            this.drawPatch(patch);
         }.bind(this));
-
-        if (moved === 0) {
-            this.stop();
-        }
     };
 
     function initialize(asDiv, imgDiv, patchSize, xMin, xMax, yMin, yMax) {

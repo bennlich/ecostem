@@ -10,7 +10,7 @@
       var model;
       $(document).ready(function() {
         var patchSize = 4;
-        var maxX = 240;
+        var maxX = 160;
         var maxY = 160;
 
         $('#image').css('width', patchSize * (maxX+1)).css('height', patchSize * (maxY+1));
@@ -26,9 +26,14 @@
                   .hide();
 
 
-        $('#layers').click(function(evt) {
-          var patchXY = model.patches.pixelXYtoPatchXY(evt.offsetX, evt.offsetY),
-              patch = model.patches.patch(patchXY[0], patchXY[1]);
+        $('.rect').click(function() {
+          updatePatch();
+        });
+
+        var currentPatch = null;
+
+        function updatePatch() {
+          var patch = currentPatch;
 
           var patchCoords = model.patches.patchXYtoPixelXY(patch.x, patch.y),
               patchTop = patchCoords[1] - patchSize/2,
@@ -46,6 +51,14 @@
                      .css('top', patchTop + patchSize)
                      .css('left', patchLeft + patchSize)
                      .show();
+        }
+
+        $('#layers').click(function(evt) {
+          var patchXY = model.patches.pixelXYtoPatchXY(evt.offsetX, evt.offsetY),
+              patch = model.patches.patch(patchXY[0], patchXY[1]);
+
+          currentPatch = patch;
+          updatePatch();
         });
 
         $('#layers').mousemove(function() {

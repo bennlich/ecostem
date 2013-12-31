@@ -1,0 +1,34 @@
+<html ng-app="Ecostem">
+  <head>
+    <title>Ecostem</title>
+    <script src="lib/agentscript.js"></script>
+    <script src="lib/data.js"></script>
+    <script src="lib/underscore.js"></script>
+    <script src="lib/jquery-1.10.2.js"></script>
+    <script src="lib/leaflet/leaflet-src.js"></script>
+    <script src="lib/angular/angular.js"></script>
+    <script src="lib/angular/angular-route.js"></script>
+
+    <script src="water_patches.js"></script>
+    <script src="js/Ecostem.js"></script>
+    <script src="js/Map.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="lib/leaflet/leaflet.css"/>
+    <link rel="stylesheet" type="text/css" href="css/ecostem.css"/>
+  </head>
+  <body>
+    <div class="container" ng-controller="EcostemCtrl">
+      <div id="map" map-body></div>
+      <div class="layers">
+        <span ng-repeat="layer in map.baseLayers">
+          <input id="cb{{$index}}" name="baseLayer" type="radio" checked-base-layer="layer"></input>
+          <label for="cb{{$index}}">{{ layer.name }}</label><br/>
+        </span>
+        <hr/>
+        <div class="simulation">
+          <button ng-click="startSimulation()">Start Simulation</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

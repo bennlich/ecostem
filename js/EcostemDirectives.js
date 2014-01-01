@@ -61,7 +61,8 @@ EcostemDirectives.directive('waterModel', [function() {
                 var maxY = Math.floor($(window).height() / patchSize);
 
                 agentscript = WaterPatchesModel.initialize(attrs.id, scope.elevationSampler,
-                                                           patchSize, minX, maxX, minY, maxY);
+                                                           patchSize, minX, maxX, minY, maxY).debug().start();
+                
             }
             if (value === false && agentscript) {
                 agentscript.stop();

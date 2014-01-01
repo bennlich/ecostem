@@ -20,10 +20,7 @@ var WaterPatchesModel = function() {
 
         this.patches.own('volume elevation waterHeight');
         this.patches.setDefault('volume', 0);
-        this.patches.setDefault('color', [100,100,150,0.01]);
-        this.patches.setDefault('waterHeight', function() {
-            return this.volume + this.elevation;
-        });
+        this.patches.setDefault('color', [100,100,150,0]);
 
         /* Sample from the elevation image */
         _.each(this.patches, function(patch) {
@@ -39,16 +36,16 @@ var WaterPatchesModel = function() {
          * is presumably a lot faster than creating a new color each
          * time.
          */
-        this.colorMap = _.map(_.range(0,10), function(num) {
-            return [100,100,150,num/10];
+        this.colorMap = _.map(_.range(0,21), function(num) {
+            return [100,100,150,num/20];
         });
     };
 
     ABM.Model.prototype.drawPatch = function(patch) {
         var idx = Math.floor(patch.volume * 3);
 
-        if (idx > 9)
-            idx = 9;
+        if (idx > 19)
+            idx = 19;
 
         patch.color = this.colorMap[idx];
     };
@@ -63,19 +60,20 @@ var WaterPatchesModel = function() {
              * height with that of its min neighbor */
 
             var minNeighbor = _.min(patch.n, function(neighbor) {
-                return neighbor.waterHeight();
+                return neighbor.volume + neighbor.elevation;
             });
 
-            if (minNeighbor.waterHeight() < patch.waterHeight()) {
-                var transferVolumeBalancePoint = (minNeighbor.waterHeight() + patch.waterHeight()) / 2;
-                var transferVolume = patch.volume - (transferVolumeBalancePoint - patch.elevation);
+            var patchHeight = patch.volume + patch.elevation;
+            var neighborHeight = minNeighbor.volume + minNeighbor.elevation;
 
-                if (transferVolume > patch.volume)
-                    transferVolume = patch.volume;
+            var transferVolumeBalancePoint = (neighborHeight + patchHeight) / 2;
+            var transferVolume = patch.volume - (transferVolumeBalancePoint - patch.elevation);
 
-                patch.volume -= transferVolume;
-                minNeighbor.volume += transferVolume;
-            }
+            if (transferVolume > patch.volume)
+                transferVolume = patch.volume;
+
+            patch.volume -= transferVolume;
+            minNeighbor.volume += transferVolume;
 
             this.drawPatch(patch);
         }.bind(this));

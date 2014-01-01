@@ -1,6 +1,7 @@
 <html ng-app="Ecostem">
   <head>
     <title>Ecostem</title>
+
     <script src="lib/agentscript.js"></script>
     <script src="lib/data.js"></script>
     <script src="lib/underscore.js"></script>
@@ -9,24 +10,48 @@
     <script src="lib/angular/angular.js"></script>
     <script src="lib/angular/angular-route.js"></script>
 
-    <script src="water_patches.js"></script>
-    <script src="js/Ecostem.js"></script>
-    <script src="js/Map.js"></script>
-
     <link rel="stylesheet" type="text/css" href="lib/leaflet/leaflet.css"/>
     <link rel="stylesheet" type="text/css" href="css/ecostem.css"/>
+
+    <script src="js/Util.js"></script>
+    <script src="js/ElevationSampler.js"></script>
+    <script src="js/WaterPatchesModel.js"></script>
+    <script src="js/Map.js"></script>
+    <script src="js/Ecostem.js"></script>
+    <script src="js/EcostemDirectives.js"></script>
+
   </head>
   <body>
     <div class="container" ng-controller="EcostemCtrl">
+      <div id="loading" ng-show="elevationIsLoading">Loading elevation data...</div>
       <div id="map" map-body></div>
+      <div id="elevation" ng-show="showElevation">
+        <canvas id="elevationCanvas" elevation-canvas/>
+      </div>
+      <div id="watermodel" water-model ng-show="showAsDiv"></div>
       <div class="layers">
         <span ng-repeat="layer in map.baseLayers">
-          <input id="cb{{$index}}" name="baseLayer" type="radio" checked-base-layer="layer"></input>
-          <label for="cb{{$index}}">{{ layer.name }}</label><br/>
+          <input id="bl{{$index}}" name="baseLayer" type="radio" checked-base-layer="layer"></input>
+          <label for="bl{{$index}}">{{ layer.name }}</label><br/>
+        </span>
+        <span ng-repeat="layer in map.layers">
+          <input id="l{{$index}}" type="checkbox" checked-layer="layer"></input>
+          <label for="l{{$index}}">{{ layer.name }}</label><br/>
         </span>
         <hr/>
         <div class="simulation">
-          <button ng-click="startSimulation()">Start Simulation</button>
+          <div ng-show="!waterModelLoaded">
+            <button ng-click="startSimulation()" ng-show="!elevationIsLoading">Start Simulation</button>
+            <span ng-show="elevationIsLoading">Starting...</span>
+          </div>
+          <div ng-show="waterModelLoaded">
+            <a ng-click="showElevation=!showElevation">
+              <span ng-show="!showElevation">Show Raw Elevation</span>
+              <span ng-show="showElevation">Hide Raw Elevation</span>
+            </a>
+            <br/>
+            <button ng-click="stopSimulation()">Stop Simulation</button>
+          </div>
         </div>
       </div>
     </div>

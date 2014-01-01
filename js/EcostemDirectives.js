@@ -49,6 +49,8 @@ var agentscript = null;
 
 EcostemDirectives.directive('waterModel', [function() {
     return function(scope, element, attrs) {
+        var patchSize = 4;
+
         scope.$watch('waterModelLoaded', function(value) {
             if (!!value) {
                 console.log('running model');
@@ -62,11 +64,56 @@ EcostemDirectives.directive('waterModel', [function() {
                                                            patchSize, minX, maxX, minY, maxY);
             }
             if (value === false && agentscript) {
-                /* Todo: this doesn't do what I want. Old model lingers. */
                 agentscript.stop();
                 agentscript.reset();
                 agentscript = null;
             }
+        });
+
+        /* Inspector implementation: */
+
+        $('.popup').hide();
+        $('.rect').css('width', patchSize)
+                  .css('height', patchSize)
+                  .hide()
+                  .click(updatePatch);
+
+        var currentPatch = null;
+        function updatePatch() {
+            var patch = currentPatch;
+
+            var patchCoords = agentscript.patches.patchXYtoPixelXY(patch.x, patch.y),
+                patchTop = patchCoords[1] - patchSize/2,
+                patchLeft = patchCoords[0] - patchSize/2;
+
+            $('.rect').css('top', patchTop)
+                .css('left', patchLeft)
+                .show();
+
+            $('.popup').html('x: ' + patch.x + '<br/>'
+                             + 'y: ' + patch.y + '<br/>'
+                             + 'volume: ' + patch.volume + '<br/>'
+                             + 'elevation: ' + patch.elevation + '<br/>'
+                             + 'color: ' + patch.color + '<br/>')
+                .css('top', patchTop + patchSize)
+                .css('left', patchLeft + patchSize)
+                .show();
+        }
+
+        element.click(function(evt) {
+            if (!agentscript)
+                return;
+
+            var patchXY = agentscript.patches.pixelXYtoPatchXY(evt.offsetX, evt.offsetY),
+                patch = agentscript.patches.patch(patchXY[0], patchXY[1]);
+
+            currentPatch = patch;
+            updatePatch();
+        });
+
+        element.mousemove(function() {
+            $('.popup').hide();
+            $('.rect').hide();
         });
     };
 }]);

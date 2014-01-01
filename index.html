@@ -29,6 +29,8 @@
         <canvas id="elevationCanvas" elevation-canvas/>
       </div>
       <div id="watermodel" water-model ng-show="showAsDiv"></div>
+      <div class="rect"></div>
+      <div class="popup"></div>
       <div class="layers">
         <span ng-repeat="layer in map.baseLayers">
           <input id="bl{{$index}}" name="baseLayer" type="radio" checked-base-layer="layer"></input>

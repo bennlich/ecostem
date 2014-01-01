@@ -66,14 +66,16 @@ var WaterPatchesModel = function() {
                 return neighbor.waterHeight();
             });
 
-            var transferVolumeBalancePoint = (minNeighbor.waterHeight() + patch.waterHeight()) / 2;
-            var transferVolume = patch.volume - (transferVolumeBalancePoint - patch.elevation);
+            if (minNeighbor.waterHeight() < patch.waterHeight()) {
+                var transferVolumeBalancePoint = (minNeighbor.waterHeight() + patch.waterHeight()) / 2;
+                var transferVolume = patch.volume - (transferVolumeBalancePoint - patch.elevation);
 
-            if (transferVolume > patch.volume)
-                transferVolume = patch.volume;
+                if (transferVolume > patch.volume)
+                    transferVolume = patch.volume;
 
-            patch.volume -= transferVolume;
-            minNeighbor.volume += transferVolume;
+                patch.volume -= transferVolume;
+                minNeighbor.volume += transferVolume;
+            }
 
             this.drawPatch(patch);
         }.bind(this));

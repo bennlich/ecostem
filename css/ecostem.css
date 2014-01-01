@@ -77,17 +77,23 @@ a {
     height: 100%;
     z-index: 30;
 }
+.container .layers h3 {
+    margin: 5 0 5 0;
+    font-weight: normal;
+    font-size: 18px;
+    text-align: center;
+}
 .container .layers .simulation {
     text-align: center;
 }
 .container .layers hr {
     border: 0;
-    margin-top: 5px;
-    margin-bottom: 4px;
+    margin-top: 8px;
+    margin-bottom: 8px;
     border-top: 1px solid #bbb;
 }
 .container .layers .simulation button {
-    margin: 4px;
+    margin: 8px;
     background: #eee;
     border: 0;
     padding: 5px;
@@ -96,6 +102,7 @@ a {
     box-shadow: 0px 1px 2px #888;
     cursor: pointer;
     outline: 0;
+    font-size: 14px;
 }
 
 .container .layers .simulation button:active {

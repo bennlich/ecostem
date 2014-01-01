@@ -32,10 +32,13 @@
       <div class="rect"></div>
       <div class="popup"></div>
       <div class="layers">
+        <h3>EcoStem</h3>
+        <hr/>
         <span ng-repeat="layer in map.baseLayers">
           <input id="bl{{$index}}" name="baseLayer" type="radio" checked-base-layer="layer"></input>
           <label for="bl{{$index}}">{{ layer.name }}</label><br/>
         </span>
+        <hr/>
         <span ng-repeat="layer in map.layers">
           <input id="l{{$index}}" type="checkbox" checked-layer="layer"></input>
           <label for="l{{$index}}">{{ layer.name }}</label><br/>

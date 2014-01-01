@@ -68,15 +68,12 @@ Map.prototype = {
     },
 
     setBaseLayer: function(layer) {
-        _.each(this.baseLayers, function(baseLayer) {
-            if (layer === baseLayer) {
-                this.currentBaseLayer = layer;
-                this.leafletMap.addLayer(layer.leafletLayer);
-                this.leafletMap.fire('baselayerchange', { layer: layer.leafletLayer });
-            } else {
-                this.leafletMap.removeLayer(baseLayer.leafletLayer);
-            }
-        }.bind(this));
+        if (this.currentBaseLayer) {
+            this.leafletMap.removeLayer(this.currentBaseLayer.leafletLayer);
+        }
+        this.currentBaseLayer = layer;
+        this.leafletMap.addLayer(layer.leafletLayer);
+        this.leafletMap.fire('baselayerchange', { layer: layer.leafletLayer });
     },
 
     /* normal layers */

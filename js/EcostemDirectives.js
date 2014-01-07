@@ -15,9 +15,7 @@ EcostemDirectives.directive('checkedBaseLayer', [function() {
         var layer = scope.$eval(attrs.checkedBaseLayer);
 
         /* make sure currently selected base layer is checked */
-        if (scope.map.isBaseLayer(layer)) {
-            element.prop('checked',true);
-        }
+        element.prop('checked', scope.map.isBaseLayer(layer));
 
         /* when radio button changes, trigger layer change on underlying map */
         element.change(function() {
@@ -57,12 +55,11 @@ EcostemDirectives.directive('waterModel', [function() {
                 var patchSize = 4;
                 var minX = 0;
                 var minY = 0;
-                var maxX = Math.floor($(window).width() / patchSize);
-                var maxY = Math.floor($(window).height() / patchSize);
+                var maxX = Math.floor($(window).width() / patchSize) - 1;
+                var maxY = Math.floor($(window).height() / patchSize) - 1;
 
                 agentscript = WaterPatchesModel.initialize(attrs.id, scope.elevationSampler,
                                                            patchSize, minX, maxX, minY, maxY).debug().start();
-                
             }
             if (value === false && agentscript) {
                 agentscript.stop();

@@ -4,9 +4,33 @@ var EcostemDirectives = angular.module('Ecostem.directives', []);
 /* for debugging */
 var map;
 
-EcostemDirectives.directive('mapBody', [function() {
+EcostemDirectives.directive('mapBody', ['$location', function($location) {
     return function(scope, element, attrs) {
         scope.map = map = new Map(attrs.id);
+
+        // TODO: Probably move this to the Map service?
+        var urlParams = $location.search(),
+            bounds = urlParams.bbox && urlParams.bbox.split(',');
+
+        if (bounds.length == 4) {
+            map.leafletMap.fitBounds([
+                [bounds[0], bounds[1]],
+                [bounds[2], bounds[3]]
+            ]);
+        }
+        
+        var queryString = '?bbox={s},{w},{n},{e}';
+        map.leafletMap.on('moveend', function() {
+            var bounds = this.getBounds();
+            scope.$apply(function() {
+                $location.url(queryString.namedFormat({
+                    s : bounds.getSouth(),
+                    w : bounds.getWest(),
+                    n : bounds.getNorth(),
+                    e : bounds.getEast()
+                }));
+            });
+        });
     };
 }]);
 

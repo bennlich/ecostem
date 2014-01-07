@@ -12,7 +12,7 @@ EcostemDirectives.directive('mapBody', ['$location', function($location) {
         var urlParams = $location.search(),
             bounds = urlParams.bbox && urlParams.bbox.split(',');
 
-        if (bounds.length == 4) {
+        if (bounds && bounds.length == 4) {
             map.leafletMap.fitBounds([
                 [bounds[0], bounds[1]],
                 [bounds[2], bounds[3]]

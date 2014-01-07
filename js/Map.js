@@ -4,7 +4,7 @@
 
 /** @constructor */
 function Map(id) {
-    this.leafletMap = new L.Map(id,{zoomControl: false});
+    this.leafletMap = new L.Map(id,{zoomControl: false, minZoom: 3, maxZoom: 15});
 
     this.leafletMap.setView(new L.LatLng(35.68832407198268, -105.91811656951903), 12);
 
@@ -53,6 +53,20 @@ Map.prototype = {
         var baseLayerSettings = { minZoom: 2, maxZoom: 18, zIndex: 1 };
 
         return [{
+            name: 'Roadmap',
+            leafletLayer: new L.Google('ROADMAP')
+        }, {
+            name: 'Satellite',
+            leafletLayer: new L.Google('SATELLITE')
+        }, {
+            name: 'Hybrid',
+            leafletLayer: new L.Google('HYBRID')
+        }, {
+            name: 'Terrain',
+            leafletLayer: new L.Google('TERRAIN')
+        }];
+        /*
+        return [{
             name: 'OSM',
             leafletLayer: new L.TileLayer(this.osmUrl(), baseLayerSettings)
         }, {
@@ -65,6 +79,7 @@ Map.prototype = {
             name: 'TopOSM Relief',
             leafletLayer: new L.TileLayer(this.topOsmUrl('toposm-color-relief', 'jpg'), baseLayerSettings)
         }];
+         */
     },
 
     setBaseLayer: function(layer) {

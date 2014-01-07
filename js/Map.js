@@ -4,7 +4,7 @@
 
 /** @constructor */
 function Map(id) {
-    this.leafletMap = new L.Map(id,{zoomControl: false});
+    this.leafletMap = new L.Map(id,{zoomControl: false, minZoom: 3, maxZoom: 15});
 
     this.leafletMap.setView(new L.LatLng(35.68832407198268, -105.91811656951903), 12);
 

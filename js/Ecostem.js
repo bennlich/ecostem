@@ -2,16 +2,17 @@
 
 /* Angular application */
 
-var Ecostem = angular.module('Ecostem', ['Ecostem.directives', 'ngRoute']);
+var Ecostem = angular.module('Ecostem', ['Ecostem.directives', 'Ecostem.services', 'ngRoute']);
 
 Ecostem.run(['$rootScope', function($rootScope) {
     console.log('Ecostem is running.');
 }]);
 
-Ecostem.controller('EcostemCtrl', ['$scope', function($scope) {
+Ecostem.controller('EcostemCtrl', ['$scope', 'map', function($scope, map) {
     $scope.waterModelLoaded = false;
     $scope.showElevation = false;
     $scope.elevationIsLoading = false;
+    $scope.map = map;
 
     $scope.startSimulation = function() {
         $scope.map.removeControls();

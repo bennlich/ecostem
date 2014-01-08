@@ -1,9 +1,5 @@
 'use strict';
 
-var EcostemDirectives = angular.module('Ecostem.directives', ['Ecostem.services']);
-/* for debugging */
-var map;
-
 EcostemDirectives.directive('mapBody', ['map', function(map) {
     return function(scope, element, attrs) {
         map.init(attrs.id);

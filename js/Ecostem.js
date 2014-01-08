@@ -2,7 +2,9 @@
 
 /* Angular application */
 
-var Ecostem = angular.module('Ecostem', ['Ecostem.directives', 'Ecostem.services', 'ngRoute']);
+var Ecostem = angular.module('Ecostem', ['EcostemDirectives', 'EcostemServices']);
+var EcostemDirectives = angular.module('EcostemDirectives', ['EcostemServices']);
+var EcostemServices = angular.module('EcostemServices', []);
 
 Ecostem.run(['$rootScope', function($rootScope) {
     console.log('Ecostem is running.');
@@ -15,7 +17,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', 'map', function($scope, map) {
     $scope.map = map;
 
     $scope.startSimulation = function() {
-        $scope.map.removeControls();
+        map.removeControls();
 
         $scope.elevationIsLoading = true;
         $scope.showAsDiv = true;
@@ -32,6 +34,6 @@ Ecostem.controller('EcostemCtrl', ['$scope', 'map', function($scope, map) {
         $scope.showElevation = false;
         $scope.waterModelLoaded = false;
         $scope.showAsDiv = false;
-        $scope.map.addControls();
+        map.addControls();
     };
 }]);

@@ -10,16 +10,16 @@ EcostemDirectives.directive('mapBody', ['map', function(map) {
     };
 }]);
 
-EcostemDirectives.directive('checkedBaseLayer', [function() {
+EcostemDirectives.directive('checkedBaseLayer', ['map', function(map) {
     return function(scope, element, attrs) {
         var layer = scope.$eval(attrs.checkedBaseLayer);
 
         /* make sure currently selected base layer is checked */
-        element.prop('checked', scope.map.isBaseLayer(layer));
+        element.prop('checked', map.isBaseLayer(layer));
 
         /* when radio button changes, trigger layer change on underlying map */
         element.change(function() {
-            scope.map.setBaseLayer(layer);
+            map.setBaseLayer(layer);
         });
     };
 }]);

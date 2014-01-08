@@ -1,9 +1,24 @@
 body {
     padding: 0;
     margin: 0;
+}
+body, button {
     font-family: "HelveticaNeue-Light", "Helvetica Neue Light", 
     "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-    font-size: 14px;
+    font-size: 16px;
+}
+button {
+    background: #ace;
+    border: 0;
+    padding: 2px;
+    border-radius: 3px;
+    box-shadow: 0px 1px 2px #888;
+    cursor: pointer;
+    outline: 0;
+}
+button:active {
+    outline: 0;
+    background: #eca;
 }
 a {
     color: #58b;
@@ -64,7 +79,7 @@ a {
     padding: 5px;
     border-radius: 5px;
     box-shadow: 0px 1px 4px #666;
-    min-width: 150px;
+    min-width: 200px;
     z-index: 100;
 }
 .container .layers label {
@@ -85,6 +100,7 @@ a {
 }
 .container .layers .simulation {
     text-align: center;
+    margin-bottom: 5px;
 }
 .container .layers hr {
     border: 0;
@@ -92,20 +108,11 @@ a {
     margin-bottom: 8px;
     border-top: 1px solid #bbb;
 }
-.container .layers .simulation button {
-    margin: 8px;
-    background: #eee;
-    border: 0;
-    padding: 5px;
-    border-radius: 3px;
-    font-size: 12px;
-    box-shadow: 0px 1px 2px #888;
-    cursor: pointer;
-    outline: 0;
-    font-size: 14px;
+.container .layers .layer-container {
+    height: 26px;
 }
 
-.container .layers .simulation button:active {
-    outline: 0;
-    background: #ddd;
+.container .layers .layer-container .edit-button {
+    float: right;
+    width: 35px;
 }

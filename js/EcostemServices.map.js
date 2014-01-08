@@ -10,13 +10,15 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
 
             L.control.scale().addTo(this.leafletMap);
 
-            this.zoomControl = L.control.zoom();
+            this._zoomControl = L.control.zoom();
             this.addControls();
 
-            this.baseLayers = this.makeBaseLayers();
+            this.baseLayers = this._makeBaseLayers();
             this.setBaseLayer(this.baseLayers[3]);
 
-            this.layers = this.makeLayers();
+            this.layers = this._makeLayers();
+
+            this.dataLayers = this._makeDataLayers();
 
             // set map bounds to bbox argument in url
             var urlParams = $location.search(),
@@ -45,23 +47,23 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
 
         /* add/remove zoom; the map is "disabled" during simulations */
         removeControls: function() {
-            this.zoomControl.removeFrom(this.leafletMap);
+            this._zoomControl.removeFrom(this.leafletMap);
         },
 
         addControls: function() {
-            this.zoomControl.addTo(this.leafletMap);
+            this._zoomControl.addTo(this.leafletMap);
         },
 
         /* tile urls */
-        osmUrl: function() {
+        _osmUrl: function() {
             return 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         },
 
-        topOsmUrl: function(style, ext) {
+        _topOsmUrl: function(style, ext) {
             return 'http://{s}.tile.stamen.com/' + style + '/{z}/{x}/{y}.' + ext;
         },
 
-        cloudMadeUrl: function(style) {
+        _cloudMadeUrl: function(style) {
             return 'http://{s}.tile.cloudmade.com/f6475b6206f54f9483a35e80bc29a974/' 
                 + style 
                 + '/256/{z}/{x}/{y}.png';
@@ -72,7 +74,7 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             return layer === this.currentBaseLayer;
         },
 
-        makeBaseLayers: function() {
+        _makeBaseLayers: function() {
             var baseLayerSettings = { minZoom: 2, maxZoom: 18, zIndex: 1 };
 
             return [{
@@ -91,16 +93,16 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             /*
              return [{
              name: 'OSM',
-             leafletLayer: new L.TileLayer(this.osmUrl(), baseLayerSettings)
+             leafletLayer: new L.TileLayer(this._osmUrl(), baseLayerSettings)
              }, {
              name: 'Pale',
-             leafletLayer: new L.TileLayer(this.cloudMadeUrl(998), baseLayerSettings)
+             leafletLayer: new L.TileLayer(this._cloudMadeUrl(998), baseLayerSettings)
              }, {
              name: 'Gray',
-             leafletLayer: new L.TileLayer(this.cloudMadeUrl(48535), baseLayerSettings)
+             leafletLayer: new L.TileLayer(this._cloudMadeUrl(48535), baseLayerSettings)
              }, {
              name: 'TopOSM Relief',
-             leafletLayer: new L.TileLayer(this.topOsmUrl('toposm-color-relief', 'jpg'), baseLayerSettings)
+             leafletLayer: new L.TileLayer(this._topOsmUrl('toposm-color-relief', 'jpg'), baseLayerSettings)
              }];
              */
         },
@@ -114,16 +116,16 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             this.leafletMap.fire('baselayerchange', { layer: layer.leafletLayer });
         },
 
-        /* normal layers */
-        makeLayers: function() {
+        /* overlay layers */
+        _makeLayers: function() {
             return [{
                 on: false,
                 name: 'Contours',
-                leafletLayer: new L.TileLayer(this.topOsmUrl('toposm-contours', 'png'), {zIndex: 10})
+                leafletLayer: new L.TileLayer(this._topOsmUrl('toposm-contours', 'png'), {zIndex: 10})
             }, {
                 on: false,
                 name: 'Features',
-                leafletLayer: new L.TileLayer(this.topOsmUrl('toposm-features', 'png'), {zIndex: 11})
+                leafletLayer: new L.TileLayer(this._topOsmUrl('toposm-features', 'png'), {zIndex: 11})
             }];
         },
 
@@ -134,6 +136,23 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                 this.leafletMap.addLayer(layer.leafletLayer);
             }
             layer.on = !layer.on;
+        },
+
+        /* editable data layers */
+        _makeDataLayers: function() {
+            return [{
+                on: false,
+                name: 'Fire Severity',
+                leafletLayer: new FireSeverityLayer()
+            }, {
+                on: false,
+                name: 'Vegetation',
+                leafletLayer: new VegetationDensityLayer()
+            }];
+        },
+
+        toggleDataLayer: function(layer) {
+            this.toggleLayer(layer);
         }
     };
 

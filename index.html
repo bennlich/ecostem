@@ -16,6 +16,8 @@
     <script src="lib/angular/angular-route.js"></script>
 
     <script src="lib/Google.js"></script>
+    <script src="lib/Leaflet.CanvasLayer/leaflet_tileloader_mixin.js"></script>
+    <script src="lib/Leaflet.CanvasLayer/leaflet_canvas_layer.js"></script>
 
     <script src="js/Util.js"></script>
     <script src="js/ElevationSampler.js"></script>
@@ -23,6 +25,7 @@
     <script src="js/Ecostem.js"></script>
     <script src="js/EcostemDirectives.js"></script>
     <script src="js/EcostemServices.map.js"></script>
+    <script src="js/FireSeverityLayer.js"></script>
 
   </head>
   <body>
@@ -38,15 +41,22 @@
       <div class="layers">
         <h3>EcoStem</h3>
         <hr/>
-        <span ng-repeat="layer in map.baseLayers">
+        <div class="layer-container"  ng-repeat="layer in map.baseLayers">
           <input id="bl{{$index}}" name="baseLayer" type="radio" checked-base-layer="layer"></input>
           <label for="bl{{$index}}">{{ layer.name }}</label><br/>
-        </span>
+        </div>
         <hr/>
-        <span ng-repeat="layer in map.layers">
+        <div class="layer-container"  ng-repeat="layer in map.layers">
           <input id="l{{$index}}" type="checkbox" checked-layer="layer"></input>
           <label for="l{{$index}}">{{ layer.name }}</label><br/>
-        </span>
+        </div>
+        <hr/>
+        <div class="layer-container" ng-repeat="layer in map.dataLayers">
+          <input id="dl{{$index}}" type="checkbox" checked-data-layer="layer"></input>
+          <label for="dl{{$index}}">{{ layer.name }}</label>
+          <button class="edit-button" ng-click="editDataLayer(layer)"><img src="img/icons/pencil.png"/></button>
+          <br/>
+        </div>
         <hr/>
         <div class="simulation">
           <div ng-show="!waterModelLoaded">

@@ -32,6 +32,18 @@ EcostemDirectives.directive('checkedLayer', ['map', function(map) {
     };
 }]);
 
+EcostemDirectives.directive('checkedDataLayer', ['map', function(map) {
+    return function(scope, element, attrs) {
+        var layer = scope.$eval(attrs.checkedDataLayer);
+
+        element.prop('checked', layer.on);
+
+        element.change(function() {
+            map.toggleDataLayer(layer);
+        });
+    };
+}]);
+
 EcostemDirectives.directive('elevationCanvas', [function() {
     return function(scope, element, attrs) {
         scope.elevationSampler = new ElevationSampler(element[0]);

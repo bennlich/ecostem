@@ -1,9 +1,11 @@
 'use strict';
-
+var map;
 /* Leaflet wrapper */
 EcostemServices.service('map', ['$location', '$rootScope', function($location, $rootScope) {
     return {
         init: function(id) {
+            map = this;
+
             this.leafletMap = new L.Map(id,{zoomControl: false, minZoom: 3, maxZoom: 15});
 
             this.leafletMap.setView(new L.LatLng(35.68832407198268, -105.91811656951903), 12);
@@ -143,11 +145,11 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             return [{
                 on: false,
                 name: 'Fire Severity',
-                leafletLayer: new FireSeverityLayer()
+                leafletLayer: new FireSeverityLayer({zIndex: 12})
             }, {
                 on: false,
                 name: 'Vegetation',
-                leafletLayer: new VegetationDensityLayer()
+                leafletLayer: new VegetationDensityLayer({zIndex: 13})
             }];
         },
 

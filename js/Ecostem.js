@@ -10,6 +10,8 @@ Ecostem.run(['$rootScope', function($rootScope) {
     console.log('Ecostem is running.');
 }]);
 
+var elevationToDroplets;
+
 Ecostem.controller('EcostemCtrl', ['$scope', 'map', function($scope, map) {
     $scope.waterModelLoaded = false;
     $scope.showElevation = false;
@@ -40,4 +42,12 @@ Ecostem.controller('EcostemCtrl', ['$scope', 'map', function($scope, map) {
         $scope.showAsDiv = false;
         map.addControls();
     };
+
+    elevationToDroplets = $scope.elevationToDroplets =
+        new TransferFunction([0, 200], 'm', [0, 400], 'droplets / m^2', 'Rainfall vs. elevation');
+
+    // example use
+    // var numMeters = 150;
+    // numDroplets = transferFunc(numMeters);
+
 }]);

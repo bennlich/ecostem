@@ -1,0 +1,34 @@
+.x-axis line, .x-axis path, .y-axis line, .y-axis path {
+	stroke-width: 1px;
+	stroke: #777;
+	fill: none;
+}
+
+.x-axis text, .y-axis text {
+	font-size: 75%;
+}
+
+text.x-label, text.y-label {
+	font-size: 80%;
+}
+
+circle.control {
+	fill: white;
+	stroke: #ace;
+	stroke-width: 2;
+}
+
+circle.handle {
+	fill: rgba(0,0,0,0);
+	stroke: none;
+}
+
+g.control:hover circle.control {
+	stroke: #6A9CCD;
+}
+
+path.plot {
+	stroke: #6A9CCD;
+	stroke-width: 3;
+	fill: none;
+}

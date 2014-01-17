@@ -2,82 +2,62 @@
 
 function TransferFunction(domain, domainUnit, range, rangeUnit, title) {
 
+	var padding = 60,
+		numSegments = 50, // number of samples used to draw the spline
+		numCtrlPoints = 5,
+		numSamples = 5000; // number of samples used to interpolate
+
 	// currently a lot of variables belong to the 'transfer' function
-	// eventually we may want to make these private, but it's good for debugging for now
+	// eventually we may want to make these private, but for now it's helped
+	// with debugging
 
 	function transfer(x) {
-		var leftIndex = 0, rightIndex, leftPoint, rightPoint, leftBound, rightBound,
-			controlPoints = transfer.controlPoints;
+		var idx = transfer.search(transfer.lookupTable, x),
+			point = transfer.lookupTable[idx];
 
-		// find the control points located on either side of x
-		for (var i = 0; i < controlPoints.length; i++) {
-			var xCoord = controlPoints[i][0];
-			if (xCoord >= x) {
-				leftIndex = Math.max(0, i-1);
-				rightIndex = i;
-				leftPoint = controlPoints[leftIndex];
-				rightPoint = controlPoints[rightIndex];
-				leftBound = leftPoint[0];
-				rightBound = rightPoint[0];
-				break;
-			}
-		}
+		// debug: show interpolated points on plot
+		// transfer.container.append('circle')
+		// 	.attr('cx', transfer.xScale(point[0]))
+		// 	.attr('cy', transfer.yScale(point[1]))
+		// 	.attr('r', 2)
+		// 	.attr('fill', '#FFFFFF');
 
-		// Currently the interpolator has problems interpolating points between
-		// the first and second control points, and between the last and second to last
-		// control points. I was experimenting with buffering the control points with duplicates
-		// to sidestep this issue.
-
-		// see https://github.com/osuushi/Smooth.js/issues/4
-
-		// var bufferedPoints = [ controlPoints[0] ].concat(controlPoints, [controlPoints[controlPoints.length - 1]]);
-		// console.log('buffered', bufferedPoints);
-
-		var interpolatorOpts = {
-			method: Smooth.METHOD_CUBIC,
-			clip: Smooth.CLIP_CLAMP,
-			cubicTension: Smooth.CUBIC_TENSION_CATMULL_ROM
-		};
-
-		var interpolate = Smooth(controlPoints, interpolatorOpts);
-		// map the x coordinate to a fractional index between
-		// surrounding control points
-		var xCoordToIndex = d3.scale.linear()
-			.domain([leftBound, rightBound])
-			.range([leftIndex, rightIndex]);
-		
-		var interpolatedX = interpolate(xCoordToIndex(x));
-
-		/* debug */
-		console.log(
-			'leftIndex', leftIndex,
-			'rightIndex', rightIndex,
-			'leftBound', leftBound,
-			'rightBound', rightBound,
-			'index', xCoordToIndex(x),
-			'interpolatedX', interpolatedX
-		);
-
-		transfer.container.append('circle')
-			.attr('cx', transfer.xScale(interpolatedX[0]))
-			.attr('cy', transfer.yScale(interpolatedX[1]))
-			.attr('r', 2)
-			.attr('fill', '#FFFFFF');
-		/* end debug */
-
-		return interpolatedX[1];
+		return point[1];
 	}
+
+	transfer.search = d3.bisector(function(d) { return d[0]; }).left;
 
 	transfer.render = function() {
 		this.interpolate = Smooth(this.controlPoints, this.interpolatorOpts);
 
+		this.indexToXCoord.domain([0, this.pathData.length - 1]);
 		for (var i = 0; i < this.pathData.length; i++) {
 			this.pathData[i] = this.interpolate(this.indexToXCoord(i));
+		}
+
+		// TODO: Make the lookup table actually a lookup table
+		// (instead of an array of samples to search through for the correct value)
+		this.indexToXCoord.domain([0, this.lookupTable.length - 1]);
+		for (var i = 0; i < this.lookupTable.length; i++) {
+			this.lookupTable[i] = this.interpolate(this.indexToXCoord(i));
 		}
 
 		this.path
 			.datum(this.pathData)
 			.attr('d', this.pathGenerator);
+
+		// for inspecting the distribution of interpolated points
+		// this.container.selectAll('circle.test')
+		// 	.data(this.pathData)
+		// 		.attr('cx', function(d) { return transfer.xScale(d[0]); })
+		// 		.attr('cy', function(d) { return transfer.yScale(d[1]); })
+		// 		// .attr('cy', function(d) { return 80; })
+		// 	.enter().append('circle')
+		// 		.attr('class', 'test')
+		// 		.attr('r', 1)
+		// 		.attr('cx', function(d) { return transfer.xScale(d[0]); })
+		// 		.attr('cy', function(d) { return transfer.yScale(d[1]); });
+		// 		// .attr('cy', function(d) { return 80; });
 
 		var controlGroup = this.container.selectAll('g.control')
 			.data(this.controlPoints);
@@ -89,8 +69,7 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title) {
 			.attr('cy', function(d) { return transfer.yScale(d[1]); });
 	}
 
-	var padding = 60,
-		width = $('#transfer-function-svg').width(),
+	var width = $('#transfer-function-svg').width(),
 		height = $('#transfer-function-svg').height();
 
 	// these scales convert from the extent of the data to
@@ -100,8 +79,7 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title) {
 
 	// setup control point coordinates equally spaced along path
 	// TODO: start path as a sigmoid instead of a line?
-	var numCtrlPoints = 5,
-		xStep = (domain[1]-domain[0])/(numCtrlPoints-1),
+	var xStep = (domain[1]-domain[0])/(numCtrlPoints-1),
 		xValues = d3.range(domain[0], domain[1]+xStep, xStep),
 		yStep = (range[1]-range[0])/(numCtrlPoints-1),
 		yValues = d3.range(range[0], range[1]+yStep, yStep);
@@ -114,11 +92,9 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title) {
 		];
 	}
 
-	// spline data and utils
-	var numSegments = 50; // number of line segments used to draw the spline
-	
+	// spline data and utils	
 	transfer.pathData = new Array(numSegments);
-	transfer.indexToXCoord = d3.scale.linear().domain([0,numSegments-1]).range(domain);
+	transfer.indexToXCoord = d3.scale.linear().domain([0, numSegments - 1]).range(domain);
 	transfer.pathGenerator = d3.svg.line()
 		.interpolate('linear')
 		.x(function(d) { return transfer.xScale(d[0]); })
@@ -129,6 +105,7 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title) {
 		cubicTension: Smooth.CUBIC_TENSION_CATMULL_ROM,
 		scaleTo: domain
 	};
+	transfer.lookupTable = new Array(numSamples);
 
 	// svg container
 	var container = transfer.container = d3.select('#transfer-function-svg').append('g');

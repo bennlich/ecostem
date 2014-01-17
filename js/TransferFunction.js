@@ -183,8 +183,8 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title) {
 					if (i < transfer.controlPoints.length - 1) {
 						rightBound = transfer.controlPoints[i+1][0];
 					}
-					d[0] += d3.event.dx;
-					d[1] -= d3.event.dy;
+					d[0] = transfer.xScale.invert(d3.event.x);
+					d[1] = transfer.yScale.invert(d3.event.y);
 					d[0] = Math.min(rightBound, Math.max(leftBound, d[0]));
 					d[1] = Math.min(range[1], Math.max(range[0], d[1]));
 					transfer.render();

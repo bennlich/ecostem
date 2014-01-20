@@ -45,6 +45,47 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                     }));
                 });
             });
+
+            this.scenarioBBox = this.createScenarioBBox();
+            this.drawBBoxPolygon(this.scenarioBBox);
+        },
+
+        /* creates a hardcoded bbox for now */
+        createScenarioBBox: function() {
+            var south = 35.624512193132595,
+                west = -106.03282928466797,
+                north = 35.75403529302012,
+                east = -105.77739715576172;
+
+            return L.latLngBounds(
+                new L.LatLng(south, west),
+                new L.LatLng(north, east)
+            );
+        },
+
+        drawBBoxPolygon: function(bbox) {
+            var south = bbox.getSouth(),
+                west = bbox.getWest(),
+                north = bbox.getNorth(),
+                east = bbox.getEast();
+
+            var geoJson = {
+                type: 'Feature',
+                geometry: {
+                    type: 'Polygon',
+                    coordinates: [[[west, south], [west, north], [east, north], [east, south], [west, south]]]
+                }
+            };
+
+            var bboxStyle = {
+                "color": "#ff7800",
+                "weight": 2,
+                "opacity": 1,
+                fillOpacity: 0
+            };
+
+            L.geoJson(geoJson, { style: bboxStyle }).addTo(this.leafletMap);
+
         },
 
         /* add/remove zoom; the map is "disabled" during simulations */

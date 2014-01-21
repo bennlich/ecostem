@@ -13,14 +13,17 @@ Ecostem.run(['$rootScope', function($rootScope) {
 var elevationToDroplets;
 
 Ecostem.controller('EcostemCtrl', ['$scope', 'map', function($scope, map) {
+    /* Scenarios are fixed in a N-pixel wide frame and are dynamically
+     * scaled when the map is moved/zoomed, using CSS transforms.
+     */
+    $scope.fixedScenarioWidth = 1024;
+
     $scope.waterModelLoaded = false;
     $scope.showElevation = false;
     $scope.elevationIsLoading = false;
     $scope.map = map;
 
     $scope.startSimulation = function() {
-        map.removeControls();
-
         $scope.elevationIsLoading = true;
         $scope.showAsDiv = true;
 
@@ -28,8 +31,6 @@ Ecostem.controller('EcostemCtrl', ['$scope', 'map', function($scope, map) {
             $scope.waterModelLoaded = true;
             $scope.elevationIsLoading = false;
         });
-
-        /* maybe let the user draw water on the map */
     };
 
     $scope.editDataLayer = function(layer) {
@@ -40,7 +41,6 @@ Ecostem.controller('EcostemCtrl', ['$scope', 'map', function($scope, map) {
         $scope.showElevation = false;
         $scope.waterModelLoaded = false;
         $scope.showAsDiv = false;
-        map.addControls();
     };
 
     elevationToDroplets = $scope.elevationToDroplets =

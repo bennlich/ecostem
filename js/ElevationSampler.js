@@ -15,11 +15,11 @@ ElevationSampler.prototype = {
      * viewing the elevation image.
      */
     loadElevationData: function(scope, callback) {
-        var bounds = scope.map.leafletMap.getBounds();
+        var scenario = scope.map.scenarioBBox;
 
         var img = new Image();
-        var width = $(window).width();
-        var height = $(window).height();
+        var width = scope.fixedScenarioWidth;
+        var height = Math.floor(scenario.pixelHeight() * width/scenario.pixelWidth());
 
         img.crossOrigin = '';
 
@@ -37,10 +37,10 @@ ElevationSampler.prototype = {
         }.bind(this);
 
         img.src = this.elevationServer.namedFormat({
-            s : bounds.getSouth(),
-            w : bounds.getWest(),
-            n : bounds.getNorth(),
-            e : bounds.getEast(),
+            s : scenario.bbox.getSouth(),
+            w : scenario.bbox.getWest(),
+            n : scenario.bbox.getNorth(),
+            e : scenario.bbox.getEast(),
             width: width,
             height: height
         });

@@ -53,21 +53,54 @@ EcostemDirectives.directive('elevationCanvas', [function() {
 /* for debugging */
 var agentscript = null;
 
-EcostemDirectives.directive('waterModel', [function() {
+EcostemDirectives.directive('waterModel', ['map', function(map) {
     return function(scope, element, attrs) {
         var patchSize = 4;
 
         scope.$watch('waterModelLoaded', function(value) {
             if (!!value) {
                 console.log('running model');
-                var patchSize = 4;
-                var minX = 0;
-                var minY = 0;
-                var maxX = Math.floor($(window).width() / patchSize) - 1;
-                var maxY = Math.floor($(window).height() / patchSize) - 1;
+
+                var height = map.scenarioBBox.pixelHeight(),
+                    width = map.scenarioBBox.pixelWidth(),
+
+                    /* The div is constructed with a fixed size. The water model runs 
+                     * inside it. This div is dynamically scaled and translated to
+                     * fit in the scenario bounding box on the map. 
+                     */
+                    divWidth = scope.fixedScenarioWidth,
+                    divHeight = height * (scope.fixedScenarioWidth / width),
+
+                    minX = 0, minY = 0,
+                    maxX = Math.floor(divWidth / patchSize) - 1,
+                    maxY = Math.floor(divHeight / patchSize) - 1;
 
                 agentscript = WaterPatchesModel.initialize(attrs.id, scope.elevationSampler,
                                                            patchSize, minX, maxX, minY, maxY).debug().start();
+
+                element.css('width', divWidth);
+                element.css('height', divHeight);
+
+                var widthRatio = scope.fixedScenarioWidth/width,
+                    /* The x- and y-offsets for the CSS transform. The widthRatio 
+                     * multiplication is necessary to account for the fact that 
+                     * we're translating and scaling at the same time.
+                     */
+                    xTranslation = map.scenarioBBox.xOffsetFromTopLeft() * widthRatio,
+                    yTranslation = map.scenarioBBox.yOffsetFromTopLeft() * widthRatio;
+
+                element.css('transform-origin', '0 0');
+                element.css('transform', 'scale({0},{0}) translate({1}px,{2}px)'.format(1/widthRatio, xTranslation, yTranslation));
+
+                map.leafletMap.on('drag moveend', function() {
+                    var width = map.scenarioBBox.pixelWidth(),
+                        xt = map.scenarioBBox.xOffsetFromTopLeft() * 1024/width,
+                        yt = map.scenarioBBox.yOffsetFromTopLeft() * 1024/width;
+
+                    var transform = 'scale({0},{0}) translate({1}px,{2}px)'.format(width/scope.fixedScenarioWidth, xt, yt);
+                    element.css('transform', transform);
+                });
+
             }
             if (value === false && agentscript) {
                 agentscript.stop();
@@ -76,8 +109,13 @@ EcostemDirectives.directive('waterModel', [function() {
             }
         });
 
-        /* Inspector implementation: */
+        /* The inspector is commented out for now because it doesn't work correctly under
+         * scaling and translation.
+         */
 
+        /* Inspector implementation: */
+        
+        /* 
         $('.popup').hide();
         $('.rect').css('width', patchSize)
                   .css('height', patchSize)
@@ -121,5 +159,6 @@ EcostemDirectives.directive('waterModel', [function() {
             $('.popup').hide();
             $('.rect').hide();
         });
+         */
     };
 }]);

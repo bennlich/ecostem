@@ -1,5 +1,45 @@
 'use strict';
 var map;
+
+/* Wrapper for the scenario bounding box. Mainly encapsulates degree-to-pixel 
+ * translations */
+function ScenarioBoundingBox(bbox, leafletMap) {
+    this.bbox = bbox;
+    this.leafletMap = leafletMap;
+    this.calculatePixelBounds();
+
+    /* Recalculate the pixel bounds when zoom levels change, since pixel 
+     * dimensions are zoom level-dependent. */
+    leafletMap.on('zoomend', function() {
+        this.calculatePixelBounds();
+    }.bind(this)); 
+}
+
+ScenarioBoundingBox.prototype = {
+    calculatePixelBounds: function() {
+        this.ne = this.leafletMap.project(this.bbox.getNorthEast());
+        this.sw = this.leafletMap.project(this.bbox.getSouthWest());
+    },
+
+    pixelWidth: function() {
+        return Math.abs(Math.floor(this.ne.x - this.sw.x));
+    },
+
+    pixelHeight: function() {
+        return Math.abs(Math.floor(this.ne.y - this.sw.y));
+    },
+
+    xOffsetFromTopLeft: function() {
+        var topLeft = this.leafletMap.getPixelBounds();
+        return Math.floor(this.sw.x - topLeft.min.x);
+    },
+
+    yOffsetFromTopLeft: function() {
+        var topLeft = this.leafletMap.getPixelBounds();
+        return Math.floor(this.ne.y - topLeft.min.y);
+    }
+};
+
 /* Leaflet wrapper */
 EcostemServices.service('map', ['$location', '$rootScope', function($location, $rootScope) {
     return {
@@ -47,7 +87,7 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             });
 
             this.scenarioBBox = this.createScenarioBBox();
-            this.drawBBoxPolygon(this.scenarioBBox);
+            this.drawBBoxPolygon(this.scenarioBBox.bbox);
         },
 
         /* creates a hardcoded bbox for now */
@@ -57,10 +97,12 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                 north = 35.75403529302012,
                 east = -105.77739715576172;
 
-            return L.latLngBounds(
+            var bounds = L.latLngBounds(
                 new L.LatLng(south, west),
                 new L.LatLng(north, east)
             );
+
+            return new ScenarioBoundingBox(bounds, this.leafletMap);
         },
 
         drawBBoxPolygon: function(bbox) {

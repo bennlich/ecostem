@@ -78,8 +78,8 @@ EcostemDirectives.directive('waterModel', ['map', function(map) {
                 agentscript = WaterPatchesModel.initialize(attrs.id, scope.elevationSampler,
                                                            patchSize, minX, maxX, minY, maxY).debug().start();
 
-                element.css('width', divWidth);
-                element.css('height', divHeight);
+                element.css('width', divWidth)
+                       .css('height', divHeight);
 
                 var widthRatio = scope.fixedScenarioWidth/width,
                     /* The x- and y-offsets for the CSS transform. The widthRatio 
@@ -87,17 +87,22 @@ EcostemDirectives.directive('waterModel', ['map', function(map) {
                      * we're translating and scaling at the same time.
                      */
                     xTranslation = map.scenarioBBox.xOffsetFromTopLeft() * widthRatio,
-                    yTranslation = map.scenarioBBox.yOffsetFromTopLeft() * widthRatio;
+                    yTranslation = map.scenarioBBox.yOffsetFromTopLeft() * widthRatio,
 
-                element.css('transform-origin', '0 0');
-                element.css('transform', 'scale({0},{0}) translate({1}px,{2}px)'.format(1/widthRatio, xTranslation, yTranslation));
+                    transform = 'scale({0},{0}) translate({1}px,{2}px)'.format(1/widthRatio, xTranslation, yTranslation);
+
+                element.css('transform-origin', '0 0')
+                       .css('transform', transform);
 
                 map.leafletMap.on('drag moveend', function() {
                     var width = map.scenarioBBox.pixelWidth(),
-                        xt = map.scenarioBBox.xOffsetFromTopLeft() * 1024/width,
-                        yt = map.scenarioBBox.yOffsetFromTopLeft() * 1024/width;
+                        ratio = scope.fixedScenarioWidth/width,
 
-                    var transform = 'scale({0},{0}) translate({1}px,{2}px)'.format(width/scope.fixedScenarioWidth, xt, yt);
+                        xt = map.scenarioBBox.xOffsetFromTopLeft() * ratio,
+                        yt = map.scenarioBBox.yOffsetFromTopLeft() * ratio,
+
+                        transform = 'scale({0},{0}) translate({1}px,{2}px)'.format(1/ratio, xt, yt);
+
                     element.css('transform', transform);
                 });
 

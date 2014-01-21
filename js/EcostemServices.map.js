@@ -46,7 +46,11 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
         init: function(id) {
             map = this;
 
-            this.leafletMap = new L.Map(id,{zoomControl: false, minZoom: 3, maxZoom: 15});
+            this.leafletMap = new L.Map(id,{
+                zoomControl: false, 
+                minZoom: 3, 
+                maxZoom: 15
+            });
 
             this.leafletMap.setView(new L.LatLng(35.68832407198268, -105.91811656951903), 12);
 
@@ -115,19 +119,21 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                 type: 'Feature',
                 geometry: {
                     type: 'Polygon',
-                    coordinates: [[[west, south], [west, north], [east, north], [east, south], [west, south]]]
+                    coordinates: [
+                        [[west, south], [west, north], [east, north], [east, south], 
+                         [west, south]]
+                    ]
                 }
             };
 
             var bboxStyle = {
-                "color": "#ff7800",
-                "weight": 2,
-                "opacity": 1,
+                color: "#000",
+                weight: 2,
+                opacity: 0.5,
                 fillOpacity: 0
             };
 
             L.geoJson(geoJson, { style: bboxStyle }).addTo(this.leafletMap);
-
         },
 
         /* add/remove zoom; the map is "disabled" during simulations */
@@ -174,22 +180,19 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             }, {
                 name: 'Terrain',
                 leafletLayer: new L.Google('TERRAIN')
+            }, {
+                name: 'OSM',
+                leafletLayer: new L.TileLayer(this._osmUrl(), baseLayerSettings)
+            }, {
+                name: 'Pale',
+                leafletLayer: new L.TileLayer(this._cloudMadeUrl(998), baseLayerSettings)
+            }, {
+                name: 'Gray',
+                leafletLayer: new L.TileLayer(this._cloudMadeUrl(48535), baseLayerSettings)
+            }, {
+                name: 'TopOSM Relief',
+                leafletLayer: new L.TileLayer(this._topOsmUrl('toposm-color-relief', 'jpg'), baseLayerSettings)
             }];
-            /*
-             return [{
-             name: 'OSM',
-             leafletLayer: new L.TileLayer(this._osmUrl(), baseLayerSettings)
-             }, {
-             name: 'Pale',
-             leafletLayer: new L.TileLayer(this._cloudMadeUrl(998), baseLayerSettings)
-             }, {
-             name: 'Gray',
-             leafletLayer: new L.TileLayer(this._cloudMadeUrl(48535), baseLayerSettings)
-             }, {
-             name: 'TopOSM Relief',
-             leafletLayer: new L.TileLayer(this._topOsmUrl('toposm-color-relief', 'jpg'), baseLayerSettings)
-             }];
-             */
         },
 
         setBaseLayer: function(layer) {

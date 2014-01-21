@@ -37,7 +37,7 @@ var WaterPatchesModel = function() {
          * time.
          */
         this.colorMap = _.map(_.range(0,21), function(num) {
-            return [100,100,150,num/20];
+            return [40,105,186,num/20];
         });
     };
 

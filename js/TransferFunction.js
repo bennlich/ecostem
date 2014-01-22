@@ -1,6 +1,9 @@
 'use strict';
 
-function TransferFunction(domain, domainUnit, range, rangeUnit, title) {
+function TransferFunction(domain, domainUnit, range, rangeUnit, title, svgcanvas_id) {
+
+	var svgcanID = "transfer-function-svg"
+	if (svgcanvas_id){ svgcanID = svgcanvas_id}
 
 	var padding = 60,
 		numSegments = 50, // number of samples used to draw the spline
@@ -69,8 +72,8 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title) {
 			.attr('cy', function(d) { return transfer.yScale(d[1]); });
 	}
 
-	var width = $('#transfer-function-svg').width(),
-		height = $('#transfer-function-svg').height();
+	var width = $('#' + svgcanID).width(),
+		height = $('#' + svgcanID).height();
 
 	// these scales convert from the extent of the data to
 	// the extent of the svg canvas where we want to draw
@@ -108,7 +111,7 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title) {
 	transfer.lookupTable = new Array(numSamples);
 
 	// svg container
-	var container = transfer.container = d3.select('#transfer-function-svg').append('g');
+	var container = transfer.container = d3.select('#' + svgcanID).append('g');
 	
 	// path
 	transfer.path = container.append('path')
@@ -160,10 +163,12 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title) {
 					if (i < transfer.controlPoints.length - 1) {
 						rightBound = transfer.controlPoints[i+1][0];
 					}
-					d[0] = transfer.xScale.invert(d3.event.x);
 					d[1] = transfer.yScale.invert(d3.event.y);
-					d[0] = Math.min(rightBound, Math.max(leftBound, d[0]));
 					d[1] = Math.min(range[1], Math.max(range[0], d[1]));
+					if( i > 0 && i < transfer.controlPoints.length - 1 ){//don't allow extents to move towards center
+						d[0] = transfer.xScale.invert(d3.event.x);
+						d[0] = Math.min(rightBound, Math.max(leftBound, d[0]));
+					}
 					transfer.render();
 				}));
 	controlGroup.append('circle')

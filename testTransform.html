@@ -1,0 +1,35 @@
+<html>
+<head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <script src="lib/underscore.js"></script>
+    <script src="lib/jquery-1.10.2.js"></script>
+    <script src="lib/d3.js"></script>
+    <script src="lib/Smooth-0.1.7.js"></script>
+    <script src="js/TransferFunction.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/svg.css"/>
+
+<script>
+	var tran1, tran2
+
+	$().ready(function(){
+		console.log('ready')
+		tran1 = new TransferFunction([0, 90], 'degrees', [0, 200], 'spread rate m/s', 'Spread rate vs Slope', 'transylvaniaSVG');
+		tran2 = new TransferFunction([0, 90], 'wind speed m/hour', [0, 200], 'spread rate m/hour', 'Spread rate vs Wind', 'transmuteSVG');
+	})
+</script>
+
+</head>
+
+<body>
+  <h1>Transformers Test</h1>
+  <div class="transfer-function-test">
+    <svg id="transylvaniaSVG" width=600 height=300></svg>
+  </div>
+  <br>
+  <div class="transfer-function-test">
+    <svg id="transmuteSVG" width=600 height=300></svg>
+  </div>
+</body>
+
+</html>

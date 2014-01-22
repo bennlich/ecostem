@@ -27,6 +27,7 @@
     <script src="js/Util.js"></script>
     <script src="js/ElevationSampler.js"></script>
     <script src="js/WaterPatchesModel.js"></script>
+    <script src="js/WaterModel.js"></script>
     <script src="js/Ecostem.js"></script>
     <script src="js/EcostemDirectives.js"></script>
     <script src="js/EcostemServices.map.js"></script>
@@ -41,7 +42,7 @@
       <div id="elevation" ng-show="showElevation">
         <canvas id="elevationCanvas" elevation-canvas/>
       </div>
-      <div id="watermodel" water-model ng-show="showAsDiv"></div>
+      <canvas id="watermodel" water-model ng-show="showAsDiv"></canvas>
       <div class="rect"></div>
       <div class="popup"></div>
       <div class="layers">
@@ -70,11 +71,11 @@
             <span ng-show="elevationIsLoading">Starting...</span>
           </div>
           <div ng-show="waterModelLoaded">
-            <!-- <a ng-click="showElevation=!showElevation"> -->
-            <!--   <span ng-show="!showElevation">Show Raw Elevation</span> -->
-            <!--   <span ng-show="showElevation">Hide Raw Elevation</span> -->
-            <!-- </a> -->
-            <!-- <br/> -->
+            <a ng-click="showElevation=!showElevation">
+              <span ng-show="!showElevation">Show Raw Elevation</span>
+              <span ng-show="showElevation">Hide Raw Elevation</span>
+            </a>
+            <br/>
             <button ng-click="stopSimulation()">Stop Simulation</button>
           </div>
         </div>

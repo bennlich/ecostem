@@ -1,11 +1,12 @@
 'use strict';
 
-function ElevationSampler(canvas) {
+function ElevationSampler(canvas, width) {
     /* Elevation server sitting upstairs @ simtable */
     this.elevationServer = "http://70.90.201.217/cgi-bin/elevation.py?bbox={s},{w},{n},{e}&res={width},{height}"; 
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.imageData = null;
+    this.width = width;
 }
 
 ElevationSampler.prototype = {
@@ -18,18 +19,17 @@ ElevationSampler.prototype = {
         var scenario = scope.map.scenarioBBox;
 
         var img = new Image();
-        var width = scope.fixedScenarioWidth;
-        var height = Math.floor(scenario.pixelHeight() * width/scenario.pixelWidth());
+        var height = Math.floor(scenario.pixelHeight() * this.width/scenario.pixelWidth());
 
         img.crossOrigin = '';
 
         img.onload = function() {
-            this.canvas.width = width;
+            this.canvas.width = this.width;
             this.canvas.height = height;
 
             this.ctx.drawImage(img, 0, 0);
 
-            this.imageData = this.ctx.getImageData(0, 0, width, height).data;
+            this.imageData = this.ctx.getImageData(0, 0, this.width, height).data;
 
             if (typeof callback === 'function') {
                 scope.$apply(callback);
@@ -41,7 +41,7 @@ ElevationSampler.prototype = {
             w : scenario.bbox.getWest(),
             n : scenario.bbox.getNorth(),
             e : scenario.bbox.getEast(),
-            width: width,
+            width: this.width,
             height: height
         });
     },

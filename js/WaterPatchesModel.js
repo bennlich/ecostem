@@ -1,3 +1,5 @@
+'use strict';
+
 var WaterPatchesModel = function() {
     var DataSet = ABM.DataSet;
     var elevationSampler = null;

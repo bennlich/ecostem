@@ -3,7 +3,7 @@ var map;
 
 /* Wrapper for the scenario bounding box. Mainly encapsulates degree-to-pixel 
  * translations */
-function ScenarioBoundingBox(bbox, leafletMap) {
+function ScenarioBoundingBox(bbox, leafletMap, scope) {
     this.bbox = bbox;
     this.leafletMap = leafletMap;
     this.calculatePixelBounds();
@@ -48,6 +48,7 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
 
             this.leafletMap = new L.Map(id,{
                 zoomControl: false, 
+                zoomAnimation: false,
                 minZoom: 3, 
                 maxZoom: 15
             });
@@ -92,6 +93,11 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
 
             this.scenarioBBox = this.createScenarioBBox();
             this.drawBBoxPolygon(this.scenarioBBox.bbox);
+
+            this.world = null;
+            WaterModel.onChange(1, function(world) {
+                this.world = world;
+            }.bind(this));
         },
 
         /* creates a hardcoded bbox for now */
@@ -166,7 +172,7 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
         },
 
         _makeBaseLayers: function() {
-            var baseLayerSettings = { minZoom: 2, maxZoom: 18, zIndex: 1 };
+            var baseLayerSettings = { minZoom: 2, maxZoom: 18, zIndex: 1, zoomAnimation: false };
 
             return [{
                 name: 'Roadmap',
@@ -228,6 +234,27 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
 
         /* editable data layers */
         _makeDataLayers: function() {
+            var colorMap = _.map(_.range(0,21), function(num) {
+                return 'rgba(40,105,186,{0})'.format(num/20);
+            });
+
+            function getColor(volume) {
+                var idx = Math.floor(volume * 3);
+                if (idx > 19)
+                    idx = 19;
+                return colorMap[idx];                    
+            }
+
+            var canvasLayer = L.tileLayer.canvas();
+            canvasLayer.drawTile = function(canvas, tilePoint, zoom) {
+                var ctx = canvas.getContext('2d');
+
+                console.log(tilePoint.x * 256, tilePoint.y * 256);
+                console.log(canvas.height, canvas.width);
+                ctx.strokeStyle='#000';
+                ctx.strokeRect(0,0,canvas.width,canvas.height);
+            }.bind(this);
+
             return [{
                 on: false,
                 name: 'Fire Severity',
@@ -236,6 +263,10 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                 on: false,
                 name: 'Vegetation',
                 leafletLayer: new VegetationDensityLayer({zIndex: 13})
+            }, {
+                on: false,
+                name: 'Water Model',
+                leafletLayer: canvasLayer
             }];
         },
 

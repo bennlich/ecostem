@@ -44,9 +44,10 @@ EcostemDirectives.directive('checkedDataLayer', ['map', function(map) {
     };
 }]);
 
+var sampler;
 EcostemDirectives.directive('elevationCanvas', [function() {
     return function(scope, element, attrs) {
-        scope.elevationSampler = new ElevationSampler(element[0]);
+        sampler = scope.elevationSampler = new ElevationSampler(element[0], scope.fixedScenarioWidth);
     };
 }]);
 
@@ -71,46 +72,52 @@ EcostemDirectives.directive('waterModel', ['map', function(map) {
                     divWidth = scope.fixedScenarioWidth,
                     divHeight = height * (scope.fixedScenarioWidth / width),
 
-                    minX = 0, minY = 0,
-                    maxX = Math.floor(divWidth / patchSize) - 1,
-                    maxY = Math.floor(divHeight / patchSize) - 1;
+                    numX = Math.floor(divWidth / patchSize),
+                    numY = Math.floor(divHeight / patchSize);
 
-                agentscript = WaterPatchesModel.initialize(attrs.id, scope.elevationSampler,
-                                                           patchSize, minX, maxX, minY, maxY).debug().start();
+                // var canvas = element[0];
+                // var ctx = canvas.getContext('2d');
 
-                element.css('width', divWidth)
-                       .css('height', divHeight);
+                // element.css('width', divWidth)
+                //        .css('height', divHeight);
 
-                var widthRatio = scope.fixedScenarioWidth/width,
-                    /* The x- and y-offsets for the CSS transform. The widthRatio 
-                     * multiplication is necessary to account for the fact that 
-                     * we're translating and scaling at the same time.
-                     */
-                    xTranslation = map.scenarioBBox.xOffsetFromTopLeft() * widthRatio,
-                    yTranslation = map.scenarioBBox.yOffsetFromTopLeft() * widthRatio,
+                // canvas.width = divWidth;
+                // canvas.height = divHeight;
 
-                    transform = 'scale({0},{0}) translate({1}px,{2}px)'.format(1/widthRatio, xTranslation, yTranslation);
+                WaterModel.initialize(numX, numY, scope.elevationSampler);
+                WaterModel.start();
 
-                element.css('transform-origin', '0 0')
-                       .css('transform', transform);
+                // agentscript = WaterPatchesModel.initialize(attrs.id, scope.elevationSampler,
+                //                                            patchSize, minX, maxX, minY, maxY).debug().start();
 
-                map.leafletMap.on('drag moveend', function() {
-                    var width = map.scenarioBBox.pixelWidth(),
-                        ratio = scope.fixedScenarioWidth/width,
+                // var widthRatio = scope.fixedScenarioWidth/width,
+                //     /* The x- and y-offsets for the CSS transform. The widthRatio 
+                //      * multiplication is necessary to account for the fact that 
+                //      * we're translating and scaling at the same time.
+                //      */
+                //     xTranslation = map.scenarioBBox.xOffsetFromTopLeft() * widthRatio,
+                //     yTranslation = map.scenarioBBox.yOffsetFromTopLeft() * widthRatio,
 
-                        xt = map.scenarioBBox.xOffsetFromTopLeft() * ratio,
-                        yt = map.scenarioBBox.yOffsetFromTopLeft() * ratio,
+                //     transform = 'scale({0},{0}) translate({1}px,{2}px)'.format(1/widthRatio, xTranslation, yTranslation);
 
-                        transform = 'scale({0},{0}) translate({1}px,{2}px)'.format(1/ratio, xt, yt);
+                // element.css('transform-origin', '0 0')
+                //        .css('transform', transform);
 
-                    element.css('transform', transform);
-                });
+                // map.leafletMap.on('drag moveend', function() {
+                //     var width = map.scenarioBBox.pixelWidth(),
+                //         ratio = scope.fixedScenarioWidth/width,
+
+                //         xt = map.scenarioBBox.xOffsetFromTopLeft() * ratio,
+                //         yt = map.scenarioBBox.yOffsetFromTopLeft() * ratio,
+
+                //         transform = 'scale({0},{0}) translate({1}px,{2}px)'.format(1/ratio, xt, yt);
+
+                //     element.css('transform', transform);
+                // });
 
             }
             if (value === false && agentscript) {
-                agentscript.stop();
-                agentscript.reset();
-                agentscript = null;
+                WaterModel.stop();
             }
         });
 

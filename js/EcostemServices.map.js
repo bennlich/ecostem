@@ -1,6 +1,28 @@
 'use strict';
 var map;
 
+function Rect(left,top,width,height) {
+    this.left = left, this.top = top,
+    this.width = width, this.height = height;
+}
+
+Rect.prototype = {
+    intersect: function(rect) {
+        var x0 = Math.max(this.left, rect.left);
+        var x1 = Math.min(this.left + this.width, rect.left + rect.width);
+
+        if (x0 <= x1) {
+            var y0 = Math.max(this.top, rect.top);
+            var y1 = Math.min(this.top + this.height, rect.top + rect.height);
+
+            if (y0 <= y1) {
+                return new Rect(x0, y0, x1-x0, y1-y0);
+            }
+        }
+        return null;
+    }
+};
+
 /* Wrapper for the scenario bounding box. Mainly encapsulates degree-to-pixel 
  * translations */
 function ScenarioBoundingBox(bbox, leafletMap, scope) {
@@ -249,10 +271,38 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             canvasLayer.drawTile = function(canvas, tilePoint, zoom) {
                 var ctx = canvas.getContext('2d');
 
-                console.log(tilePoint.x * 256, tilePoint.y * 256);
-                console.log(canvas.height, canvas.width);
+                var x = tilePoint.x * canvas.width;
+                var y = tilePoint.y * canvas.height;
+
+                this.scenarioBBox.calculatePixelBounds();
+
+                var box_x = this.scenarioBBox.sw.x;
+                var box_y = this.scenarioBBox.ne.y;
+                var box_width = this.scenarioBBox.pixelWidth();
+                var box_height = this.scenarioBBox.pixelHeight();
+
+                console.log('c',x, y, canvas.width, canvas.height);
+                console.log('b',box_x, box_y, box_width, box_height);
+
+                var canvasRect = new Rect(x, y, canvas.width, canvas.height);
+                var boxRect = new Rect(box_x, box_y, box_width, box_height);
+
+                var intersection = canvasRect.intersect(boxRect);
+
+                if (intersection == null) {
+                    return;
+                }
+
+                console.log(intersection);
+
+                var o_x = intersection.left - x;
+                var o_y = intersection.top - y;
+
+                ctx.fillStyle='#58b';
+                ctx.fillRect(o_x,o_y, intersection.width, intersection.height);
                 ctx.strokeStyle='#000';
                 ctx.strokeRect(0,0,canvas.width,canvas.height);
+
             }.bind(this);
 
             return [{

@@ -23,13 +23,18 @@ var WaterModel = function() {
             for (var j = 0; j < ySize; ++j) {
                 world[i][j] = { 
                     volume: 0,
-                    elevation: elevationSampler.sample(i, j)
+                    elevation: sample(i, j)
                 };
             }
         }
 
         for (i = 60; i < 70; ++i) {
             for (j = 20; j < 30; ++j) {
+                world[i][j].volume = 50;
+            }
+        }
+        for (i = 100; i < 110; ++i) {
+            for (j = 60; j < 70; ++j) {
                 world[i][j].volume = 50;
             }
         }
@@ -101,23 +106,28 @@ var WaterModel = function() {
     }
 
     function start() {
+        console.log('start');
         steps = 0;
         started = true;
         run();
     }
 
     function stop() {
+        console.log('stop');
+        //clearCallbacks();
         started = false;
     }
 
     function onChange(cb) {
-        console.log('new callback');
         callbacks.push(cb);
     }
 
     function clearCallbacks() {
-        console.log('clear callbacks');
         callbacks = [];
+    }
+
+    function getCallbacks() {
+        return callbacks;
     }
 
     return {
@@ -129,6 +139,6 @@ var WaterModel = function() {
         initialize: initialize,
         getDims: getDims,
         clearCallbacks: clearCallbacks,
-        callbacks: callbacks
+        getCallbacks: getCallbacks
     };
 }();

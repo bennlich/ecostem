@@ -311,14 +311,14 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                 //console.log(i_x, i_y);
 
                 WaterModel.onChange(function(world) {
+                    ctx.clearRect(1,1,canvas.width-1,canvas.height-1);
+
                     for (var i = start_x, p = 0; i < end_x; ++i, ++p) {
                         for (var j = start_y, k = 0; j < end_y; ++j, ++k) {
                             var patch = world[i][j];
                             if (patch.volume > 0) {
                                 ctx.fillStyle = getColor(patch.volume);
                                 ctx.fillRect(i_x + p * patchSize, i_y + k * patchSize, patchSize, patchSize);
-                            } else {
-                                ctx.clearRect(i_x + p * patchSize, i_y + k * patchSize, patchSize, patchSize);
                             }
                         }
                     }
@@ -326,8 +326,8 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
 
                 // ctx.fillStyle='#58b';
                 // ctx.fillRect(i_x,i_y, intersection.width, intersection.height);
-                // ctx.strokeStyle='#000';
-                // ctx.strokeRect(0,0,canvas.width,canvas.height);
+                ctx.strokeStyle='#000';
+                ctx.strokeRect(0,0,canvas.width,canvas.height);
             }.bind(this);
 
             return [{

@@ -266,7 +266,7 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                 return colorMap[idx];                    
             }
 
-            var canvasLayer = L.tileLayer.canvas();
+            var canvasLayer = L.tileLayer.canvas({zIndex: 14});
             canvasLayer.drawTile = function(canvas, tilePoint, zoom) {
                 var ctx = canvas.getContext('2d');
 

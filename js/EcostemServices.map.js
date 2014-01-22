@@ -113,13 +113,12 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                 });
             });
 
+            this.leafletMap.on('zoomstart', function() {
+                WaterModel.clearCallbacks();
+            });
+
             this.scenarioBBox = this.createScenarioBBox();
             this.drawBBoxPolygon(this.scenarioBBox.bbox);
-
-            this.world = null;
-            WaterModel.onChange(1, function(world) {
-                this.world = world;
-            }.bind(this));
         },
 
         /* creates a hardcoded bbox for now */
@@ -281,8 +280,8 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                 var box_width = this.scenarioBBox.pixelWidth();
                 var box_height = this.scenarioBBox.pixelHeight();
 
-                console.log('c',x, y, canvas.width, canvas.height);
-                console.log('b',box_x, box_y, box_width, box_height);
+                // console.log('c',x, y, canvas.width, canvas.height);
+                // console.log('b',box_x, box_y, box_width, box_height);
 
                 var canvasRect = new Rect(x, y, canvas.width, canvas.height);
                 var boxRect = new Rect(box_x, box_y, box_width, box_height);
@@ -293,16 +292,42 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                     return;
                 }
 
-                console.log(intersection);
+                //console.log(intersection);
 
-                var o_x = intersection.left - x;
-                var o_y = intersection.top - y;
+                var patchSize = box_width / WaterModel.getDims()[0];
 
-                ctx.fillStyle='#58b';
-                ctx.fillRect(o_x,o_y, intersection.width, intersection.height);
-                ctx.strokeStyle='#000';
-                ctx.strokeRect(0,0,canvas.width,canvas.height);
+                var offset_x = Math.abs(box_x - intersection.left);
+                var offset_y = Math.abs(box_y - intersection.top);
 
+                var start_x = Math.floor(offset_x / patchSize);
+                var start_y = Math.floor(offset_y / patchSize);
+                var end_x = Math.floor((offset_x + intersection.width)/patchSize);
+                var end_y = Math.floor((offset_y + intersection.height)/patchSize);
+
+                //console.log(start_x, start_y, end_x, end_y, WaterModel.getDims());
+
+                var i_x = intersection.left - x;
+                var i_y = intersection.top - y;
+                //console.log(i_x, i_y);
+
+                WaterModel.onChange(function(world) {
+                    for (var i = start_x, p = 0; i < end_x; ++i, ++p) {
+                        for (var j = start_y, k = 0; j < end_y; ++j, ++k) {
+                            var patch = world[i][j];
+                            if (patch.volume > 0) {
+                                ctx.fillStyle = getColor(patch.volume);
+                                ctx.fillRect(i_x + p * patchSize, i_y + k * patchSize, patchSize, patchSize);
+                            } else {
+                                ctx.clearRect(i_x + p * patchSize, i_y + k * patchSize, patchSize, patchSize);
+                            }
+                        }
+                    }
+                });
+
+                // ctx.fillStyle='#58b';
+                // ctx.fillRect(i_x,i_y, intersection.width, intersection.height);
+                // ctx.strokeStyle='#000';
+                // ctx.strokeRect(0,0,canvas.width,canvas.height);
             }.bind(this);
 
             return [{

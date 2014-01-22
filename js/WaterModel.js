@@ -7,6 +7,10 @@ var WaterModel = function() {
     var sampleSpacing = 1;
     var elevationSampler = null;
 
+    function getDims() {
+        return [xSize, ySize];
+    }
+
     function initialize(xs, ys, sampler) {
         xSize = xs;
         ySize = ys;
@@ -83,16 +87,15 @@ var WaterModel = function() {
 
     var started = false;
     var steps = 0;
-    var callback = null;
-    var callbackSteps = 0;
+    var callbacks = [];
 
     function run() {
         if (started) {
             step();
             steps++;
-            if (typeof callback === 'function' && steps % callbackSteps === 0) {
+            _.each(callbacks, function(callback) {
                 callback(world);
-            }
+            });
             setTimeout(run, 50);
         }
     }
@@ -107,9 +110,14 @@ var WaterModel = function() {
         started = false;
     }
 
-    function onChange(numSteps, cb) {
-        callbackSteps = numSteps;
-        callback = cb;
+    function onChange(cb) {
+        console.log('new callback');
+        callbacks.push(cb);
+    }
+
+    function clearCallbacks() {
+        console.log('clear callbacks');
+        callbacks = [];
     }
 
     return {
@@ -118,6 +126,9 @@ var WaterModel = function() {
         stop: stop,
         onChange: onChange,
         neighbors: neighbors,
-        initialize: initialize
+        initialize: initialize,
+        getDims: getDims,
+        clearCallbacks: clearCallbacks,
+        callbacks: callbacks
     };
 }();

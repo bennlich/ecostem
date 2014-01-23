@@ -35,20 +35,25 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title, svgcanvas
 	}).left;
 
 	transfer.render = function() {
+		
 		//this.interpolate = Smooth(this.controlPoints, this.interpolatorOpts);
-
-		this.cc = matf.compute_coefficients(this.controlPoints, 3)
+		//
+		//  Curve fitting instead of smoother. It outputs a function. 
+		//    This has it's own problems, especially when there are more than like 5 control points
+		//
+		var polynomialDegree = this.controlPoints.length - 1//matches every point exactly when degree is length-1
+		this.polynomialCoeffients = matf.compute_coefficients(this.controlPoints, polynomialDegree)
 		this.interpolate = function(x) {
-			//console.log(cc, cc[1])
-			var cc = this.cc
-			var x2 = 1
+			//res = cc[0] + cc[1]*x + cc[2]*x*x ...
+			var cc = this.polynomialCoeffients
 			var res = 0
 			for (var i = 0; i < cc.length; i++) {
-				res += x2 * cc[i]
-				x2 = x2 * x
+				res += Math.pow(x,i) * cc[i]
 			}
-			return [x, Math.max(0, res)]
+			return [x, Math.min( range[1], Math.max(range[0], res))]
 		}
+
+
 
 		this.indexToXCoord.domain([0, this.pathData.length - 1]);
 		for (var i = 0; i < this.pathData.length; i++) {

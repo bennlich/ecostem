@@ -54,7 +54,6 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title, svgcanvas
 		}
 
 
-
 		this.indexToXCoord.domain([0, this.pathData.length - 1]);
 		for (var i = 0; i < this.pathData.length; i++) {
 			this.pathData[i] = this.interpolate(this.indexToXCoord(i));

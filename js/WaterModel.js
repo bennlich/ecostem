@@ -99,7 +99,7 @@ var WaterModel = function() {
             step();
             steps++;
             _.each(callbacks, function(callback) {
-                callback(world);
+                setTimeout(function() { callback(world); }, 0);
             });
             setTimeout(run, 50);
         }

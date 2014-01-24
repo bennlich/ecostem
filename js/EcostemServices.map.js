@@ -1,5 +1,4 @@
 'use strict';
-var map;
 
 function Rect(left,top,width,height) {
     this.left = left, this.top = top,
@@ -66,8 +65,6 @@ ScenarioBoundingBox.prototype = {
 EcostemServices.service('map', ['$location', '$rootScope', function($location, $rootScope) {
     return {
         init: function(id) {
-            map = this;
-
             this.leafletMap = new L.Map(id,{
                 zoomControl: false, 
                 zoomAnimation: false,
@@ -86,8 +83,8 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             this.setBaseLayer(this.baseLayers[3]);
 
             this.layers = this._makeLayers();
-
             this.dataLayers = this._makeDataLayers();
+            this.modelLayers = this._makeModelLayers();
 
             // set map bounds to bbox argument in url
             var urlParams = $location.search(),
@@ -160,7 +157,14 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                 fillOpacity: 0
             };
 
-            L.geoJson(geoJson, { style: bboxStyle }).addTo(this.leafletMap);
+            var polygon = L.geoJson(geoJson, { style: bboxStyle });
+
+            // pass double-clicks down to the map
+            polygon.on('dblclick', function(e) { 
+                this.leafletMap.fire('dblclick', e); 
+            }.bind(this));
+
+            polygon.addTo(this.leafletMap);
         },
 
         /* add/remove zoom; the map is "disabled" during simulations */
@@ -255,99 +259,28 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
 
         /* editable data layers */
         _makeDataLayers: function() {
-            var colorMap = _.map(_.range(0,21), function(num) {
-                return 'rgba(40,105,186,{0})'.format(num/20);
-            });
-
-            function getColor(volume) {
-                var idx = Math.floor(volume * 3);
-                if (idx > 19)
-                    idx = 19;
-                return colorMap[idx];                    
-            }
-
-            var canvasLayer = L.tileLayer.canvas({zIndex: 14});
-            canvasLayer.drawTile = function(canvas, tilePoint, zoom) {
-                var ctx = canvas.getContext('2d');
-
-                var x = tilePoint.x * canvas.width;
-                var y = tilePoint.y * canvas.height;
-
-                this.scenarioBBox.calculatePixelBounds();
-
-                var box_x = this.scenarioBBox.sw.x;
-                var box_y = this.scenarioBBox.ne.y;
-                var box_width = this.scenarioBBox.pixelWidth();
-                var box_height = this.scenarioBBox.pixelHeight();
-
-                // console.log('c',x, y, canvas.width, canvas.height);
-                // console.log('b',box_x, box_y, box_width, box_height);
-
-                var canvasRect = new Rect(x, y, canvas.width, canvas.height);
-                var boxRect = new Rect(box_x, box_y, box_width, box_height);
-
-                var intersection = canvasRect.intersect(boxRect);
-
-                if (intersection == null) {
-                    return;
-                }
-
-                //console.log(intersection);
-
-                var patchSize = box_width / WaterModel.getDims()[0];
-
-                var offset_x = Math.abs(box_x - intersection.left);
-                var offset_y = Math.abs(box_y - intersection.top);
-
-                var start_x = Math.floor(offset_x / patchSize);
-                var start_y = Math.floor(offset_y / patchSize);
-                var end_x = Math.floor((offset_x + intersection.width)/patchSize);
-                var end_y = Math.floor((offset_y + intersection.height)/patchSize);
-
-                //console.log(start_x, start_y, end_x, end_y, WaterModel.getDims());
-
-                var i_x = intersection.left - x;
-                var i_y = intersection.top - y;
-                //console.log(i_x, i_y);
-
-                WaterModel.onChange(function(world) {
-                    ctx.clearRect(1,1,canvas.width-1,canvas.height-1);
-
-                    for (var i = start_x, p = 0; i < end_x; ++i, ++p) {
-                        for (var j = start_y, k = 0; j < end_y; ++j, ++k) {
-                            var patch = world[i][j];
-                            if (patch.volume > 0) {
-                                ctx.fillStyle = getColor(patch.volume);
-                                ctx.fillRect(i_x + p * patchSize, i_y + k * patchSize, patchSize, patchSize);
-                            }
-                        }
-                    }
-                });
-
-                // ctx.fillStyle='#58b';
-                // ctx.fillRect(i_x,i_y, intersection.width, intersection.height);
-                ctx.strokeStyle='#000';
-                ctx.strokeRect(0,0,canvas.width,canvas.height);
-            }.bind(this);
-
             return [{
                 on: false,
+                disabled: false,
                 name: 'Fire Severity',
                 leafletLayer: new FireSeverityLayer({zIndex: 12})
             }, {
                 on: false,
+                disabled: false,
                 name: 'Vegetation',
                 leafletLayer: new VegetationDensityLayer({zIndex: 13})
-            }, {
-                on: false,
-                name: 'Water Model',
-                leafletLayer: canvasLayer
             }];
         },
 
-        toggleDataLayer: function(layer) {
-            this.toggleLayer(layer);
+        _makeModelLayers: function() {
+            return [{
+                on: false,
+                disabled: true,
+                name: 'Water Model',
+                leafletLayer: WaterModelLayer.create(this)
+            }];
         }
     };
 
 }]);
+

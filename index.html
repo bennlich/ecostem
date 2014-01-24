@@ -26,12 +26,14 @@
     <script src="lib/Leaflet.CanvasLayer/leaflet_canvas_layer.js"></script>
 
     <script src="js/Util.js"></script>
-    <script src="js/ElevationSampler.js"></script>
     <script src="js/WaterPatchesModel.js"></script>
     <script src="js/WaterModel.js"></script>
+    <script src="js/WaterModelLayer.js"></script>
     <script src="js/Ecostem.js"></script>
     <script src="js/EcostemDirectives.js"></script>
     <script src="js/EcostemServices.map.js"></script>
+    <script src="js/EcostemServices.water.js"></script>
+    <script src="js/ElevationSampler.js"></script>
     <script src="js/FireSeverityLayer.js"></script>
     <script src="js/TransferFunction.js"></script>
 
@@ -43,9 +45,6 @@
       <div id="elevation" ng-show="showElevation">
         <canvas id="elevationCanvas" elevation-canvas/>
       </div>
-      <canvas id="watermodel" water-model ng-show="showAsDiv"></canvas>
-      <div class="rect"></div>
-      <div class="popup"></div>
       <div class="layers">
         <h3>EcoStem</h3>
         <hr/>
@@ -55,14 +54,20 @@
         </div>
         <hr/>
         <div class="layer-container"  ng-repeat="layer in map.layers">
-          <input id="l{{$index}}" type="checkbox" checked-layer="layer"></input>
+          <input id="l{{$index}}" type="checkbox" checked-layer="layer" ng-checked="layer.on" ng-disabled="layer.disabled"></input>
           <label for="l{{$index}}">{{ layer.name }}</label><br/>
         </div>
         <hr/>
         <div class="layer-container" ng-repeat="layer in map.dataLayers">
-          <input id="dl{{$index}}" type="checkbox" checked-data-layer="layer"></input>
+          <input id="dl{{$index}}" type="checkbox" checked-layer="layer" ng-checked="layer.on" ng-disabled="layer.disabled"></input>
           <label for="dl{{$index}}">{{ layer.name }}</label>
           <button class="edit-button" ng-click="editDataLayer(layer)"><img src="img/icons/pencil.png"/></button>
+          <br/>
+        </div>
+        <hr/>
+        <div class="layer-container" ng-repeat="layer in map.modelLayers">
+          <input id="ml{{$index}}" type="checkbox" checked-layer="layer" ng-checked="layer.on" ng-disabled="layer.disabled"></input>
+          <label for="ml{{$index}}">{{ layer.name }}</label>
           <br/>
         </div>
         <hr/>
@@ -81,7 +86,7 @@
           </div>
         </div>
       </div>
-      <div class="transfer-function-test">
+      <div class="transfer-function-test" ng-show="false">
         <svg id="transfer-function-svg"></svg>
       </div>
     </div>

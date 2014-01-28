@@ -93,21 +93,21 @@ var WaterModelLayer = function() {
                      * painted "patch".
                      */
 
-                    var size = Math.floor(skip);
-                    var num = 0, sum = 0;
+                    // var size = Math.floor(skip);
+                    // var num = 0, sum = 0;
 
-                    for (var x = 0; x < size; ++x) {
-                        for (var y = 0; y < size; ++y) {
-                            var neighbor;
-                            if (world[intI + x] && (neighbor = world[intI + x][intJ + y])) {
-                                num++;
-                                sum += neighbor.volume;
-                            }
-                        }
-                    }
+                    // for (var x = 0; x < size; ++x) {
+                    //     for (var y = 0; y < size; ++y) {
+                    //         var neighbor;
+                    //         if (world[intI + x] && (neighbor = world[intI + x][intJ + y])) {
+                    //             num++;
+                    //             sum += neighbor.volume;
+                    //         }
+                    //     }
+                    // }
 
-                    if (sum/num > 0) {
-                        ctx.fillStyle = getColor(sum/num);
+                    if (patch.volume > 0) {
+                        ctx.fillStyle = getColor(patch.volume);
                         ctx.fillRect(p, k, paintSize, paintSize);
                     }
                 }

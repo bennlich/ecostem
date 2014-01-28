@@ -61,10 +61,14 @@ ScenarioBoundingBox.prototype = {
     }
 };
 
+var map;
+
 /* Leaflet wrapper */
 EcostemServices.service('map', ['$location', '$rootScope', function($location, $rootScope) {
     return {
         init: function(id) {
+            map = this;
+
             this.leafletMap = new L.Map(id,{
                 zoomControl: false, 
                 zoomAnimation: false,
@@ -78,6 +82,9 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
 
             this._zoomControl = L.control.zoom();
             this.addControls();
+
+            this.scenarioBBox = this.createScenarioBBox();
+            this.drawBBoxPolygon(this.scenarioBBox.bbox);
 
             this.baseLayers = this._makeBaseLayers();
             this.setBaseLayer(this.baseLayers[3]);
@@ -113,9 +120,6 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             this.leafletMap.on('zoomstart', function() {
                 WaterModel.clearCallbacks();
             });
-
-            this.scenarioBBox = this.createScenarioBBox();
-            this.drawBBoxPolygon(this.scenarioBBox.bbox);
         },
 
         /* creates a hardcoded bbox for now */
@@ -162,6 +166,16 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             // pass double-clicks down to the map
             polygon.on('dblclick', function(e) { 
                 this.leafletMap.fire('dblclick', e); 
+            }.bind(this));
+
+            polygon.on('click', function(e) {
+                var bbox_x = this.scenarioBBox.xOffsetFromTopLeft();
+                var bbox_y = this.scenarioBBox.yOffsetFromTopLeft();
+
+                WaterModelLayer.click({
+                    x: e.containerPoint.x - bbox_x,
+                    y: e.containerPoint.y - bbox_y
+                });
             }.bind(this));
 
             polygon.addTo(this.leafletMap);
@@ -275,7 +289,7 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
         _makeModelLayers: function() {
             return [{
                 on: false,
-                disabled: true,
+                disabled: false,
                 name: 'Water Model',
                 leafletLayer: WaterModelLayer.create(this)
             }];

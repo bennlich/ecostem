@@ -2,7 +2,7 @@
 
 EcostemServices.service('water', ['$rootScope','map', 'elevationSampler', function($scope, map, elevationSampler) {
     return {
-        start: function() {
+        init: function() {
             var patchSize = 4;
             var height = map.scenarioBBox.pixelHeight(),
                 width = map.scenarioBBox.pixelWidth(),
@@ -17,29 +17,19 @@ EcostemServices.service('water', ['$rootScope','map', 'elevationSampler', functi
                 numX = Math.floor(divWidth / patchSize),
                 numY = Math.floor(divHeight / patchSize);
 
-            WaterModel.initialize(numX, numY, elevationSampler);
+            WaterModel.initialize(numX, numY, elevationSampler);            
+        },
+
+        start: function() {
             WaterModel.start();
-
-            var waterLayer = _.find(map.modelLayers, function(layer) {
-                return layer.name === 'Water Model';
-            });
-
-            waterLayer.disabled = false;
-            map.toggleLayer(waterLayer);
         },
 
         stop: function() {
             WaterModel.stop();
+        },
 
-            var waterLayer = _.find(map.modelLayers, function(layer) {
-                return layer.name === 'Water Model';
-            });
-
-            waterLayer.disabled = true;
-
-            if (waterLayer.on) {
-                map.toggleLayer(waterLayer);
-            }
+        sampleElevation: function() {
+            WaterModel.sampleElevation();
         }
     };
 }]);

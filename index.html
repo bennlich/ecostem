@@ -72,16 +72,16 @@
         </div>
         <hr/>
         <div class="simulation">
-          <div ng-show="!waterModelLoaded">
+          <a ng-click="showElevation=!showElevation" ng-show="elevationLoaded">
+            <span ng-show="!showElevation">Show Raw Elevation</span>
+            <span ng-show="showElevation">Hide Raw Elevation</span>
+          </a>
+          <br/>
+          <div ng-show="!simulationStarted">
             <button ng-click="startSimulation()" ng-show="!elevationIsLoading">Start Simulation</button>
             <span ng-show="elevationIsLoading">Starting...</span>
           </div>
-          <div ng-show="waterModelLoaded">
-            <a ng-click="showElevation=!showElevation">
-              <span ng-show="!showElevation">Show Raw Elevation</span>
-              <span ng-show="showElevation">Hide Raw Elevation</span>
-            </a>
-            <br/>
+          <div ng-show="simulationStarted">
             <button ng-click="stopSimulation()">Stop Simulation</button>
           </div>
         </div>

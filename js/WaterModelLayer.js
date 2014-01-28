@@ -21,6 +21,8 @@ var WaterModelLayer = function() {
         var x = tilePoint.x * canvas.width;
         var y = tilePoint.y * canvas.height;
 
+        console.log('here', map);
+
         map.scenarioBBox.calculatePixelBounds();
 
         // absolute pixel coords and dimensions of the scenario
@@ -39,6 +41,8 @@ var WaterModelLayer = function() {
             // no intersection, nothing to do
             return;
         }
+
+        console.log('here11');
 
         // size of patches to render visually
         var paintSize = 8;
@@ -74,6 +78,7 @@ var WaterModelLayer = function() {
         var i_x = intersection.left - x;
         var i_y = intersection.top - y;
 
+        console.log('register');
         WaterModel.onChange(function(world) {
             ctx.clearRect(0,0,canvas.width,canvas.height);
 
@@ -97,14 +102,33 @@ var WaterModelLayer = function() {
         });
     }
 
-    function create(_map) {
-        map = _map;
+    function click(pt) {
+        var dims = WaterModel.getDims(),
+            scenarioScreenWidth = map.scenarioBBox.pixelWidth(),
+            scenarioScreenHeight = map.scenarioBBox.pixelHeight(),
 
-        var canvasLayer = L.tileLayer.canvas({zIndex: 14});
+            elemSize = scenarioScreenWidth / dims[0],
+
+            x = Math.floor(pt.x / elemSize),
+            y = Math.floor(pt.y / elemSize);
+        
+        WaterModel.putWater(x,y,4,4);
+    }
+
+    function create(_map, opts) {
+        map = _map;
+        console.log(map);
+        opts = opts || {};
+        _.extend(opts, {zIndex: 14});
+
+        var canvasLayer = L.tileLayer.canvas(opts);
         canvasLayer.drawTile = drawTile;
 
         return canvasLayer;
     }
 
-    return { create : create };
+    return { 
+        create : create,
+        click : click
+    };
 }();

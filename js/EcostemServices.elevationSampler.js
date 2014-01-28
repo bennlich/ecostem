@@ -15,6 +15,10 @@ EcostemServices.service('elevationSampler', [function() {
             this.width = this.fixedScenarioWidth;
         },
 
+        hasData: function() {
+            return this.imageData != null;
+        },
+
         /* Loads elevation data for the current map bounds. Downloads the
          * elevation image and writes it into a canvas. The canvas is used
          * for pixel-level access into the image, as well as for optionally
@@ -62,7 +66,9 @@ EcostemServices.service('elevationSampler', [function() {
             var g = this.imageData[idx+1];
             var b = this.imageData[idx+2];
 
-            return (r * 255 * 255 + g * 255 + b) / 10;
+            var elevation = (r * 255 * 255 + g * 255 + b) / 10;
+
+            return elevation;
         }
     };
 }]);

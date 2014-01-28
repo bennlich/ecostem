@@ -15,27 +15,40 @@ var WaterModel = function() {
         xSize = xs;
         ySize = ys;
         elevationSampler = sampler;
-        sampleSpacing = Math.floor(sampler.width / xSize);
+        sampleSpacing = Math.floor(sampler.fixedScenarioWidth / xSize);
 
         world = new Array(xSize);
         for (var i = 0; i < xSize; ++i) {
             world[i] = new Array(ySize);
             for (var j = 0; j < ySize; ++j) {
-                world[i][j] = { 
+                world[i][j] = {
                     volume: 0,
-                    elevation: sample(i, j)
+                    elevation: 0
                 };
             }
         }
 
-        for (i = 60; i < 70; ++i) {
-            for (j = 20; j < 30; ++j) {
-                world[i][j].volume = 50;
+        putWater(60,20,10,10);
+        putWater(100,60,10,10);
+
+        run();
+    }
+
+    function putWater(x,y,width,height,amount) {
+        if (typeof amount === 'undefined')
+            amount = 50;
+
+        for (var i = x; i < x + width; ++i) {
+            for (var j = y; j < y + height; ++j) {
+                world[i][j].volume += amount;
             }
         }
-        for (i = 100; i < 110; ++i) {
-            for (j = 60; j < 70; ++j) {
-                world[i][j].volume = 50;
+    }
+
+    function sampleElevation() {
+        for (var i = 0; i < xSize; ++i) {
+            for (var j = 0; j < ySize; ++j) {
+                world[i][j].elevation = sample(i,j);
             }
         }
     }
@@ -56,6 +69,7 @@ var WaterModel = function() {
         function offset(p) { 
             return p * sampleSpacing + Math.floor(sampleSpacing/2);
         }
+
         return elevationSampler.sample(offset(x), offset(y));
     }
 
@@ -91,30 +105,25 @@ var WaterModel = function() {
     }
 
     var started = false;
-    var steps = 0;
     var callbacks = [];
 
     function run() {
         if (started) {
             step();
-            steps++;
-            _.each(callbacks, function(callback) {
-                setTimeout(function() { callback(world); }, 0);
-            });
-            setTimeout(run, 100);
         }
+        _.each(callbacks, function(callback) {
+            setTimeout(function() { callback(world); }, 0);
+        });
+        setTimeout(run, 80);
     }
 
     function start() {
         console.log('start');
-        steps = 0;
         started = true;
-        run();
     }
 
     function stop() {
         console.log('stop');
-        //clearCallbacks();
         started = false;
     }
 
@@ -131,8 +140,13 @@ var WaterModel = function() {
         return callbacks;
     }
 
+    function isRunning() {
+        return started;
+    }
+
     return {
         getWorld: getWorld,
+        sampleElevation: sampleElevation,
         start: start,
         stop: stop,
         onChange: onChange,
@@ -140,6 +154,8 @@ var WaterModel = function() {
         initialize: initialize,
         getDims: getDims,
         clearCallbacks: clearCallbacks,
-        getCallbacks: getCallbacks
+        getCallbacks: getCallbacks,
+        isRunning : isRunning,
+        putWater : putWater
     };
 }();

@@ -112,6 +112,9 @@ var WaterModelLayer = function() {
                     }
                 }
             }
+
+            ctx.strokeStyle = '#888';
+            ctx.strokeRect(0,0,canvas.width,canvas.height);
         });
     }
 

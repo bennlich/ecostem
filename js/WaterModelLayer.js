@@ -40,8 +40,18 @@ var WaterModelLayer = function() {
             return;
         }
 
-        // patch size: scenario width / number of cells in the x dimension
+        // size of patches to render visually
+        var paintSize = 8;
+
+        // patch size relative to the bounding box:
+        // scenario width / number of cells in the x dimension
         var patchSize = box_width / WaterModel.getDims()[0];
+
+        if (paintSize < patchSize)
+            paintSize = patchSize;
+
+        // number of objects to skip while iterating
+        var skip = paintSize / patchSize;
 
         // the offset of the intersection's top-left corner relative to
         // the scenario top-left corner
@@ -52,9 +62,10 @@ var WaterModelLayer = function() {
         var start_x = Math.floor(offset_x / patchSize);
         var start_y = Math.floor(offset_y / patchSize);
 
+
         // min-x and min-y pixel positions where to begin drawing patches
-        var start_p = offset_x % patchSize;
-        var start_k = offset_y % patchSize;
+        var start_p = offset_x % paintSize;
+        var start_k = offset_y % paintSize;
 
         // where to stop drawing patches
         var end_x = Math.floor((offset_x + intersection.width)/patchSize)+1;
@@ -66,17 +77,20 @@ var WaterModelLayer = function() {
         WaterModel.onChange(function(world) {
             ctx.clearRect(0,0,canvas.width,canvas.height);
 
-            for (var i = start_x, p = i_x-start_p; i < end_x; ++i, p += patchSize) {
-                for (var j = start_y, k = i_y-start_k; j < end_y; ++j, k += patchSize) {
+            for (var i = start_x, p = i_x-start_p; i < end_x; i += skip, p += paintSize) {
+                for (var j = start_y, k = i_y-start_k; j < end_y; j += skip, k += paintSize) {
                     var patch;
 
-                    if (!world[i] || !(patch = world[i][j])) {
+                    var intI = Math.floor(i);
+                    var intJ = Math.floor(j);
+
+                    if (!world[intI] || !(patch = world[intI][intJ])) {
                         continue;
                     }
 
                     if (patch.volume > 0) {
                         ctx.fillStyle = getColor(patch.volume);
-                        ctx.fillRect(p, k, patchSize, patchSize);
+                        ctx.fillRect(p, k, paintSize, paintSize);
                     }
                 }
             }

@@ -101,7 +101,7 @@ var WaterModel = function() {
             _.each(callbacks, function(callback) {
                 setTimeout(function() { callback(world); }, 0);
             });
-            setTimeout(run, 50);
+            setTimeout(run, 100);
         }
     }
 
@@ -124,6 +124,7 @@ var WaterModel = function() {
 
     function clearCallbacks() {
         callbacks = [];
+        console.log('clear');
     }
 
     function getCallbacks() {

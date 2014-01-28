@@ -20,16 +20,6 @@ EcostemServices.service('water', ['$rootScope','map', 'elevationSampler', functi
             WaterModel.initialize(numX, numY, elevationSampler);            
         },
 
-        start: function() {
-            WaterModel.start();
-        },
-
-        stop: function() {
-            WaterModel.stop();
-        },
-
-        sampleElevation: function() {
-            WaterModel.sampleElevation();
-        }
+        model: WaterModel
     };
 }]);

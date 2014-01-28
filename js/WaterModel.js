@@ -28,15 +28,39 @@ var WaterModel = function() {
             }
         }
 
-        putWater(60,20,10,10);
-        putWater(100,60,10,10);
+        init();
 
         run();
+    }
+
+    function init() {
+        putWater(60,20,10,10);
+        putWater(100,60,10,10);
+    }
+
+    function reset() {
+        for (var i = 0; i < xSize; ++i) {
+            for (var j = 0; j < ySize; ++j) {
+                world[i][j].volume = 0;
+            }
+        }
+
+        init();
     }
 
     function putWater(x,y,width,height,amount) {
         if (typeof amount === 'undefined')
             amount = 50;
+
+        if (x < 0) 
+            x = 0;
+        if (x + width > xSize)
+            width = xSize - x;
+
+        if (y < 0)
+            y = 0;
+        if (y + height > ySize)
+            height = ySize - y;
 
         for (var i = x; i < x + width; ++i) {
             for (var j = y; j < y + height; ++j) {
@@ -156,6 +180,7 @@ var WaterModel = function() {
         clearCallbacks: clearCallbacks,
         getCallbacks: getCallbacks,
         isRunning : isRunning,
-        putWater : putWater
+        putWater : putWater,
+        reset : reset
     };
 }();

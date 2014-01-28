@@ -82,7 +82,10 @@
             <span ng-show="elevationIsLoading">Starting...</span>
           </div>
           <div ng-show="simulationStarted">
-            <button ng-click="stopSimulation()">Stop Simulation</button>
+            <button ng-click="stopSimulation()">Pause Simulation</button>
+          </div>
+          <div>
+            <button ng-click="resetSimulation()">Reset Simulation</button>
           </div>
         </div>
       </div>

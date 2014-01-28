@@ -21,8 +21,6 @@ var WaterModelLayer = function() {
         var x = tilePoint.x * canvas.width;
         var y = tilePoint.y * canvas.height;
 
-        console.log('here', map);
-
         map.scenarioBBox.calculatePixelBounds();
 
         // absolute pixel coords and dimensions of the scenario
@@ -41,8 +39,6 @@ var WaterModelLayer = function() {
             // no intersection, nothing to do
             return;
         }
-
-        console.log('here11');
 
         // size of patches to render visually
         var paintSize = 8;
@@ -78,7 +74,6 @@ var WaterModelLayer = function() {
         var i_x = intersection.left - x;
         var i_y = intersection.top - y;
 
-        console.log('register');
         WaterModel.onChange(function(world) {
             ctx.clearRect(0,0,canvas.width,canvas.height);
 
@@ -93,8 +88,26 @@ var WaterModelLayer = function() {
                         continue;
                     }
 
-                    if (patch.volume > 0) {
-                        ctx.fillStyle = getColor(patch.volume);
+                    /* find the patches under the paintSize x paintSize square
+                     * and average their volume to compute a color of this current 
+                     * painted "patch".
+                     */
+
+                    var size = Math.floor(skip);
+                    var num = 0, sum = 0;
+
+                    for (var x = 0; x < size; ++x) {
+                        for (var y = 0; y < size; ++y) {
+                            var neighbor;
+                            if (world[intI + x] && (neighbor = world[intI + x][intJ + y])) {
+                                num++;
+                                sum += neighbor.volume;
+                            }
+                        }
+                    }
+
+                    if (sum/num > 0) {
+                        ctx.fillStyle = getColor(sum/num);
                         ctx.fillRect(p, k, paintSize, paintSize);
                     }
                 }
@@ -110,14 +123,17 @@ var WaterModelLayer = function() {
             elemSize = scenarioScreenWidth / dims[0],
 
             x = Math.floor(pt.x / elemSize),
-            y = Math.floor(pt.y / elemSize);
-        
-        WaterModel.putWater(x,y,4,4);
+            y = Math.floor(pt.y / elemSize),
+
+            // draw bigger areas at lower zooms
+            size = Math.floor(30 / elemSize) || 1;
+
+        WaterModel.putWater(x,y,size,size);
     }
 
     function create(_map, opts) {
         map = _map;
-        console.log(map);
+
         opts = opts || {};
         _.extend(opts, {zIndex: 14});
 

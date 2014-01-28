@@ -21,7 +21,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', 'map', 'water', 'elevationSampler',
 
     $scope.startSimulation = function() {
         function start() {
-            water.start();
+            water.model.start();
             $scope.simulationStarted = true;
         }
 
@@ -32,7 +32,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', 'map', 'water', 'elevationSampler',
                 $scope.elevationIsLoading = false;
                 $scope.elevationLoaded = true;
 
-                water.sampleElevation();
+                water.model.sampleElevation();
 
                 start();
             });
@@ -45,9 +45,14 @@ Ecostem.controller('EcostemCtrl', ['$scope', 'map', 'water', 'elevationSampler',
         console.log('edit data layer', layer);
     };
 
+    $scope.resetSimulation = function() {
+        $scope.stopSimulation();
+        water.model.reset();
+    };
+
     $scope.stopSimulation = function() {
         $scope.simulationStarted = false;
-        water.stop();
+        water.model.stop();
     };
 
     elevationToDroplets = $scope.elevationToDroplets =

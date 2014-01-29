@@ -40,6 +40,8 @@ EcostemServices.service('elevationSampler', [function() {
 
                 this.imageData = this.ctx.getImageData(0, 0, this.width, height).data;
 
+                computeQuad(this);
+
                 if (typeof callback === 'function') {
                     scope.$apply(callback);
                 }
@@ -53,6 +55,7 @@ EcostemServices.service('elevationSampler', [function() {
                 width: this.width,
                 height: height
             });
+
         },
 
         /* Gives the elevation value at a given pixel. The value is
@@ -73,3 +76,47 @@ EcostemServices.service('elevationSampler', [function() {
     };
 }]);
 
+function computeQuad(sampler) {
+    var height = sampler.canvas.height;
+    var width = sampler.canvas.width;
+
+    var canvas = document.getElementById('quadCanvas');
+
+    canvas.height = height;
+    canvas.width = width;
+
+    var ctx = canvas.getContext('2d');
+
+    ctx.fillStyle='#fff';
+    ctx.fillRect(0,0,width,height);
+
+    ctx.strokeStyle = '#444';
+    ctx.lineWidth = 1;
+
+    doQuad(ctx,sampler,0,0,width,height);
+}
+
+function doQuad(ctx, sampler, x, y, width, height) {
+    var min=1000000, max=0;
+
+    ctx.strokeRect(x,y,width,height);
+
+    for (var i = x; i < x+width; ++i) {
+        for (var j = y; j < y+height; ++j) {
+            var val = sampler.sample(i,j);
+            if (val < min)
+                min = val;
+            if (val > max)
+                max = val;
+        }
+    }
+
+    if (max - min > 100) {
+        var w = width/2,
+            h = height/2;
+        doQuad(ctx,sampler,x,y,w,h);
+        doQuad(ctx,sampler,x+w,y,w,h);
+        doQuad(ctx,sampler,x,y+h,w,h);
+        doQuad(ctx,sampler,x+w,y+h,w,h);
+    }
+}

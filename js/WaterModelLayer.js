@@ -11,7 +11,7 @@ var WaterModelLayer = function() {
         var idx = Math.floor(volume * 3);
         if (idx > 19)
             idx = 19;
-        return colorMap[idx];                    
+        return colorMap[idx];
     }
 
     function drawTile(canvas, tilePoint, zoom) {

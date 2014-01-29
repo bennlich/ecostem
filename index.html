@@ -45,6 +45,9 @@
       <div id="elevation" ng-show="showElevation">
         <canvas id="elevationCanvas" elevation-canvas/>
       </div>
+      <div id="quad" ng-show="showQuad">
+        <canvas id="quadCanvas"/>
+      </div>
       <div class="layers">
         <h3>EcoStem</h3>
         <hr/>
@@ -75,6 +78,11 @@
           <a ng-click="showElevation=!showElevation" ng-show="elevationLoaded">
             <span ng-show="!showElevation">Show Raw Elevation</span>
             <span ng-show="showElevation">Hide Raw Elevation</span>
+          </a>
+          <br/>
+          <a ng-click="showQuad=!showQuad">
+            <span ng-show="!showQuad">Show Quad</span>
+            <span ng-show="showQuad">Hide Quad</span>
           </a>
           <br/>
           <div ng-show="!simulationStarted">

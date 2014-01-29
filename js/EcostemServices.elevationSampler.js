@@ -63,6 +63,9 @@ EcostemServices.service('elevationSampler', [function() {
          *  (red * 255^2 + green * 255 + blue)/10
          */
         sample: function(x,y) {
+            x = Math.floor(x);
+            y = Math.floor(y);
+
             var idx = (y * this.canvas.width + x) * 4;
 
             var r = this.imageData[idx];

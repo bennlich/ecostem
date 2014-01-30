@@ -6,9 +6,14 @@ var WaterModel = function() {
     var ySize = 0;
     var sampleSpacing = 1;
     var elevationSampler = null;
+    var idleRefreshRate = 500;
+    var refreshRate = 100;
 
     function getDims() {
-        return [xSize, ySize];
+        return {
+            xSize: xSize,
+            ySize: ySize
+        };
     }
 
     function initialize(xs, ys, sampler) {
@@ -138,7 +143,7 @@ var WaterModel = function() {
         _.each(callbacks, function(callback) {
             setTimeout(function() { callback(world); }, 0);
         });
-        setTimeout(run, 80);
+        setTimeout(run, started ? refreshRate : idleRefreshRate);
     }
 
     function start() {
@@ -180,7 +185,35 @@ var WaterModel = function() {
         clearCallbacks: clearCallbacks,
         getCallbacks: getCallbacks,
         isRunning : isRunning,
-        putWater : putWater,
+        putData : putWater,
         reset : reset
     };
+}();
+
+var WaterModelRenderer = function() {
+    var colorMap = _.map(_.range(0,21), function(num) {
+        return 'rgba(40,105,186,{0})'.format(num/20);
+    });
+
+    function getColor(volume) {
+        var idx = Math.floor(volume * 3);
+        if (idx > 19)
+            idx = 19;
+        return colorMap[idx];
+    }
+
+    function render(ctx, world, i, j, drawX, drawY, drawWidth, drawHeight) {
+        var patch;
+
+        if (!world[i] || !(patch = world[i][j])) {
+            return;
+        }
+
+        if (patch.volume > 0) {
+            ctx.fillStyle = getColor(patch.volume);
+            ctx.fillRect(drawX, drawY, drawWidth, drawHeight);
+        }
+    }
+
+    return { render: render };
 }();

@@ -58,6 +58,10 @@ ScenarioBoundingBox.prototype = {
     yOffsetFromTopLeft: function() {
         var topLeft = this.leafletMap.getPixelBounds();
         return Math.floor(this.ne.y - topLeft.min.y);
+    },
+
+    toRect: function() {
+        return new Rect(this.sw.x, this.ne.y, this.pixelWidth(), this.pixelHeight());
     }
 };
 
@@ -89,6 +93,8 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             this.baseLayers = this._makeBaseLayers();
             this.setBaseLayer(this.baseLayers[3]);
 
+            this.dataLayerObjects = [];
+            
             this.layers = this._makeLayers();
             this.dataLayers = this._makeDataLayers();
             this.modelLayers = this._makeModelLayers();
@@ -172,9 +178,11 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                 var bbox_x = this.scenarioBBox.xOffsetFromTopLeft();
                 var bbox_y = this.scenarioBBox.yOffsetFromTopLeft();
 
-                WaterModelLayer.click({
-                    x: e.containerPoint.x - bbox_x,
-                    y: e.containerPoint.y - bbox_y
+                _.each(this.dataLayerObjects, function(obj) {
+                    obj.handleClick({
+                        x: e.containerPoint.x - bbox_x,
+                        y: e.containerPoint.y - bbox_y
+                    });
                 });
             }.bind(this));
 
@@ -273,28 +281,30 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
 
         /* editable data layers */
         _makeDataLayers: function() {
+            var fireLayer = new DataLayerRenderer(this, FireSeverityModel, FireModelPatchRenderer);
+            var canvasLayer = fireLayer.makeLayer({zIndex: 12});
+            this.dataLayerObjects.push(fireLayer);
+
             return [{
                 on: false,
                 disabled: false,
                 name: 'Fire Severity',
-                leafletLayer: new FireSeverityLayer({zIndex: 12})
-            }, {
-                on: false,
-                disabled: false,
-                name: 'Vegetation',
-                leafletLayer: new VegetationDensityLayer({zIndex: 13})
+                leafletLayer: canvasLayer
             }];
         },
 
         _makeModelLayers: function() {
+            var waterLayer = new DataLayerRenderer(this, WaterModel, WaterModelRenderer);
+            var canvasLayer = waterLayer.makeLayer({zIndex: 14});
+            this.dataLayerObjects.push(waterLayer);
+
             return [{
                 on: false,
                 disabled: false,
                 name: 'Water Model',
-                leafletLayer: WaterModelLayer.create(this)
+                leafletLayer: canvasLayer
             }];
         }
     };
-
 }]);
 

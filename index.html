@@ -29,12 +29,13 @@
     <script src="js/WaterPatchesModel.js"></script>
     <script src="js/WaterModel.js"></script>
     <script src="js/WaterModelLayer.js"></script>
+    <script src="js/DataLayerRenderer.js"></script>
     <script src="js/Ecostem.js"></script>
     <script src="js/EcostemDirectives.js"></script>
     <script src="js/EcostemServices.map.js"></script>
     <script src="js/EcostemServices.water.js"></script>
     <script src="js/EcostemServices.elevationSampler.js"></script>
-    <script src="js/FireSeverityLayer.js"></script>
+    <script src="js/FireSeverityModel.js"></script>
     <script src="js/TransferFunction.js"></script>
 
   </head>
@@ -80,7 +81,7 @@
             <span ng-show="showElevation">Hide Raw Elevation</span>
           </a>
           <br/>
-          <a ng-click="showQuad=!showQuad">
+          <a ng-click="showQuad=!showQuad" ng-show="elevationLoaded">
             <span ng-show="!showQuad">Show Quad</span>
             <span ng-show="showQuad">Hide Quad</span>
           </a>

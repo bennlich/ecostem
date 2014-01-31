@@ -1,11 +1,8 @@
 'use strict';
 
-EcostemDirectives.directive('mapBody', ['map', 'water', function(map, water) {
+EcostemDirectives.directive('mapBody', ['map', function(map) {
     return function(scope, element, attrs) {
         map.init(attrs.id);
-        console.log('map init');
-        water.init();
-        console.log('water');
     };
 }]);
 

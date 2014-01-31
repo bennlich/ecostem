@@ -12,7 +12,7 @@ Ecostem.run(['$rootScope', function($rootScope) {
 
 var elevationToDroplets;
 
-Ecostem.controller('EcostemCtrl', ['$scope', 'map', 'water', 'elevationSampler', function($scope, map, water, elevationSampler) {
+Ecostem.controller('EcostemCtrl', ['$scope', 'map', 'elevationSampler', function($scope, map, elevationSampler) {
     $scope.simulationStarted = false;
     $scope.showElevation = false;
     $scope.elevationLoaded = false;

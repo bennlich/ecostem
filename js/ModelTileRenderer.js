@@ -3,7 +3,7 @@
 function ModelTileRenderer(map, model, renderer) {
     this.map = map;
     this.model = model;
-    this.renderer = renderer;
+    this.patchRenderer = renderer;
     this.canvasLayer = null;
 
     this._drawTile = function(canvas, tilePoint, zoom) {
@@ -63,12 +63,13 @@ function ModelTileRenderer(map, model, renderer) {
                     var intI = Math.floor(i);
                     var intJ = Math.floor(j);
 
-                    this.renderer.render(ctx, world, intI, intJ, p, k, paintSize, paintSize);
+                    this.patchRenderer.render(ctx, world, intI, intJ, p, k, paintSize, paintSize);
                 }
             }
 
-            ctx.strokeStyle = '#888';
-            ctx.strokeRect(0,0,canvas.width,canvas.height);
+            // this shows the tile boundaries
+            // ctx.strokeStyle = '#888';
+            // ctx.strokeRect(0,0,canvas.width,canvas.height);
         }.bind(this);
 
         this.model.onChange(renderStep);

@@ -31,13 +31,15 @@ var FirePatchRenderer = function() {
     var colorMedium = 'rgba(173,147,118,0.9)';
     var colorLow = 'rgba(240,217,192,0.9)';
 
+    var t = FireSeverityModel.severityTypes;
+
     function getColor(severity) {
         switch (severity) {
-        case FireSeverityModel.severityTypes.HIGH:
+        case t.HIGH:
             return colorHigh;
-        case FireSeverityModel.severityTypes.MEDIUM:
+        case t.MEDIUM:
             return colorMedium;
-        case FireSeverityModel.severityTypes.LOW:
+        case t.LOW:
         default:
             return colorLow;
         }
@@ -57,5 +59,15 @@ var FirePatchRenderer = function() {
         ctx.fillRect(drawX, drawY, drawWidth, drawHeight);
     }
 
-    return { render: render };
+    
+    var scale = [
+        { value: t.LOW, color: colorLow, name: 'Low Severity' },
+        { value: t.MEDIUM, color: colorMedium, name: 'Medium Severity' },
+        { value: t.HIGH, color: colorHigh, name: 'High Severity' }
+    ];
+
+    return { 
+        render: render,
+        scale: scale
+    };
 }();

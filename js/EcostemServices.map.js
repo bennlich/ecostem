@@ -293,6 +293,7 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             return [{
                 on: false,
                 disabled: false,
+                tileRenderer: fireLayer,
                 name: 'Fire Severity',
                 leafletLayer: canvasLayer
             }];
@@ -310,6 +311,7 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             return [{
                 on: false,
                 disabled: false,
+                tileRenderer: waterLayer,
                 name: 'Water Model',
                 leafletLayer: canvasLayer
             }];

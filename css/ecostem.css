@@ -24,6 +24,13 @@ a {
     color: #58b;
     cursor: pointer;
 }
+.uibox {
+    background: rgba(255,255,255,0.8);
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0px 1px 4px #666;
+    z-index: 100;
+}
 .container {
     position: relative;
     width: 100%;
@@ -78,15 +85,40 @@ a {
     height: 100%;
     z-index: 50;
 }
+.container .editor {
+    position: absolute;
+    top: 10; right: 230;
+    width: 400px;
+}
+.container .editor .section {
+    position: relative;
+    display: inline-block;
+    width: 50%;
+    vertical-align: top;
+}
+.container .editor .section h2 {
+    font-size: 14px;
+    font-weight: normal;
+    margin: 0;
+    margin-bottom: 5px;
+}
+.container .editor .section select {
+    font-size: 16px;
+}
+.container .editor .section .brush {
+    display: inline-block;
+    margin: 4px;
+    border: 1px solid black;
+    cursor: pointer;
+}
+.container .editor .section .selected {
+    border: 4px solid red;
+    margin: 1;
+}
 .container .layers {
     position: absolute;
     top: 10; right: 10;
-    background: rgba(255,255,255,0.8);
-    padding: 5px;
-    border-radius: 5px;
-    box-shadow: 0px 1px 4px #666;
     min-width: 200px;
-    z-index: 100;
 }
 .container .layers label {
     cursor: pointer;
@@ -107,7 +139,7 @@ a {
     text-align: center;
     margin-bottom: 5px;
 }
-.container .layers hr {
+hr {
     border: 0;
     margin-top: 8px;
     margin-bottom: 8px;

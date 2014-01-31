@@ -19,6 +19,12 @@ Ecostem.controller('EcostemCtrl', ['$scope', 'map', 'elevationSampler', function
     $scope.elevationIsLoading = false;
     $scope.map = map;
 
+    $scope.brushSizes = [40, 30, 20];
+    $scope.selectedBrushSize = $scope.brushSizes[0];
+    $scope.selectBrushSize = function(s) {
+        $scope.selectedBrushSize = s;
+    };
+
     $scope.startSimulation = function() {
         function start() {
             map.waterModel.start();
@@ -41,8 +47,22 @@ Ecostem.controller('EcostemCtrl', ['$scope', 'map', 'elevationSampler', function
         }
     };
 
+    $scope.editedLayer = null;
+    $scope.scaleValue = {};
+
     $scope.editDataLayer = function(layer) {
-        console.log('edit data layer', layer);
+        if (!layer.on) {
+            map.toggleLayer(layer);
+        }
+        layer.disabled = true;
+        $scope.editedLayer = layer;
+        $scope.scaleValue = layer.tileRenderer.patchRenderer.scale[0];
+        console.log(layer.on);
+    };
+    
+    $scope.doneEditingDataLayer = function() {
+        $scope.editedLayer.disabled = false;
+        $scope.editedLayer = null;
     };
 
     $scope.resetSimulation = function() {
@@ -57,9 +77,4 @@ Ecostem.controller('EcostemCtrl', ['$scope', 'map', 'elevationSampler', function
 
     elevationToDroplets = $scope.elevationToDroplets =
         new TransferFunction([0, 200], 'm', [0, 400], 'droplets / m^2', 'Rainfall vs. elevation');
-
-    // example use
-    // var numMeters = 150;
-    // numDroplets = transferFunc(numMeters);
-
 }]);

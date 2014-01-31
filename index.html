@@ -50,7 +50,24 @@
       <div id="quad" ng-show="showQuad">
         <canvas id="quadCanvas"/>
       </div>
-      <div class="layers">
+      <div class="editor uibox" ng-show="editedLayer">
+        Editing {{editedLayer.name}}
+        <hr/>
+        <div class="section">
+          <h2>Choose a brush:</h2>
+          <div ng-repeat="b in brushSizes" 
+               ng-click="selectBrushSize(b)"
+               class="brush" ng-class="{'selected':selectedBrushSize==b}" 
+               style="width: {{b}}; height: {{b}}; background-color: {{scaleValue.color}}"></div>
+        </div><div class="section">
+          <h2>Choose a value:</h2>
+          <select ng-model="scaleValue" ng-options="v.name for v in editedLayer.tileRenderer.patchRenderer.scale">
+          </select>
+        </div>
+        <hr/>
+        <button style="float: right" ng-click="doneEditingDataLayer()">Done Editing</button>
+      </div>
+      <div class="layers uibox">
         <h3>EcoStem</h3>
         <hr/>
         <div class="layer-container"  ng-repeat="layer in map.baseLayers">
@@ -59,19 +76,19 @@
         </div>
         <hr/>
         <div class="layer-container"  ng-repeat="layer in map.layers">
-          <input id="l{{$index}}" type="checkbox" checked-layer="layer" ng-checked="layer.on" ng-disabled="layer.disabled"></input>
+          <input id="l{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
           <label for="l{{$index}}">{{ layer.name }}</label><br/>
         </div>
         <hr/>
         <div class="layer-container" ng-repeat="layer in map.dataLayers">
-          <input id="dl{{$index}}" type="checkbox" checked-layer="layer" ng-checked="layer.on" ng-disabled="layer.disabled"></input>
+          <input id="dl{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
           <label for="dl{{$index}}">{{ layer.name }}</label>
           <button class="edit-button" ng-click="editDataLayer(layer)"><img src="img/icons/pencil.png"/></button>
           <br/>
         </div>
         <hr/>
         <div class="layer-container" ng-repeat="layer in map.modelLayers">
-          <input id="ml{{$index}}" type="checkbox" checked-layer="layer" ng-checked="layer.on" ng-disabled="layer.disabled"></input>
+          <input id="ml{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
           <label for="ml{{$index}}">{{ layer.name }}</label>
           <br/>
         </div>

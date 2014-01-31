@@ -55,13 +55,20 @@ Ecostem.controller('EcostemCtrl', ['$scope', 'map', 'elevationSampler', function
             map.toggleLayer(layer);
         }
         layer.disabled = true;
+        layer.editing = true;
         $scope.editedLayer = layer;
         $scope.scaleValue = layer.tileRenderer.patchRenderer.scale[0];
-        console.log(layer.on);
     };
+
+    map.onBBoxClick(function(point) {
+        if ($scope.editedLayer) {
+            $scope.editedLayer.tileRenderer.putData(point, $scope.selectedBrushSize, $scope.scaleValue.value);
+        }
+    });
     
     $scope.doneEditingDataLayer = function() {
         $scope.editedLayer.disabled = false;
+        $scope.editedLayer.editing = false;
         $scope.editedLayer = null;
     };
 

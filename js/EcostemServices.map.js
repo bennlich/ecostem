@@ -177,18 +177,23 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             }.bind(this));
 
             polygon.on('click', function(e) {
+                if (typeof this.bboxCallback !== 'function')
+                    return;
+
                 var bbox_x = this.scenarioBBox.xOffsetFromTopLeft();
                 var bbox_y = this.scenarioBBox.yOffsetFromTopLeft();
 
-                _.each(this.dataLayerObjects, function(obj) {
-                    obj.handleClick({
-                        x: e.containerPoint.x - bbox_x,
-                        y: e.containerPoint.y - bbox_y
-                    });
+                this.bboxCallback({
+                    x: e.containerPoint.x - bbox_x,
+                    y: e.containerPoint.y - bbox_y
                 });
             }.bind(this));
 
             polygon.addTo(this.leafletMap);
+        },
+
+        onBBoxClick: function(callback) {
+            this.bboxCallback = callback;
         },
 
         /* add/remove zoom; the map is "disabled" during simulations */
@@ -294,6 +299,7 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                 on: false,
                 disabled: false,
                 tileRenderer: fireLayer,
+                editing: false,
                 name: 'Fire Severity',
                 leafletLayer: canvasLayer
             }];
@@ -312,6 +318,7 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                 on: false,
                 disabled: false,
                 tileRenderer: waterLayer,
+                editing: false,
                 name: 'Water Model',
                 leafletLayer: canvasLayer
             }];

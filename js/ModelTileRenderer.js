@@ -75,19 +75,18 @@ function ModelTileRenderer(map, model, renderer) {
         this.model.onChange(renderStep);
     };
 
-    this.handleClick = function(pt) {
+    this.putData = function(pt, brushSize, value) {
         var scenarioScreenWidth = this.map.scenarioBBox.pixelWidth(),
             scenarioScreenHeight = this.map.scenarioBBox.pixelHeight(),
 
             elemSize = scenarioScreenWidth / this.model.xSize,
 
+            size = Math.floor(this.model.xSize * (brushSize / scenarioScreenWidth)),
+
             x = Math.floor(pt.x / elemSize),
-            y = Math.floor(pt.y / elemSize),
+            y = Math.floor(pt.y / elemSize);
 
-            // draw bigger areas at lower zooms
-            size = Math.floor(30 / elemSize) || 1;
-
-        this.model.putData(x,y,size,size);
+        this.model.putData(x,y,size,size,value);
     };
 
     this.makeLayer = function(layerOpts) {

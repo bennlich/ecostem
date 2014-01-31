@@ -1,5 +1,17 @@
 'use strict';
 
+function clonePrototype(obj) {
+    if (typeof obj !== 'undefined') {
+	clonePrototype.prototype = Object(obj);
+	return new clonePrototype;
+    } else {
+        /* this branch is hit when clonePrototype invokes
+         * "new clonePrototype" in the branch above
+         */
+        return undefined;
+    }
+}
+
 if (typeof String.prototype.format !== 'function') {
     String.prototype.format = function() {
         var args = arguments;

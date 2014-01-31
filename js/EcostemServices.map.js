@@ -124,7 +124,9 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             });
 
             this.leafletMap.on('zoomstart', function() {
-                WaterModel.clearCallbacks();
+                _.each(this.dataLayerObjects, function(obj) {
+                    obj.clearCallbacks();
+                });
             });
         },
 
@@ -281,8 +283,11 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
 
         /* editable data layers */
         _makeDataLayers: function() {
-            var fireLayer = new DataLayerRenderer(this, FireSeverityModel, FireModelPatchRenderer);
+            var firemodel = new FireSeverityModel(512, 320, 1024);
+
+            var fireLayer = new ModelTileRenderer(this, firemodel, FirePatchRenderer);
             var canvasLayer = fireLayer.makeLayer({zIndex: 12});
+
             this.dataLayerObjects.push(fireLayer);
 
             return [{
@@ -294,8 +299,12 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
         },
 
         _makeModelLayers: function() {
-            var waterLayer = new DataLayerRenderer(this, WaterModel, WaterModelRenderer);
+            /* TODO: not the best way to refer to the water model */
+            this.waterModel = new WaterModel(256, 160, 1024);
+
+            var waterLayer = new ModelTileRenderer(this, this.waterModel, WaterPatchRenderer);
             var canvasLayer = waterLayer.makeLayer({zIndex: 14});
+
             this.dataLayerObjects.push(waterLayer);
 
             return [{

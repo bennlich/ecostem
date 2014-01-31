@@ -1,6 +1,6 @@
 'use strict';
 
-function DataLayerRenderer(map, model, renderer) {
+function ModelTileRenderer(map, model, renderer) {
     this.map = map;
     this.model = model;
     this.renderer = renderer;
@@ -31,7 +31,7 @@ function DataLayerRenderer(map, model, renderer) {
 
         // patch size relative to the bounding box:
         // scenario width / number of cells in the x dimension
-        var patchSize = scenarioRect.width / this.model.getDims().xSize;
+        var patchSize = scenarioRect.width / this.model.xSize;
 
         if (paintSize < patchSize)
             paintSize = patchSize;
@@ -75,11 +75,10 @@ function DataLayerRenderer(map, model, renderer) {
     };
 
     this.handleClick = function(pt) {
-        var dims = this.model.getDims(),
-            scenarioScreenWidth = this.map.scenarioBBox.pixelWidth(),
+        var scenarioScreenWidth = this.map.scenarioBBox.pixelWidth(),
             scenarioScreenHeight = this.map.scenarioBBox.pixelHeight(),
 
-            elemSize = scenarioScreenWidth / dims.xSize,
+            elemSize = scenarioScreenWidth / this.model.xSize,
 
             x = Math.floor(pt.x / elemSize),
             y = Math.floor(pt.y / elemSize),

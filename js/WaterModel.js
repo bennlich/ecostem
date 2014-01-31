@@ -1,120 +1,52 @@
 'use strict';
 
-var WaterModel = function() {
-    var world = null;
-    var xSize = 0;
-    var ySize = 0;
-    var sampleSpacing = 1;
-    var elevationSampler = null;
-    var idleRefreshRate = 500;
-    var refreshRate = 100;
+/* Water model inherits from DataModel */
 
-    function getDims() {
-        return {
-            xSize: xSize,
-            ySize: ySize
-        };
-    }
+function WaterModel(xs, ys, fixedGeometryWidth) {
+    DataModel.call(this, xs, ys);
 
-    function initialize(xs, ys, sampler) {
-        xSize = xs;
-        ySize = ys;
-        elevationSampler = sampler;
-        sampleSpacing = Math.floor(sampler.fixedScenarioWidth / xSize);
+    this.sampleSpacing = Math.floor(fixedGeometryWidth / xs);
 
-        world = new Array(xSize);
-        for (var i = 0; i < xSize; ++i) {
-            world[i] = new Array(ySize);
-            for (var j = 0; j < ySize; ++j) {
-                world[i][j] = {
-                    volume: 0,
-                    elevation: 0
-                };
+    this.init({ 
+        elevation: 0,
+        volume: 0
+    });
+
+    this.reset();
+}
+
+WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
+    reset: function() {
+        this._putData(0, 0, this.xSize, this.ySize, { volume: 0 });
+        this._putData(60, 20, 10, 10, { volume: 50 });
+        this._putData(100, 60, 10, 10, { volume: 50 });
+    },
+
+    sampleElevationXY: function(sampler, x,y) {
+        var offset = function(p) { 
+            return p * this.sampleSpacing + Math.floor(this.sampleSpacing/2);
+        }.bind(this);
+
+        return sampler.sample(offset(x), offset(y));
+    },
+
+    sampleElevation: function(sampler) {
+        for (var i = 0; i < this.xSize; ++i) {
+            for (var j = 0; j < this.ySize; ++j) {
+                this.world[i][j].elevation = this.sampleElevationXY(sampler, i,j);
             }
         }
+    },
 
-        init();
-
-        run();
-    }
-
-    function init() {
-        putWater(60,20,10,10);
-        putWater(100,60,10,10);
-    }
-
-    function reset() {
-        for (var i = 0; i < xSize; ++i) {
-            for (var j = 0; j < ySize; ++j) {
-                world[i][j].volume = 0;
-            }
-        }
-
-        init();
-    }
-
-    function putWater(x,y,width,height,amount) {
-        if (typeof amount === 'undefined')
-            amount = 50;
-
-        if (x < 0) 
-            x = 0;
-        if (x + width > xSize)
-            width = xSize - x;
-
-        if (y < 0)
-            y = 0;
-        if (y + height > ySize)
-            height = ySize - y;
-
-        for (var i = x; i < x + width; ++i) {
-            for (var j = y; j < y + height; ++j) {
-                world[i][j].volume += amount;
-            }
-        }
-    }
-
-    function sampleElevation() {
-        for (var i = 0; i < xSize; ++i) {
-            for (var j = 0; j < ySize; ++j) {
-                world[i][j].elevation = sample(i,j);
-            }
-        }
-    }
-
-    function neighbors(x,y) {
-        var n = [];
-        for (var i = x-1; i <= x+1; ++i) {
-            for (var j = y-1; j <= y+1; ++j) {
-                if (!(i === x && j === y) && i >= 0 && j >= 0 && i < xSize && j < ySize) {
-                    n.push(world[i][j]);
-                }
-            }
-        }
-        return n;
-    }
-
-    function sample(x,y) {
-        function offset(p) { 
-            return p * sampleSpacing + Math.floor(sampleSpacing/2);
-        }
-
-        return elevationSampler.sample(offset(x), offset(y));
-    }
-
-    function getWorld() {
-        return world;
-    }
-
-    function step() {
-        for (var i = 0; i < xSize; ++i) {
-            for (var j = 0; j < ySize; ++j) {
-                var patch = world[i][j];
+    step: function() {
+        for (var i = 0; i < this.xSize; ++i) {
+            for (var j = 0; j < this.ySize; ++j) {
+                var patch = this.world[i][j];
 
                 if (patch.volume === 0)
                     continue;
 
-                var minNeighbor = _.min(neighbors(i,j), function(neighbor) {
+                var minNeighbor = _.min(this.neighbors(i,j), function(neighbor) {
                     return neighbor.volume + neighbor.elevation;
                 });
 
@@ -131,66 +63,14 @@ var WaterModel = function() {
                 minNeighbor.volume += transferVolume;
             }
         }
+    },
+
+    putData: function(x, y, width, height) {
+        this._putData(x, y, width, height, {volume: 50});
     }
+});
 
-    var started = false;
-    var callbacks = [];
-
-    function run() {
-        if (started) {
-            step();
-        }
-        _.each(callbacks, function(callback) {
-            setTimeout(function() { callback(world); }, 0);
-        });
-        setTimeout(run, started ? refreshRate : idleRefreshRate);
-    }
-
-    function start() {
-        console.log('start');
-        started = true;
-    }
-
-    function stop() {
-        console.log('stop');
-        started = false;
-    }
-
-    function onChange(cb) {
-        callbacks.push(cb);
-    }
-
-    function clearCallbacks() {
-        callbacks = [];
-        console.log('clear');
-    }
-
-    function getCallbacks() {
-        return callbacks;
-    }
-
-    function isRunning() {
-        return started;
-    }
-
-    return {
-        getWorld: getWorld,
-        sampleElevation: sampleElevation,
-        start: start,
-        stop: stop,
-        onChange: onChange,
-        neighbors: neighbors,
-        initialize: initialize,
-        getDims: getDims,
-        clearCallbacks: clearCallbacks,
-        getCallbacks: getCallbacks,
-        isRunning : isRunning,
-        putData : putWater,
-        reset : reset
-    };
-}();
-
-var WaterModelRenderer = function() {
+var WaterPatchRenderer = function() {
     var colorMap = _.map(_.range(0,21), function(num) {
         return 'rgba(40,105,186,{0})'.format(num/20);
     });

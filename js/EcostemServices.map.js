@@ -279,8 +279,6 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
 
         /* editable data layers */
         _makeDataLayers: function() {
-            /* TODO: not the best way to refer to the water model */
-
             var waterModel = new WaterModel(256, 160, 1024);
             var firemodel = new FireSeverityModel(512, 320, 1024);
             var vegModel = new VegetationModel(512, 320, 1024);

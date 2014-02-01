@@ -46,6 +46,14 @@ Ecostem.controller('EcostemCtrl', ['$scope', 'map', 'elevationSampler', '$timeou
     $scope.editedLayer = null;
     $scope.scaleValue = {};
 
+    // when clicking in the scenario box and we're editing,
+    // put data on the map at that location
+    map.onBBoxClick(function(point) {
+        if ($scope.editedLayer) {
+            $scope.editedLayer.tileRenderer.putData(point, $scope.selectedBrushSize, $scope.scaleValue.value);
+        }
+    });
+
     $scope.editDataLayer = function(layer) {
         if ($scope.editedLayer) {
             $scope.doneEditingDataLayer();
@@ -62,20 +70,6 @@ Ecostem.controller('EcostemCtrl', ['$scope', 'map', 'elevationSampler', '$timeou
         $scope.scaleValue = layer.tileRenderer.patchRenderer.scale[0];
     };
 
-    map.onBBoxClick(function(point) {
-        if ($scope.editedLayer) {
-            $scope.editedLayer.tileRenderer.putData(point, $scope.selectedBrushSize, $scope.scaleValue.value);
-        }
-    });
-
-    $timeout(function() {
-        $scope.elevationIsLoading = true;
-        elevationSampler.loadElevationData($scope, function() {
-            $scope.elevationIsLoading = false;
-            $scope.elevationLoaded = true;
-        });
-    },1000);
-    
     $scope.doneEditingDataLayer = function() {
         $scope.editedLayer.disabled = false;
         $scope.editedLayer.editing = false;
@@ -84,4 +78,16 @@ Ecostem.controller('EcostemCtrl', ['$scope', 'map', 'elevationSampler', '$timeou
 
     elevationToDroplets = $scope.elevationToDroplets =
         new TransferFunction([0, 200], 'm', [0, 400], 'droplets / m^2', 'Rainfall vs. elevation');
+
+    // TODO: hacky way to load elevation at startup
+    // I think we need to start tracking dependency loading in services by using
+    // promises. For example, the elevation server should know when the map
+    // is done initializing or the other way around.
+    $timeout(function() {
+        $scope.elevationIsLoading = true;
+        elevationSampler.loadElevationData($scope, function() {
+            $scope.elevationIsLoading = false;
+            $scope.elevationLoaded = true;
+        });
+    },1000);    
 }]);

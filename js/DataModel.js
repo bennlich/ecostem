@@ -8,8 +8,8 @@ function DataModel(xs, ys) {
     this.isAnimated = false;
     this.isRunning = false;
     this.refreshRates = {
-        idle: 500,
-        active: 100
+        idle: 200,
+        active: 80
     };
     this.run();
 }

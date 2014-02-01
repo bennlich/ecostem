@@ -30,6 +30,7 @@
     <script src="js/DataModel.js"></script>
     <script src="js/FireSeverityModel.js"></script>
     <script src="js/WaterModel.js"></script>
+    <script src="js/VegetationModel.js"></script>
 
     <script src="js/ModelTileRenderer.js"></script>
 
@@ -68,7 +69,7 @@
           </select>
         </div>
       </div>
-      <div class="layers uibox">
+      <div class="layers uibox" ng-show="elevationLoaded">
         <h3>EcoStem</h3>
         <hr/>
         <div class="layer-container"  ng-repeat="layer in map.baseLayers">

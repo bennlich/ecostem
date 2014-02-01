@@ -280,11 +280,14 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
         /* editable data layers */
         _makeDataLayers: function() {
             /* TODO: not the best way to refer to the water model */
-            this.waterModel = new WaterModel(256, 160, 1024);
+
+            var waterModel = new WaterModel(256, 160, 1024);
             var firemodel = new FireSeverityModel(512, 320, 1024);
+            var vegModel = new VegetationModel(512, 320, 1024);
 
             var fireLayer = new ModelTileRenderer(this, firemodel, FirePatchRenderer);
-            var waterLayer = new ModelTileRenderer(this, this.waterModel, WaterPatchRenderer);
+            var waterLayer = new ModelTileRenderer(this, waterModel, WaterPatchRenderer);
+            var vegLayer = new ModelTileRenderer(this, vegModel, VegetationPatchRenderer);
 
             return [{
                 on: false,
@@ -293,6 +296,13 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                 editing: false,
                 name: 'Fire Severity',
                 leafletLayer: fireLayer.makeLayer({zIndex: 12})
+            }, {
+                on: false,
+                disabled: false,
+                tileRenderer: vegLayer,
+                editing: false,
+                name: 'Vegetation',
+                leafletLayer: vegLayer.makeLayer({zIndex: 13})
             }, {
                 on: false,
                 disabled: false,

@@ -81,10 +81,13 @@ function ModelTileRenderer(map, model, renderer) {
 
             elemSize = scenarioScreenWidth / this.model.xSize,
 
-            size = Math.floor(this.model.xSize * (brushSize / scenarioScreenWidth)),
+            size = Math.ceil(this.model.xSize * (brushSize / scenarioScreenWidth)),
 
             x = Math.floor(pt.x / elemSize),
             y = Math.floor(pt.y / elemSize);
+
+        if (size < 1)
+            size = 1;
 
         this.model.putData(x,y,size,size,value);
     };
@@ -93,9 +96,14 @@ function ModelTileRenderer(map, model, renderer) {
         layerOpts = layerOpts || {};
 
         this.canvasLayer = L.tileLayer.canvas(layerOpts);
+
         this.canvasLayer.drawTile = function(canvas, tilePoint, zoom) {
             this._drawTile(canvas, tilePoint, zoom);
         }.bind(this);
+
+        this.map.leafletMap.on('zoomstart', function() {
+            this.model.clearCallbacks();
+        }.bind(this));
 
         return this.canvasLayer;
     };

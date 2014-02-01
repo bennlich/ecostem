@@ -1,6 +1,6 @@
 'use strict';
 
-EcostemDirectives.directive('mapBody', ['map', function(map) {
+EcostemDirectives.directive('mapBody', ['map', 'elevationSampler', function(map, elevationSampler) {
     return function(scope, element, attrs) {
         map.init(attrs.id);
     };

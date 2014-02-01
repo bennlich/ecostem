@@ -42,7 +42,7 @@
   </head>
   <body>
     <div class="container" ng-controller="EcostemCtrl">
-      <div id="loading" ng-show="elevationIsLoading">Loading elevation data...</div>
+      <div id="loading" class="uibox" ng-show="elevationIsLoading">Loading elevation data...</div>
       <div id="map" map-body></div>
       <div id="elevation" ng-show="showElevation">
         <canvas id="elevationCanvas" elevation-canvas/>
@@ -51,7 +51,10 @@
         <canvas id="quadCanvas"/>
       </div>
       <div class="editor uibox" ng-show="editedLayer">
-        Editing {{editedLayer.name}}
+        <div class="header">
+          Editing {{editedLayer.name}}
+          <button style="float: right" ng-click="doneEditingDataLayer()">Done Editing</button>
+        </div>
         <hr/>
         <div class="section">
           <h2>Choose a brush:</h2>
@@ -64,8 +67,6 @@
           <select ng-model="scaleValue" ng-options="v.name for v in editedLayer.tileRenderer.patchRenderer.scale">
           </select>
         </div>
-        <hr/>
-        <button style="float: right" ng-click="doneEditingDataLayer()">Done Editing</button>
       </div>
       <div class="layers uibox">
         <h3>EcoStem</h3>
@@ -83,13 +84,18 @@
         <div class="layer-container" ng-repeat="layer in map.dataLayers">
           <input id="dl{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
           <label for="dl{{$index}}">{{ layer.name }}</label>
-          <button class="edit-button" ng-click="editDataLayer(layer)"><img src="img/icons/pencil.png"/></button>
           <br/>
-        </div>
-        <hr/>
-        <div class="layer-container" ng-repeat="layer in map.modelLayers">
-          <input id="ml{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
-          <label for="ml{{$index}}">{{ layer.name }}</label>
+          <div class="action-buttons" ng-show="!layer.tileRenderer.model.isAnimated">
+            <button ng-click="editDataLayer(layer)">Edit</button>
+          </div>
+          <div class="action-buttons" ng-show="layer.tileRenderer.model.isAnimated">
+            <button ng-click="editDataLayer(layer)">Edit</button>
+            <button ng-show="layer.tileRenderer.model.isRunning"
+                    ng-click="pauseSimulation(layer)">Pause</button>
+            <button ng-show="! layer.tileRenderer.model.isRunning"
+                    ng-click="startSimulation(layer)">Start</button>
+            <button ng-click="resetSimulation(layer)">Reset</button>
+          </div>
           <br/>
         </div>
         <hr/>
@@ -103,20 +109,9 @@
             <span ng-show="!showQuad">Show Quad</span>
             <span ng-show="showQuad">Hide Quad</span>
           </a>
-          <br/>
-          <div ng-show="!simulationStarted">
-            <button ng-click="startSimulation()" ng-show="!elevationIsLoading">Start Simulation</button>
-            <span ng-show="elevationIsLoading">Starting...</span>
-          </div>
-          <div ng-show="simulationStarted">
-            <button ng-click="stopSimulation()">Pause Simulation</button>
-          </div>
-          <div>
-            <button ng-click="resetSimulation()">Reset Simulation</button>
-          </div>
         </div>
       </div>
-      <div class="transfer-function-test" ng-show="false">
+      <div class="uibox transfer-function-test" ng-show="false">
         <svg id="transfer-function-svg"></svg>
       </div>
     </div>

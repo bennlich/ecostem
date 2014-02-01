@@ -11,6 +11,8 @@ button {
     background: #ace;
     border: 0;
     padding: 2px;
+    padding-left: 4px;
+    padding-right: 4px;
     border-radius: 3px;
     box-shadow: 0px 1px 2px #888;
     cursor: pointer;
@@ -21,14 +23,15 @@ button:active {
     background: #eca;
 }
 a {
-    color: #58b;
+    color: #8ad;
     cursor: pointer;
 }
 .uibox {
-    background: rgba(255,255,255,0.8);
+    background: rgba(40,40,40,0.9);
     padding: 5px;
     border-radius: 5px;
-    box-shadow: 0px 1px 4px #666;
+    box-shadow: 0px 1px 4px #111;
+    color: #eee;
     z-index: 100;
 }
 .container {
@@ -39,7 +42,7 @@ a {
 }
 .container .popup {
     position: absolute; 
-    background-color: rgba(255,255,255,0.85);
+    background-color: rgba(40,40,40,0.9);
     border: 1px solid #eee;
     font-family: helvetica;
     font-size: 13px;
@@ -56,9 +59,6 @@ a {
     font-size: 16px;
     position: absolute;
     z-index: 120;
-    background: white;
-    border-radius: 5px;
-    box-shadow: 0px 1px 4px #666;
     text-align: center;
     width: 200px;
     left: 50%;
@@ -90,6 +90,12 @@ a {
     top: 10; right: 230;
     width: 400px;
 }
+.container .editor .header {
+    margin-bottom: 10px;
+}
+.container .editor .header button {
+    font-size: 14px;
+}
 .container .editor .section {
     position: relative;
     display: inline-block;
@@ -108,7 +114,7 @@ a {
 .container .editor .section .brush {
     display: inline-block;
     margin: 4px;
-    border: 1px solid black;
+    border: 1px solid #ccc;
     cursor: pointer;
 }
 .container .editor .section .selected {
@@ -143,25 +149,29 @@ hr {
     border: 0;
     margin-top: 8px;
     margin-bottom: 8px;
-    border-top: 1px solid #bbb;
+    border-top: 1px solid #666;
 }
 .container .layers .layer-container {
-    height: 26px;
+    min-height: 26px;
 }
 
 .container .layers .layer-container .edit-button {
     float: right;
-    width: 35px;
+    min-width: 35px;
+}
+
+.container .layers .layer-container .action-buttons {
+    margin: 0;
+    padding: 0;
+    margin-left: 20px;
+    display: inline-block;
+    margin-bottom: 5px;
 }
 
 .container .transfer-function-test {
     position: absolute;
     top: 10px;
     right: 230px;
-    background: rgba(255,255,255,0.8);
-    padding: 5px;
-    border-radius: 5px;
-    box-shadow: 0px 1px 4px #666;
     width: 320px;
     height: 320px;
     z-index: 100;

@@ -30,7 +30,7 @@ DataModel.prototype = {
         this.world = world;
     },
 
-    _putData: function(x,y,width,height,obj) {
+    putData: function(x,y,width,height,obj) {
         if (x < 0) 
             x = 0;
         if (x + width > this.xSize)

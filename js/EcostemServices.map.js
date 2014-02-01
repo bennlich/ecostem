@@ -93,11 +93,8 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             this.baseLayers = this._makeBaseLayers();
             this.setBaseLayer(this.baseLayers[3]);
 
-            this.dataLayerObjects = [];
-            
             this.layers = this._makeLayers();
             this.dataLayers = this._makeDataLayers();
-            this.modelLayers = this._makeModelLayers();
 
             // set map bounds to bbox argument in url
             var urlParams = $location.search(),
@@ -120,12 +117,6 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                         n : bounds.getNorth(),
                         e : bounds.getEast()
                     }));
-                });
-            });
-
-            this.leafletMap.on('zoomstart', function() {
-                _.each(this.dataLayerObjects, function(obj) {
-                    obj.clearCallbacks();
                 });
             });
         },
@@ -288,12 +279,12 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
 
         /* editable data layers */
         _makeDataLayers: function() {
+            /* TODO: not the best way to refer to the water model */
+            this.waterModel = new WaterModel(256, 160, 1024);
             var firemodel = new FireSeverityModel(512, 320, 1024);
 
             var fireLayer = new ModelTileRenderer(this, firemodel, FirePatchRenderer);
-            var canvasLayer = fireLayer.makeLayer({zIndex: 12});
-
-            this.dataLayerObjects.push(fireLayer);
+            var waterLayer = new ModelTileRenderer(this, this.waterModel, WaterPatchRenderer);
 
             return [{
                 on: false,
@@ -301,26 +292,14 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                 tileRenderer: fireLayer,
                 editing: false,
                 name: 'Fire Severity',
-                leafletLayer: canvasLayer
-            }];
-        },
-
-        _makeModelLayers: function() {
-            /* TODO: not the best way to refer to the water model */
-            this.waterModel = new WaterModel(256, 160, 1024);
-
-            var waterLayer = new ModelTileRenderer(this, this.waterModel, WaterPatchRenderer);
-            var canvasLayer = waterLayer.makeLayer({zIndex: 14});
-
-            this.dataLayerObjects.push(waterLayer);
-
-            return [{
+                leafletLayer: fireLayer.makeLayer({zIndex: 12})
+            }, {
                 on: false,
                 disabled: false,
                 tileRenderer: waterLayer,
                 editing: false,
                 name: 'Water Model',
-                leafletLayer: canvasLayer
+                leafletLayer: waterLayer.makeLayer({zIndex: 14})
             }];
         }
     };

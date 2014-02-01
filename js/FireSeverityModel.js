@@ -14,10 +14,6 @@ FireSeverityModel.severityTypes = {
 FireSeverityModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
     reset: function() {
         this.init({ severity: FireSeverityModel.severityTypes.NONE });
-    },
-
-    putData: function(x, y, width, height, value) {
-        this._putData(x, y, width, height, value);
     }
 });
 
@@ -59,7 +55,6 @@ var FirePatchRenderer = function() {
         ctx.fillRect(drawX, drawY, drawWidth, drawHeight);
     }
 
-    
     var scale = [
         { value: { severity: t.LOW }, color: colorLow, name: 'Low Severity' },
         { value: { severity: t.MEDIUM }, color: colorMedium, name: 'Medium Severity' },

@@ -12,14 +12,16 @@ function WaterModel(xs, ys, fixedGeometryWidth) {
         volume: 0
     });
 
+    this.isAnimated = true;
+
     this.reset();
 }
 
 WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
     reset: function() {
-        this._putData(0, 0, this.xSize, this.ySize, { volume: 0 });
-        this._putData(60, 20, 10, 10, { volume: 50 });
-        this._putData(100, 60, 10, 10, { volume: 50 });
+        this.putData(0, 0, this.xSize, this.ySize, { volume: 0 });
+        this.putData(60, 20, 10, 10, { volume: 50 });
+        this.putData(100, 60, 10, 10, { volume: 50 });
     },
 
     sampleElevationXY: function(sampler, x,y) {
@@ -63,10 +65,6 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
                 minNeighbor.volume += transferVolume;
             }
         }
-    },
-
-    putData: function(x, y, width, height) {
-        this._putData(x, y, width, height, {volume: 50});
     }
 });
 
@@ -95,5 +93,12 @@ var WaterPatchRenderer = function() {
         }
     }
 
-    return { render: render };
+    var scale = _.map([1,5,10,20], function(num) {
+        return { value: { volume: num }, color: getColor(num), name: num };
+    });
+
+    return { 
+        render: render,
+        scale: scale
+    };
 }();

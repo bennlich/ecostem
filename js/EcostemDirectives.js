@@ -1,5 +1,28 @@
 'use strict';
 
+EcostemDirectives.directive('drawingSurface', ['map', function(map) {
+    return function(scope, element, attrs) {
+        function mouseHandler(e) {
+            var b = map.scenarioBBox,
+                bx = b.xOffsetFromTopLeft(),
+                by = b.yOffsetFromTopLeft(),
+                bw = b.pixelWidth(),
+                bh = b.pixelHeight(),
+
+                x = e.clientX - bx,
+                y = e.clientY - by;
+
+            if (x < 0 || x >= bw || y < 0 || y >= bh)
+                return;
+
+            scope.drawAt({x:x,y:y});
+        }
+
+        element.drag('init', mouseHandler);
+        element.drag(mouseHandler);
+    };
+}]);
+
 EcostemDirectives.directive('mapBody', ['map', 'elevationSampler', function(map, elevationSampler) {
     return function(scope, element, attrs) {
         map.init(attrs.id);

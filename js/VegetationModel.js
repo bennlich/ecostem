@@ -25,6 +25,7 @@ var VegetationPatchRenderer = function() {
     colors[t.PRAIRIE] = 'rgba(130, 115, 83, 0.9)';
     colors[t.STEPPE] = 'rgba(214, 173, 84, 0.9)';
     colors[t.GRASS] = 'rgba(59, 153, 54, 0.9)';
+    colors[t.NONE] = 'rgba(255,255,255,0.0)';
 
     function render(ctx, world, i, j, drawX, drawY, drawWidth, drawHeight) {
         var patch;
@@ -46,7 +47,8 @@ var VegetationPatchRenderer = function() {
         { value: { vegetation: t.SAGEBRUSH }, color: colors[t.SAGEBRUSH], name: 'Sagebrush' },
         { value: { vegetation: t.PRAIRIE }, color: colors[t.PRAIRIE], name: 'Prairie' },
         { value: { vegetation: t.STEPPE }, color: colors[t.STEPPE], name: 'Steppe' },
-        { value: { vegetation: t.GRASS }, color: colors[t.GRASS], name: 'Grass' }
+        { value: { vegetation: t.GRASS }, color: colors[t.GRASS], name: 'Grass' },
+        { value: { vegetation: t.NONE }, color: colors[t.NONE], name: 'None (Erase)' }
     ];
 
     return { 

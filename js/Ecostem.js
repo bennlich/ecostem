@@ -48,11 +48,11 @@ Ecostem.controller('EcostemCtrl', ['$scope', 'map', 'elevationSampler', '$timeou
 
     // when clicking in the scenario box and we're editing,
     // put data on the map at that location
-    map.onBBoxClick(function(point) {
+    $scope.drawAt = function(point) {
         if ($scope.editedLayer) {
             $scope.editedLayer.tileRenderer.putData(point, $scope.selectedBrushSize, $scope.scaleValue.value);
         }
-    });
+    };
 
     $scope.editDataLayer = function(layer) {
         if ($scope.editedLayer) {

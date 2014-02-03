@@ -5,6 +5,7 @@ function DataModel(xs, ys) {
     this.ySize = ys;
     this.world = null;
     this.callbacks = [];
+    this.callbacks2 = [];
     this.isAnimated = false;
     this.isRunning = false;
     this.refreshRates = {
@@ -12,6 +13,7 @@ function DataModel(xs, ys) {
         active: 80
     };
     this.run();
+    this.run2();
 }
 
 DataModel.prototype = {
@@ -31,6 +33,7 @@ DataModel.prototype = {
     },
 
     putData: function(x,y,width,height,obj) {
+        console.log('put data');
         if (x < 0) 
             x = 0;
         if (x + width > this.xSize)
@@ -87,6 +90,20 @@ DataModel.prototype = {
         }.bind(this), timeout);
     },
 
+    run2: function() {
+        var world = this.world;
+
+        _.each(this.callbacks2, function(cb) {
+            setTimeout(function() {
+                cb.cb(world);
+            }, 0);
+        });
+
+        setTimeout(function() {
+            this.run2();
+        }.bind(this), 400);
+    },
+
     start: function() {
         this.isRunning = true;
     },
@@ -96,10 +113,23 @@ DataModel.prototype = {
     },
 
     onChange: function(cb) {
-        this.callbacks.push(cb);
+        if (typeof cb === 'function') {
+            this.callbacks.push(cb);
+        }
+    },
+
+    onChange2: function(cbName, cb) {
+        if (typeof cb === 'function') {
+            this.callbacks2.push({name: cbName, cb: cb});
+        }
     },
 
     clearCallbacks: function() {
         this.callbacks = [];
+    },
+
+    clearCallbacks2: function(name) {
+        this.callbacks2 = _.reject(this.callbacks2, function(cb) { return cb.name === name; });
     }
+
 };

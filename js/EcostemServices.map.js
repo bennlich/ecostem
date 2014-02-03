@@ -27,41 +27,41 @@ Rect.prototype = {
 function ScenarioBoundingBox(bbox, leafletMap, scope) {
     this.bbox = bbox;
     this.leafletMap = leafletMap;
-    this.calculatePixelBounds();
-
-    /* Recalculate the pixel bounds when zoom levels change, since pixel 
-     * dimensions are zoom level-dependent. */
-    leafletMap.on('zoomend', function() {
-        this.calculatePixelBounds();
-    }.bind(this)); 
 }
 
 ScenarioBoundingBox.prototype = {
-    calculatePixelBounds: function() {
-        this.ne = this.leafletMap.project(this.bbox.getNorthEast());
-        this.sw = this.leafletMap.project(this.bbox.getSouthWest());
+    calculatePixelBounds: function(zoom) {
+        return {
+            ne: this.leafletMap.project(this.bbox.getNorthEast(), zoom),
+            sw: this.leafletMap.project(this.bbox.getSouthWest(), zoom)
+        };
     },
 
-    pixelWidth: function() {
-        return Math.abs(Math.floor(this.ne.x - this.sw.x));
+    pixelWidth: function(zoom) {
+        var bounds = this.calculatePixelBounds(zoom);
+        return Math.abs(Math.floor(bounds.ne.x - bounds.sw.x));
     },
 
-    pixelHeight: function() {
-        return Math.abs(Math.floor(this.ne.y - this.sw.y));
+    pixelHeight: function(zoom) {
+        var bounds = this.calculatePixelBounds(zoom);
+        return Math.abs(Math.floor(bounds.ne.y - bounds.sw.y));
     },
 
-    xOffsetFromTopLeft: function() {
-        var topLeft = this.leafletMap.getPixelBounds();
-        return Math.floor(this.sw.x - topLeft.min.x);
+    xOffsetFromTopLeft: function(zoom) {
+        var topLeft = this.leafletMap.getPixelBounds(),
+            bounds = this.calculatePixelBounds(zoom);
+        return Math.floor(bounds.sw.x - topLeft.min.x);
     },
 
-    yOffsetFromTopLeft: function() {
-        var topLeft = this.leafletMap.getPixelBounds();
-        return Math.floor(this.ne.y - topLeft.min.y);
+    yOffsetFromTopLeft: function(zoom) {
+        var topLeft = this.leafletMap.getPixelBounds(),
+            bounds = this.calculatePixelBounds(zoom);
+        return Math.floor(bounds.ne.y - topLeft.min.y);
     },
 
-    toRect: function() {
-        return new Rect(this.sw.x, this.ne.y, this.pixelWidth(), this.pixelHeight());
+    toRect: function(zoom) {
+        var bounds = this.calculatePixelBounds(zoom);
+        return new Rect(bounds.sw.x, bounds.ne.y, this.pixelWidth(zoom), this.pixelHeight(zoom));
     }
 };
 
@@ -183,7 +183,7 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             polygon.addTo(this.leafletMap);
         },
 
-        onBBoxClick: function(callback) {
+        onBBoxClickDrag: function(callback) {
             this.bboxCallback = callback;
         },
 
@@ -284,7 +284,7 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             var vegModel = new VegetationModel(512, 320, 1024);
 
             var fireLayer = new ModelTileRenderer(this, firemodel, FirePatchRenderer);
-            var waterLayer = new ModelTileRenderer(this, waterModel, WaterPatchRenderer);
+            var waterLayer = new ModelTileRenderer(this, waterModel, WaterPatchRenderer, true);
             var vegLayer = new ModelTileRenderer(this, vegModel, VegetationPatchRenderer);
 
             return [{

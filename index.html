@@ -8,12 +8,14 @@
     <link rel="stylesheet" type="text/css" href="css/ecostem.css"/>
     <link rel="stylesheet" type="text/css" href="css/svg.css"/>
 
+    <script src="https://cdn.firebase.com/js/client/1.0.2/firebase.js"></script>
     <script src="http://maps.google.com/maps/api/js?v=3&sensor=false"></script>
 
     <script src="lib/agentscript.js"></script>
     <script src="lib/data.js"></script>
     <script src="lib/underscore.js"></script>
     <script src="lib/jquery-1.10.2.js"></script>
+    <script src="lib/jquery.event.drag-2.2/jquery.event.drag-2.2.js"></script>
     <script src="lib/leaflet/leaflet-src.js"></script>
     <script src="lib/angular/angular.js"></script>
     <script src="lib/angular/angular-route.js"></script>
@@ -43,6 +45,7 @@
   </head>
   <body>
     <div class="container" ng-controller="EcostemCtrl">
+      <div class="cover" ng-show="editedLayer" drawing-surface></div>
       <div id="loading" class="uibox" ng-show="elevationIsLoading">Loading elevation data...</div>
       <div id="map" map-body></div>
       <div id="elevation" ng-show="showElevation">

@@ -99,8 +99,11 @@ var WaterPatchRenderer = function() {
         }
     }
 
-    var scale = _.map([5, 10, 20, 30], function(num) {
-        return { value: { volume: num }, color: getColor(num), name: num };
+    var scale = _.map([5, 10, 20, 30, 0], function(num) {
+        var name = num;
+        if (num === 0)
+            name = 'None (Erase)';
+        return { value: { volume: num }, color: getColor(num), name: name };
     });
 
     return { 

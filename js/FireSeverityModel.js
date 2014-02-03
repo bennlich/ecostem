@@ -23,6 +23,7 @@ var FirePatchRenderer = function() {
     var colorHigh = 'rgba(105,82,58,0.9)';
     var colorMedium = 'rgba(173,147,118,0.9)';
     var colorLow = 'rgba(240,217,192,0.9)';
+    var colorNone = 'rgba(255,255,255,0.0)';
 
     var t = FireSeverityModel.severityTypes;
 
@@ -55,7 +56,8 @@ var FirePatchRenderer = function() {
     var scale = [
         { value: { severity: t.LOW }, color: colorLow, name: 'Low Severity' },
         { value: { severity: t.MEDIUM }, color: colorMedium, name: 'Medium Severity' },
-        { value: { severity: t.HIGH }, color: colorHigh, name: 'High Severity' }
+        { value: { severity: t.HIGH }, color: colorHigh, name: 'High Severity' },
+        { value: { severity: t.NONE }, color: colorNone, name: 'None (Erase)' }
     ];
 
     return { 

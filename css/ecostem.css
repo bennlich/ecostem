@@ -32,13 +32,19 @@ a {
     border-radius: 5px;
     box-shadow: 0px 1px 4px #111;
     color: #eee;
-    z-index: 100;
 }
 .container {
     position: relative;
     width: 100%;
     height: 100%;
     user-select: none;
+}
+.container .cover {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 105;
 }
 .container .popup {
     position: absolute; 
@@ -89,6 +95,7 @@ a {
     position: absolute;
     top: 10; right: 230;
     width: 400px;
+    z-index: 120;
 }
 .container .editor .header {
     margin-bottom: 10px;
@@ -125,6 +132,7 @@ a {
     position: absolute;
     top: 10; right: 10;
     min-width: 200px;
+    z-index: 120;
 }
 .container .layers label {
     cursor: pointer;

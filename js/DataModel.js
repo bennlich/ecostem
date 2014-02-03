@@ -33,7 +33,6 @@ DataModel.prototype = {
     },
 
     putData: function(x,y,width,height,obj) {
-        console.log('put data');
         if (x < 0) 
             x = 0;
         if (x + width > this.xSize)

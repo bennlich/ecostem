@@ -1,7 +1,8 @@
 'use strict';
 
-EcostemServices.service('elevationSampler', [function() {
+EcostemServices.service('elevationSampler', ['$rootScope', '$q', function($rootScope, $q) {
     return {
+        deferred: $q.defer(),
         elevationServer: "http://70.90.201.217/cgi-bin/elevation.py?bbox={s},{w},{n},{e}&res={width},{height}",
         canvas: null,
         ctx: null,
@@ -13,6 +14,8 @@ EcostemServices.service('elevationSampler', [function() {
             this.canvas = canvas;
             this.ctx = canvas.getContext('2d');
             this.width = this.fixedScenarioWidth;
+            
+            this.deferred.resolve(this);
         },
 
         hasData: function() {
@@ -24,9 +27,7 @@ EcostemServices.service('elevationSampler', [function() {
          * for pixel-level access into the image, as well as for optionally
          * viewing the elevation image.
          */
-        loadElevationData: function(scope, callback) {
-            var scenario = scope.map.scenarioBBox;
-
+        loadElevationData: function(scenario, callback) {
             var img = new Image();
             var height = Math.floor(scenario.pixelHeight() * this.width/scenario.pixelWidth());
 
@@ -43,7 +44,7 @@ EcostemServices.service('elevationSampler', [function() {
                 computeQuad(this);
 
                 if (typeof callback === 'function') {
-                    scope.$apply(callback);
+                    $rootScope.$apply(callback);
                 }
             }.bind(this);
 

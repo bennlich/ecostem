@@ -68,8 +68,9 @@ ScenarioBoundingBox.prototype = {
 var map;
 
 /* Leaflet wrapper */
-EcostemServices.service('map', ['$location', '$rootScope', function($location, $rootScope) {
+EcostemServices.service('map', ['$location', '$rootScope', '$q', function($location, $rootScope, $q) {
     return {
+        deferred: $q.defer(),
         init: function(id) {
             map = this;
 
@@ -88,7 +89,7 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             this.addControls();
 
             this.scenarioBBox = this.createScenarioBBox();
-            this.drawBBoxPolygon(this.scenarioBBox.bbox);
+            this.addBBoxPolygon(this.scenarioBBox.bbox);
 
             this.baseLayers = this._makeBaseLayers();
             this.setBaseLayer(this.baseLayers[3]);
@@ -119,6 +120,8 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
                     }));
                 });
             });
+
+            this.deferred.resolve(this);
         },
 
         /* creates a hardcoded bbox for now */
@@ -136,7 +139,7 @@ EcostemServices.service('map', ['$location', '$rootScope', function($location, $
             return new ScenarioBoundingBox(bounds, this.leafletMap);
         },
 
-        drawBBoxPolygon: function(bbox) {
+        addBBoxPolygon: function(bbox) {
             var south = bbox.getSouth(),
                 west = bbox.getWest(),
                 north = bbox.getNorth(),

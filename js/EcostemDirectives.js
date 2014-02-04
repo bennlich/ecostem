@@ -23,7 +23,7 @@ EcostemDirectives.directive('drawingSurface', ['map', function(map) {
     };
 }]);
 
-EcostemDirectives.directive('mapBody', ['map', 'elevationSampler', function(map, elevationSampler) {
+EcostemDirectives.directive('mapBody', ['map', function(map) {
     return function(scope, element, attrs) {
         map.init(attrs.id);
     };

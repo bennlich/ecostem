@@ -12,7 +12,7 @@ Ecostem.run(['$rootScope', function($rootScope) {
 
 var elevationToDroplets;
 
-Ecostem.controller('EcostemCtrl', ['$scope', 'map', 'elevationSampler', '$timeout', function($scope, map, elevationSampler, $timeout) {
+Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', function($scope, $q, map, elevationSampler) {
     $scope.simulationStarted = false;
     $scope.showElevation = false;
     $scope.elevationLoaded = false;
@@ -79,15 +79,12 @@ Ecostem.controller('EcostemCtrl', ['$scope', 'map', 'elevationSampler', '$timeou
     elevationToDroplets = $scope.elevationToDroplets =
         new TransferFunction([0, 200], 'm', [0, 400], 'droplets / m^2', 'Rainfall vs. elevation');
 
-    // TODO: hacky way to load elevation at startup
-    // I think we need to start tracking dependency loading in services by using
-    // promises. For example, the elevation server should know when the map
-    // is done initializing or the other way around.
-    $timeout(function() {
+    $q.all([map.deferred.promise, elevationSampler.deferred.promise]).then(function() {
         $scope.elevationIsLoading = true;
-        elevationSampler.loadElevationData($scope, function() {
+        elevationSampler.loadElevationData(map.scenarioBBox, function() {
             $scope.elevationIsLoading = false;
             $scope.elevationLoaded = true;
         });
-    },1000);    
+    });
+
 }]);

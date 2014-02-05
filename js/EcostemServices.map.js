@@ -287,8 +287,11 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
             var vegModel = new VegetationModel(512, 320, 1024);
 
             var fireLayer = new ModelTileRenderer(this, firemodel, FirePatchRenderer);
-            var waterLayer = new ModelTileRenderer(this, waterModel, WaterPatchRenderer, true);
+            var waterLayer = new ModelTileRenderer(this, waterModel, WaterPatchRenderer);
             var vegLayer = new ModelTileRenderer(this, vegModel, VegetationPatchRenderer);
+
+            var tileServer = new ModelTileServer(waterLayer);
+            tileServer.runServer();
 
             return [{
                 on: false,

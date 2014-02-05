@@ -1,3 +1,5 @@
+'use strict';
+
 var LiveTexture = function() {
     function leafletWaterLayer(map, opts) {
         var fb = new Firebase("https://simtable.firebaseio.com/nnmc/livetiles2");

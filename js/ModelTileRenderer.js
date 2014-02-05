@@ -71,8 +71,8 @@ ModelTileRenderer.prototype = {
             // console.log(imageData);
 
             // this shows the tile boundaries
-            // ctx.strokeStyle = '#888';
-            // ctx.strokeRect(0,0,canvas.width,canvas.height);
+            ctx.strokeStyle = '#888';
+            ctx.strokeRect(0,0,canvas.width,canvas.height);
         }.bind(this);
 
         return renderStep;

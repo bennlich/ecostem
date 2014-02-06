@@ -37,13 +37,31 @@
         map.setView(new L.LatLng(35.68832407198268, -105.91811656951903), 12);
         map.addLayer(new L.Google('TERRAIN'));
 
-        map.addLayer(LiveTexture.leafletWaterLayer(map, {zIndex: 10}));
+        var liveTexture = new LiveTexture();
+
+        liveTexture.onLayerAppeared(function(id, name, layer) {
+          $('#layers').append('<div id="{0}"><input id="cb{0}" type="checkbox"></input>&nbsp<label for="cb{0}">{1}</label></div>'.format(id, name));
+        });
+
+        liveTexture.onLayerDisappeared(function(id, name, layer) {
+          map.removeLayer(layer);
+          $('#' + id).remove();
+        });
+
+        $(document).on('click', 'input[type=checkbox]', function() {
+          var checked = $(this).prop('checked'),
+              id = $(this).parent().attr('id'),
+              layer = liveTexture.findLayer(id);
+
+          checked ? map.addLayer(layer) : map.removeLayer(layer);
+        });
       });
     </script>
   </head>
   <body>
     <div class="container">
       <div id="map"></div>
+      <div id="layers" class="layers uibox"></div>
     </div>
   </body>
 </html>

@@ -1,10 +1,54 @@
 'use strict';
 
-var LiveTexture = function() {
-    function leafletWaterLayer(map, opts) {
+function LiveTexture(leafletMap) {
+    this._appearedCallbacks = [];
+    this._disappearedCallbacks = [];
+    this._map = leafletMap;
+    this._layers = [];
+
+    this._init();
+}
+
+LiveTexture.prototype = {
+    _init: function() {
         var fb = new Firebase("https://simtable.firebaseio.com/nnmc/livetiles2");
 
-        var liveLayer = new L.tileLayer.canvas(opts);
+        fb.on('child_added', function(snap) {
+            if (!snap.val())
+                return;
+
+            var id = snap.name(),
+                name = snap.val().name,
+                layer = this._leafletLayer(snap.ref());
+
+            this._layers.push({ id: id, name: name, leafletLayer: layer });
+
+            _.each(this._appearedCallbacks, function(cb) {
+                cb(id, name, layer);
+            });
+        }.bind(this));
+
+        fb.on('child_removed', function(snap) {
+            if (!snap.val())
+                return;
+
+            var id = snap.name(),
+                name = snap.val().name;
+
+            var layer = _.find(this._layers, function(layer) {
+                return id === layer.id;
+            });
+
+            this._layers = _.without(this._layers, layer);
+
+            _.each(this._disappearedCallbacks, function(cb) {
+                cb(id, name, layer.leafletLayer);
+            });
+        }.bind(this));
+    },
+
+    _leafletLayer: function(ref) {
+        var liveLayer = new L.tileLayer.canvas();
 
         liveLayer.drawTile = function(canvas, tilePoint, zoom) {
             var ctx = canvas.getContext('2d');
@@ -12,8 +56,8 @@ var LiveTexture = function() {
 
             var img = new Image();
 
-            fb.child('listen').set(handle);
-            fb.child(handle).on('value', function(data) {
+            ref.child('listen').set(handle);
+            ref.child(handle).on('value', function(data) {
                 var base64 = data.val();
                 if (!base64)
                     return;
@@ -25,15 +69,31 @@ var LiveTexture = function() {
                 };
             });
 
-            map.on('zoomstart', function() {
-                fb.child('stopListening').set(handle);
+            this._map.on('zoomstart', function() {
+                ref.child('stopListening').set(handle);
             });
         };
 
         return liveLayer;
-    }
+    },
 
-    return {
-        leafletWaterLayer : leafletWaterLayer
-    };
-}();
+    findLayer: function(id) {
+        var layer = _.find(this._layers, function(layer) {
+            return layer.id === id;
+        });
+
+        return layer.leafletLayer;
+    },
+
+    onLayerAppeared: function(cb) {
+        if (typeof cb === 'function') {
+            this._appearedCallbacks.push(cb);
+        }
+    },
+
+    onLayerDisappeared: function(cb) {
+        if (typeof cb === 'function') {
+            this._disappearedCallbacks.push(cb);
+        }
+    }
+};

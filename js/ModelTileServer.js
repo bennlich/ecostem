@@ -5,8 +5,7 @@ function ModelTileServer(modelTileRenderer) {
     this.fb = new Firebase("https://simtable.firebaseio.com/nnmc/livetiles2");
     this.callbacks = [];
     this.isRunning = false;
-
-    this.init();
+    this._layerRef = null;
 }
 
 ModelTileServer.prototype = {
@@ -18,19 +17,23 @@ ModelTileServer.prototype = {
         return !!cb;
     },
 
-    init: function() {
-        this.fb.child('listen').on('value', function(data) {
-            this.handleTileRequest(data.val());
+    _init: function(name) {
+        this._layerRef = this.fb.push({ name: name });
+
+        this._layerRef.child('listen').on('value', function(data) {
+            var val = data.val();
+            if (val)
+                this.handleTileRequest(val);
         }.bind(this));
 
-        this.fb.child('stopListening').on('value', function(data) {
+        this._layerRef.child('stopListening').on('value', function(data) {
             var zxy = data.val();
 
             if (!zxy)
                 return;
 
             this.uninstallTileUpdateLoop(zxy);
-            this.fb.child(zxy).remove();
+            this._layerRef.child(zxy).remove();
         }.bind(this));
     },
 
@@ -47,13 +50,15 @@ ModelTileServer.prototype = {
         });
     },
 
-    start: function() {
+    start: function(name) {
+        this._init(name);
         this.isRunning = true;
         this._run();
     },
 
     stop: function() {
         this.isRunning = false;
+        this._layerRef.remove();
         this.callbacks = [];
     },
 
@@ -90,7 +95,7 @@ ModelTileServer.prototype = {
         if (tileClosure) {
             this.installTileUpdateLoop(fbHandle, function(world) {
                 tileClosure(world);
-                this.fb.child(fbHandle).set(canvas.toDataURL());
+                this._layerRef.child(fbHandle).set(canvas.toDataURL());
             }.bind(this));
         }
     }

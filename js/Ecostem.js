@@ -43,13 +43,37 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
         model.stop();
     };
 
+    /*
+     * Serving a layer.
+     */
+
     $scope.serveTiles = function(layer) {
-        layer.model.server.start();
+        $scope.serverLayer = layer;
+        $scope.serverPopupIsOpen = true;
+    };
+
+    $scope.startServer = function() {
+        if ($scope.serverLayerName && $scope.serverLayer) {
+            $scope.serverLayer.model.server.start($scope.serverLayerName);
+            $scope.initStartServer();
+        } 
+    };
+
+    $scope.initStartServer = function() {
+        $scope.serverLayer = null;
+        $scope.serverLayerName = "";
+        $scope.serverPopupIsOpen = false;
     };
 
     $scope.stopServingTiles = function(layer) {
         layer.model.server.stop();
     };
+
+    $scope.initStartServer();
+
+    /* 
+     * Drawing on/editing layers.
+     */
 
     $scope.editedLayer = null;
     $scope.scaleValue = {};
@@ -63,8 +87,16 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
     };
 
     $scope.editDataLayer = function(layer) {
+        var editedLayer = $scope.editedLayer;
+
         if ($scope.editedLayer) {
             $scope.doneEditingDataLayer();
+        }
+
+        // if clicking "Edit" on the currently edited layer,
+        // just stop editing
+        if (editedLayer === layer) {
+            return;
         }
 
         if (!layer.on) {

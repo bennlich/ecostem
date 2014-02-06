@@ -50,7 +50,12 @@
   <body>
     <div class="container" ng-controller="EcostemCtrl">
       <div class="cover" ng-show="editedLayer" drawing-surface></div>
-      <div id="loading" class="uibox" ng-show="elevationIsLoading">Loading elevation data...</div>
+      <div class="uibox loading" ng-show="elevationIsLoading">Loading elevation data...</div>
+      <div class="uibox server-popup" ng-show="serverPopupIsOpen">
+        Name: <input type="text" ng-model="serverLayerName"></input>
+        <button ng-click="startServer()">Serve Layer</button>
+        <button ng-click="initStartServer()">Cancel</button>
+      </div>
       <div id="map" map-body></div>
       <div id="elevation" ng-show="showElevation">
         <canvas id="elevationCanvas" elevation-canvas/>
@@ -93,21 +98,18 @@
           <input id="dl{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
           <label for="dl{{$index}}">{{ layer.name }}</label>
           <br/>
-          <div class="action-buttons" ng-show="!layer.model.dataModel.isAnimated">
-            <button ng-click="editDataLayer(layer)">Edit</button>
-            <button ng-show="layer.model.server.isRunning" 
-                    ng-click="stopServingTiles(layer)">Stop Server</button>
-            <button ng-show="! layer.model.server.isRunning" 
-                    ng-click="serveTiles(layer)">Start Server</button>
-          </div>
-          <div class="action-buttons" ng-show="layer.model.dataModel.isAnimated">
-            <button ng-click="editDataLayer(layer)">Edit</button>
-            <button ng-show="layer.model.dataModel.isRunning"
+          <div class="action-buttons">
+            <button ng-class="{'active-button':layer.editing}"
+                    ng-click="editDataLayer(layer)">Edit</button>
+            <button class="active-button"
+                    ng-show="layer.model.dataModel.isAnimated && layer.model.dataModel.isRunning"
                     ng-click="pauseSimulation(layer)">Pause</button>
-            <button ng-show="! layer.model.dataModel.isRunning"
+            <button ng-show="layer.model.dataModel.isAnimated && ! layer.model.dataModel.isRunning"
                     ng-click="startSimulation(layer)">Start</button>
-            <button ng-click="resetSimulation(layer)">Reset</button>
-            <button ng-show="layer.model.server.isRunning" 
+            <button ng-show="layer.model.dataModel.isAnimated"
+                    ng-click="resetSimulation(layer)">Reset</button>
+            <button class="active-button"
+                    ng-show="layer.model.server.isRunning" 
                     ng-click="stopServingTiles(layer)">Stop Server</button>
             <button ng-show="! layer.model.server.isRunning" 
                     ng-click="serveTiles(layer)">Start Server</button>

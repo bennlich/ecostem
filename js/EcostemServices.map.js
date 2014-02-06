@@ -282,39 +282,19 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
         /* editable data layers */
         _makeDataLayers: function() {
-            var waterModel = new WaterModel(256, 160, 1024);
-            var firemodel = new FireSeverityModel(512, 320, 1024);
-            var vegModel = new VegetationModel(512, 320, 1024);
+            var modelSet = new ModelSet(map);
 
-            var fireLayer = new ModelTileRenderer(this, firemodel, FirePatchRenderer);
-            var waterLayer = new ModelTileRenderer(this, waterModel, WaterPatchRenderer);
-            var vegLayer = new ModelTileRenderer(this, vegModel, VegetationPatchRenderer);
-
-            var tileServer = new ModelTileServer(waterLayer);
-            tileServer.runServer();
-
-            return [{
-                on: false,
-                disabled: false,
-                tileRenderer: fireLayer,
-                editing: false,
-                name: 'Fire Severity',
-                leafletLayer: fireLayer.makeLayer({zIndex: 12})
-            }, {
-                on: false,
-                disabled: false,
-                tileRenderer: vegLayer,
-                editing: false,
-                name: 'Vegetation',
-                leafletLayer: vegLayer.makeLayer({zIndex: 13})
-            }, {
-                on: false,
-                disabled: false,
-                tileRenderer: waterLayer,
-                editing: false,
-                name: 'Water Model',
-                leafletLayer: waterLayer.makeLayer({zIndex: 14})
-            }];
+            var zIndex = 12;
+            return _.map(modelSet.models, function(model) {
+                return {
+                    name: model.name,
+                    model: model,
+                    on: false,
+                    disabled: false,
+                    editing: false,
+                    leafletLayer: model.renderer.makeLayer({zIndex: zIndex++})
+                };
+            });
         }
     };
 }]);

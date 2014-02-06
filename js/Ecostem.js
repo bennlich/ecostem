@@ -26,21 +26,29 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
     };
 
     $scope.startSimulation = function(layer) {
-        var model = layer.tileRenderer.model;
+        var model = layer.model.dataModel;
         model.sampleElevation(elevationSampler);
         model.start();
     };
 
     $scope.resetSimulation = function(layer) {
-        var model = layer.tileRenderer.model;
+        var model = layer.model.dataModel;
         $scope.pauseSimulation(layer);
         model.reset();
     };
 
     $scope.pauseSimulation = function(layer) {
-        var model = layer.tileRenderer.model;
+        var model = layer.model.dataModel;
         $scope.simulationStarted = false;
         model.stop();
+    };
+
+    $scope.serveTiles = function(layer) {
+        layer.model.server.start();
+    };
+
+    $scope.stopServingTiles = function(layer) {
+        layer.model.server.stop();
     };
 
     $scope.editedLayer = null;
@@ -50,7 +58,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
     // put data on the map at that location
     $scope.drawAt = function(point) {
         if ($scope.editedLayer) {
-            $scope.editedLayer.tileRenderer.putData(point, $scope.selectedBrushSize, $scope.scaleValue.value);
+            $scope.editedLayer.model.renderer.putData(point, $scope.selectedBrushSize, $scope.scaleValue.value);
         }
     };
 
@@ -67,7 +75,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
         layer.editing = true;
 
         $scope.editedLayer = layer;
-        $scope.scaleValue = layer.tileRenderer.patchRenderer.scale[0];
+        $scope.scaleValue = layer.model.renderer.patchRenderer.scale[0];
     };
 
     $scope.doneEditingDataLayer = function() {

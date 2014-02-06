@@ -4,6 +4,7 @@ function ModelTileServer(modelTileRenderer) {
     this.renderer = modelTileRenderer;
     this.fb = new Firebase("https://simtable.firebaseio.com/nnmc/livetiles2");
     this.callbacks = [];
+    this.isRunning = false;
 
     this.init();
 }
@@ -46,18 +47,30 @@ ModelTileServer.prototype = {
         });
     },
 
-    runServer: function() {
-        var world = this.renderer.model.world;
+    start: function() {
+        this.isRunning = true;
+        this._run();
+    },
 
-        _.each(this.callbacks, function(cb) {
+    stop: function() {
+        this.isRunning = false;
+        this.callbacks = [];
+    },
+
+    _run: function() {
+        if (this.isRunning) {
+            var world = this.renderer.model.world;
+
+            _.each(this.callbacks, function(cb) {
+                setTimeout(function() {
+                    cb.cb(world);
+                },0);
+            });
+
             setTimeout(function() {
-                cb.cb(world);
-            },0);
-        });
-
-        setTimeout(function() {
-            this.runServer();
-        }.bind(this), 400);
+                this._run();
+            }.bind(this), 400);
+        }
     },
 
     handleTileRequest: function(fbHandle) {

@@ -49,6 +49,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
 
     $scope.serveTiles = function(layer) {
         $scope.serverLayer = layer;
+        $scope.serverLayerName = layer.name;
         $scope.serverPopupIsOpen = true;
     };
 

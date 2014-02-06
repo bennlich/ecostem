@@ -20,6 +20,8 @@ ModelTileServer.prototype = {
     _init: function(name) {
         this._layerRef = this.fb.push({ name: name });
 
+        this._layerRef.onDisconnect().remove();
+
         this._layerRef.child('listen').on('value', function(data) {
             var val = data.val();
             if (val)
@@ -74,7 +76,7 @@ ModelTileServer.prototype = {
 
             setTimeout(function() {
                 this._run();
-            }.bind(this), 400);
+            }.bind(this), 600);
         }
     },
 

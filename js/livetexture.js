@@ -19,7 +19,8 @@ LiveTexture.prototype = {
 
             var id = snap.name(),
                 name = snap.val().name,
-                layer = this._leafletLayer(snap.ref());
+                ref = snap.ref(),
+                layer = this._leafletLayer(ref);
 
             this._layers.push({ id: id, name: name, leafletLayer: layer });
 
@@ -48,7 +49,8 @@ LiveTexture.prototype = {
     },
 
     _leafletLayer: function(ref) {
-        var liveLayer = new L.tileLayer.canvas();
+        var liveLayer = new L.tileLayer.canvas(),
+            map = this._map;
 
         liveLayer.drawTile = function(canvas, tilePoint, zoom) {
             var ctx = canvas.getContext('2d');
@@ -69,9 +71,12 @@ LiveTexture.prototype = {
                 };
             });
 
-            this._map.on('zoomstart', function() {
+            var onZoomStart = function() {
                 ref.child('stopListening').set(handle);
-            });
+                map.off('zoomstart', onZoomStart);
+            };
+
+            map.on('zoomstart', onZoomStart);
         };
 
         return liveLayer;

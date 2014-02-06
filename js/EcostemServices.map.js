@@ -74,19 +74,11 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
         init: function(id) {
             map = this;
 
-            this.leafletMap = new L.Map(id,{
-                zoomControl: false, 
-                zoomAnimation: false,
-                minZoom: 3, 
-                maxZoom: 15
-            });
+            this.leafletMap = new L.Map(id,{ minZoom: 3, maxZoom: 15 });
 
             this.leafletMap.setView(new L.LatLng(35.68832407198268, -105.91811656951903), 12);
 
             L.control.scale().addTo(this.leafletMap);
-
-            this._zoomControl = L.control.zoom();
-            this.addControls();
 
             this.scenarioBBox = this.createScenarioBBox();
             this.addBBoxPolygon(this.scenarioBBox.bbox);
@@ -188,15 +180,6 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
         onBBoxClickDrag: function(callback) {
             this.bboxCallback = callback;
-        },
-
-        /* add/remove zoom; the map is "disabled" during simulations */
-        removeControls: function() {
-            this._zoomControl.removeFrom(this.leafletMap);
-        },
-
-        addControls: function() {
-            this._zoomControl.addTo(this.leafletMap);
         },
 
         /* tile urls */

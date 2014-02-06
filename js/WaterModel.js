@@ -2,10 +2,8 @@
 
 /* Water model inherits from DataModel */
 
-function WaterModel(xs, ys, fixedGeometryWidth) {
-    DataModel.call(this, xs, ys);
-
-    this.sampleSpacing = Math.floor(fixedGeometryWidth / xs);
+function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
+    DataModel.call(this, xs, ys, fixedGeometryWidth, modelSet);
 
     this.init({ 
         elevation: 0,
@@ -47,9 +45,16 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
     },
 
     step: function() {
+        var fireSeverityModel = this.modelSet.getDataModel('Fire Severity');
+
         for (var i = 0; i < this.xSize; ++i) {
             for (var j = 0; j < this.ySize; ++j) {
                 var patch = this.world[i][j];
+
+                /* sampling live... so if you draw on the map while the model is running
+                 * the model should respond.
+                 */
+                var sevValue = this.modelSet.sample(i, j, this, fireSeverityModel);
 
                 if (patch.volume === 0)
                     continue;

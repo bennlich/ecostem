@@ -1,8 +1,10 @@
 'use strict';
 
-function DataModel(xs, ys) {
+function DataModel(xs, ys, fixedGeometryWidth, modelSet) {
     this.xSize = xs;
     this.ySize = ys;
+    this.sampleSpacing = Math.floor(fixedGeometryWidth / xs);
+    this.modelSet = modelSet;
     this.world = null;
     this.callbacks = [];
     this.isAnimated = false;
@@ -11,6 +13,7 @@ function DataModel(xs, ys) {
         idle: 200,
         active: 80
     };
+
     this.run();
 }
 

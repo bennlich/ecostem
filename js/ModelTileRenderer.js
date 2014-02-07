@@ -92,7 +92,7 @@ ModelTileRenderer.prototype = {
         // top-left corner of the world relevant to this tile
         var startX = Math.floor(offsetX / patchSize);
         var startY = Math.floor(offsetY / patchSize);
-        // where to stop drawing patches
+        // where to stop drawing patches (exclusive)
         var endX = Math.floor((offsetX + intersection.width)/patchSize)+1;
         var endY = Math.floor((offsetY + intersection.height)/patchSize)+1;
 
@@ -123,21 +123,21 @@ ModelTileRenderer.prototype = {
         return renderStep;
     },
 
-    putData: function(pt, brushSize, value) {
+    putData: function(point, brushSize, value) {
         var scenarioScreenWidth = this.map.scenarioBBox.pixelWidth(),
             scenarioScreenHeight = this.map.scenarioBBox.pixelHeight(),
 
-            elemSize = scenarioScreenWidth / this.model.xSize,
+            patchSize = scenarioScreenWidth / this.model.xSize,
 
-            size = Math.ceil(this.model.xSize * (brushSize / scenarioScreenWidth)),
+            numPatches = Math.ceil(brushSize / patchSize),
 
-            x = Math.floor(pt.x / elemSize),
-            y = Math.floor(pt.y / elemSize);
+            worldX = Math.round(point.x / patchSize - numPatches/2),
+            worldY = Math.round(point.y / patchSize - numPatches/2);
 
-        if (size < 1)
-            size = 1;
+        if (numPatches < 1)
+            numPatches = 1;
 
-        this.model.putData(x,y,size,size,value);
+        this.model.putData(worldX,worldY,numPatches,numPatches,value);
     },
 
     makeLayer: function(layerOpts) {

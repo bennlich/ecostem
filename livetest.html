@@ -25,11 +25,10 @@
     <script src="lib/Google.js"></script>
 
     <script src="js/Util.js"></script>
+    <script src="js/livetexture.js"></script>
 
     <script>
       $(document).ready(function() {
-        var fb = new Firebase("https://simtable.firebaseio.com/nnmc/livetiles");
-
         var map = new L.Map('map',{
           minZoom: 3, 
           maxZoom: 15
@@ -38,38 +37,31 @@
         map.setView(new L.LatLng(35.68832407198268, -105.91811656951903), 12);
         map.addLayer(new L.Google('TERRAIN'));
 
-        var liveLayer = new L.tileLayer.canvas({zIndex:10});
-        liveLayer.drawTile = function(canvas, tilePoint, zoom) {
-          var ctx = canvas.getContext('2d');
-          var handle = '{0}_{1}_{2}'.format(zoom, tilePoint.x, tilePoint.y);
+        var liveTexture = new LiveTexture(map);
 
-          var img = new Image();
+        liveTexture.onLayerAppeared(function(id, name, layer) {
+          $('#layers').append('<div id="{0}"><input id="cb{0}" type="checkbox"></input>&nbsp<label for="cb{0}">{1}</label></div>'.format(id, name));
+        });
 
-          fb.child('listen').set(handle);
-          fb.child(handle).on('value', function(data) {
-            var base64 = data.val();
-            if (!base64)
-              return;
+        liveTexture.onLayerDisappeared(function(id, name, layer) {
+          map.removeLayer(layer);
+          $('#' + id).remove();
+        });
 
-            img.src = base64;
-            img.onload = function() {
-              ctx.clearRect(0,0,canvas.width,canvas.height);
-              ctx.drawImage(img, 0, 0);
-            };
-          });
+        $(document).on('click', 'input[type=checkbox]', function() {
+          var checked = $(this).prop('checked'),
+              id = $(this).parent().attr('id'),
+              layer = liveTexture.findLayer(id);
 
-          map.on('zoomstart', function() {
-            fb.child('stopListening').set(handle);
-          });
-        };
-
-        map.addLayer(liveLayer);
+          checked ? map.addLayer(layer) : map.removeLayer(layer);
+        });
       });
     </script>
   </head>
   <body>
     <div class="container">
       <div id="map"></div>
+      <div id="layers" class="layers uibox"></div>
     </div>
   </body>
 </html>

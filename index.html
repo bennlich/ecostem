@@ -22,6 +22,7 @@
     <script src="lib/d3.js"></script>
     <script src="lib/Smooth-0.1.7.js"></script>
     <script src="lib/curveFit.js"></script>
+    <script src="lib/cd.js"></script>
 
     <script src="lib/Google.js"></script>
     <script src="lib/Leaflet.CanvasLayer/leaflet_tileloader_mixin.js"></script>
@@ -34,7 +35,10 @@
     <script src="js/WaterModel.js"></script>
     <script src="js/VegetationModel.js"></script>
 
+    <script src="js/ModelSet.js"></script>
+
     <script src="js/ModelTileRenderer.js"></script>
+    <script src="js/ModelTileServer.js"></script>
 
     <script src="js/Ecostem.js"></script>
     <script src="js/EcostemDirectives.js"></script>
@@ -46,7 +50,12 @@
   <body>
     <div class="container" ng-controller="EcostemCtrl">
       <div class="cover" ng-show="editedLayer" drawing-surface></div>
-      <div id="loading" class="uibox" ng-show="elevationIsLoading">Loading elevation data...</div>
+      <div class="uibox loading" ng-show="elevationIsLoading">Loading elevation data...</div>
+      <div class="uibox server-popup" ng-show="serverPopupIsOpen">
+        Name: <input type="text" ng-model="serverLayerName"></input>
+        <button ng-click="startServer()">Serve Layer</button>
+        <button ng-click="initStartServer()">Cancel</button>
+      </div>
       <div id="map" map-body></div>
       <div id="elevation" ng-show="showElevation">
         <canvas id="elevationCanvas" elevation-canvas/>
@@ -68,7 +77,7 @@
                style="width: {{b}}; height: {{b}}; background-color: {{scaleValue.color}}"></div>
         </div><div class="section">
           <h2>Choose a value:</h2>
-          <select ng-model="scaleValue" ng-options="v.name for v in editedLayer.tileRenderer.patchRenderer.scale">
+          <select ng-model="scaleValue" ng-options="v.name for v in editedLayer.model.renderer.patchRenderer.scale">
           </select>
         </div>
       </div>
@@ -89,16 +98,21 @@
           <input id="dl{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
           <label for="dl{{$index}}">{{ layer.name }}</label>
           <br/>
-          <div class="action-buttons" ng-show="!layer.tileRenderer.model.isAnimated">
-            <button ng-click="editDataLayer(layer)">Edit</button>
-          </div>
-          <div class="action-buttons" ng-show="layer.tileRenderer.model.isAnimated">
-            <button ng-click="editDataLayer(layer)">Edit</button>
-            <button ng-show="layer.tileRenderer.model.isRunning"
+          <div class="action-buttons">
+            <button ng-class="{'active-button':layer.editing}"
+                    ng-click="editDataLayer(layer)">Edit</button>
+            <button class="active-button"
+                    ng-show="layer.model.dataModel.isAnimated && layer.model.dataModel.isRunning"
                     ng-click="pauseSimulation(layer)">Pause</button>
-            <button ng-show="! layer.tileRenderer.model.isRunning"
+            <button ng-show="layer.model.dataModel.isAnimated && ! layer.model.dataModel.isRunning"
                     ng-click="startSimulation(layer)">Start</button>
-            <button ng-click="resetSimulation(layer)">Reset</button>
+            <button ng-show="layer.model.dataModel.isAnimated"
+                    ng-click="resetSimulation(layer)">Reset</button>
+            <button class="active-button"
+                    ng-show="layer.model.server.isRunning" 
+                    ng-click="stopServingTiles(layer)">Stop Server</button>
+            <button ng-show="! layer.model.server.isRunning" 
+                    ng-click="serveTiles(layer)">Start Server</button>
           </div>
           <br/>
         </div>

@@ -18,7 +18,7 @@ button {
     cursor: pointer;
     outline: 0;
 }
-button:active {
+button:active, .active-button {
     outline: 0;
     background: #eca;
 }
@@ -60,7 +60,7 @@ a {
     background-color: red;
     z-index: 110;
 }
-.container #loading {
+.container .loading {
     padding: 10px;
     font-size: 16px;
     position: absolute;
@@ -70,6 +70,20 @@ a {
     left: 50%;
     top: 40%;
     margin-left: -100px;
+}
+.container .server-popup {
+    padding: 10px;
+    font-size: 16px;
+    position: absolute;
+    z-index: 120;
+    text-align: center;
+    width: 400px;
+    left: 50%;
+    top: 40%;
+    margin-left: -200px;
+}
+.container .server-popup input {
+    font-size: 16px;
 }
 .container #watermodel {
     position: absolute;
@@ -93,7 +107,7 @@ a {
 }
 .container .editor {
     position: absolute;
-    top: 10; right: 230;
+    top: 10; right: 280;
     width: 400px;
     z-index: 120;
 }
@@ -131,7 +145,7 @@ a {
 .container .layers {
     position: absolute;
     top: 10; right: 10;
-    min-width: 200px;
+    min-width: 250px;
     z-index: 120;
 }
 .container .layers label {
@@ -174,6 +188,10 @@ hr {
     margin-left: 20px;
     display: inline-block;
     margin-bottom: 5px;
+}
+
+.container .layers .layer-container .action-buttons button {
+    font-size: 12px;
 }
 
 .container .transfer-function-test {

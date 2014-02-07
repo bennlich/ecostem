@@ -5,55 +5,10 @@ function ModelTileRenderer(map, model, renderer, firebased) {
     this.model = model;
     this.patchRenderer = renderer;
     this.canvasLayer = null;
-    this.handlers = {};
-    this.firebased = firebased;
-    this.fb = new Firebase("https://simtable.firebaseio.com/nnmc/livetiles");
-
-    if (this.firebased) {
-        this.fb.child('listen').on('value', function(data) {
-            this.handleTileRequest(data.val());
-        }.bind(this));
-
-        this.fb.child('stopListening').on('value', function(data) {
-            var zxy = data.val();
-
-            if (!zxy)
-                return;
-
-            delete this.handlers[zxy];
-
-            this.model.clearCallbacks2(zxy);
-            this.fb.child(zxy).remove();
-        }.bind(this));
-    }
 }
 
 ModelTileRenderer.prototype = {
-    handleTileRequest: function(fbHandle) {
-        var zxy = fbHandle.split('_'),
-            z = zxy[0], x = zxy[1], y = zxy[2];
-
-        if (this.handlers[fbHandle]) {
-            return;
-        }
-
-        var canvas = document.createElement('canvas');
-        canvas.width = 256;
-        canvas.height = 256;
-
-        var renderStep = this._drawTile(canvas, x, y, z);
-
-        if (renderStep) {
-            this.handlers[fbHandle] = true;
-
-            this.model.onChange2(fbHandle, function(world) {
-                renderStep(world);
-                this.fb.child(fbHandle).set(canvas.toDataURL());
-            }.bind(this));
-        }
-    },
-
-    _drawTile: function(canvas, x, y, zoom) {
+    getDrawTileClosure: function(canvas, x, y, zoom) {
         var ctx = canvas.getContext('2d');
 
         // absolute pixel coordinates of top-left corner of tile
@@ -146,7 +101,7 @@ ModelTileRenderer.prototype = {
         this.canvasLayer = L.tileLayer.canvas(layerOpts);
 
         this.canvasLayer.drawTile = function(canvas, tilePoint, zoom) {
-            var renderStep = this._drawTile(canvas, tilePoint.x, tilePoint.y, zoom);
+            var renderStep = this.getDrawTileClosure(canvas, tilePoint.x, tilePoint.y, zoom);
             this.model.onChange(renderStep);
         }.bind(this);
 

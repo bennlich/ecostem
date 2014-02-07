@@ -26,22 +26,55 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
     };
 
     $scope.startSimulation = function(layer) {
-        var model = layer.tileRenderer.model;
+        var model = layer.model.dataModel;
         model.sampleElevation(elevationSampler);
         model.start();
     };
 
     $scope.resetSimulation = function(layer) {
-        var model = layer.tileRenderer.model;
+        var model = layer.model.dataModel;
         $scope.pauseSimulation(layer);
         model.reset();
     };
 
     $scope.pauseSimulation = function(layer) {
-        var model = layer.tileRenderer.model;
+        var model = layer.model.dataModel;
         $scope.simulationStarted = false;
         model.stop();
     };
+
+    /*
+     * Serving a layer.
+     */
+
+    $scope.serveTiles = function(layer) {
+        $scope.serverLayer = layer;
+        $scope.serverLayerName = layer.name;
+        $scope.serverPopupIsOpen = true;
+    };
+
+    $scope.startServer = function() {
+        if ($scope.serverLayerName && $scope.serverLayer) {
+            $scope.serverLayer.model.server.start($scope.serverLayerName);
+            $scope.initStartServer();
+        } 
+    };
+
+    $scope.initStartServer = function() {
+        $scope.serverLayer = null;
+        $scope.serverLayerName = "";
+        $scope.serverPopupIsOpen = false;
+    };
+
+    $scope.stopServingTiles = function(layer) {
+        layer.model.server.stop();
+    };
+
+    $scope.initStartServer();
+
+    /* 
+     * Drawing on/editing layers.
+     */
 
     $scope.editedLayer = null;
     $scope.scaleValue = {};
@@ -50,13 +83,21 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
     // put data on the map at that location
     $scope.drawAt = function(point) {
         if ($scope.editedLayer) {
-            $scope.editedLayer.tileRenderer.putData(point, $scope.selectedBrushSize, $scope.scaleValue.value);
+            $scope.editedLayer.model.renderer.putData(point, $scope.selectedBrushSize, $scope.scaleValue.value);
         }
     };
 
     $scope.editDataLayer = function(layer) {
+        var editedLayer = $scope.editedLayer;
+
         if ($scope.editedLayer) {
             $scope.doneEditingDataLayer();
+        }
+
+        // if clicking "Edit" on the currently edited layer,
+        // just stop editing
+        if (editedLayer === layer) {
+            return;
         }
 
         if (!layer.on) {
@@ -67,7 +108,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
         layer.editing = true;
 
         $scope.editedLayer = layer;
-        $scope.scaleValue = layer.tileRenderer.patchRenderer.scale[0];
+        $scope.scaleValue = layer.model.renderer.patchRenderer.scale[0];
     };
 
     $scope.doneEditingDataLayer = function() {

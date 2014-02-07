@@ -1,7 +1,7 @@
 'use strict';
 
 function VegetationModel(xs, ys, fixedGeometryWidth) {
-    DataModel.call(this, xs, ys);
+    DataModel.call(this, xs, ys, fixedGeometryWidth);
     this.reset();
 }
 

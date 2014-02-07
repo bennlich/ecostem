@@ -74,19 +74,11 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
         init: function(id) {
             map = this;
 
-            this.leafletMap = new L.Map(id,{
-                zoomControl: false, 
-                zoomAnimation: false,
-                minZoom: 3, 
-                maxZoom: 15
-            });
+            this.leafletMap = new L.Map(id,{ minZoom: 3, maxZoom: 15 });
 
             this.leafletMap.setView(new L.LatLng(35.68832407198268, -105.91811656951903), 12);
 
             L.control.scale().addTo(this.leafletMap);
-
-            this._zoomControl = L.control.zoom();
-            this.addControls();
 
             this.scenarioBBox = this.createScenarioBBox();
             this.addBBoxPolygon(this.scenarioBBox.bbox);
@@ -190,15 +182,6 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
             this.bboxCallback = callback;
         },
 
-        /* add/remove zoom; the map is "disabled" during simulations */
-        removeControls: function() {
-            this._zoomControl.removeFrom(this.leafletMap);
-        },
-
-        addControls: function() {
-            this._zoomControl.addTo(this.leafletMap);
-        },
-
         /* tile urls */
         _osmUrl: function() {
             return 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -282,36 +265,19 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
         /* editable data layers */
         _makeDataLayers: function() {
-            var waterModel = new WaterModel(256, 160, 1024);
-            var firemodel = new FireSeverityModel(512, 320, 1024);
-            var vegModel = new VegetationModel(512, 320, 1024);
+            var modelSet = new ModelSet(map);
 
-            var fireLayer = new ModelTileRenderer(this, firemodel, FirePatchRenderer);
-            var waterLayer = new ModelTileRenderer(this, waterModel, WaterPatchRenderer, true);
-            var vegLayer = new ModelTileRenderer(this, vegModel, VegetationPatchRenderer);
-
-            return [{
-                on: false,
-                disabled: false,
-                tileRenderer: fireLayer,
-                editing: false,
-                name: 'Fire Severity',
-                leafletLayer: fireLayer.makeLayer({zIndex: 12})
-            }, {
-                on: false,
-                disabled: false,
-                tileRenderer: vegLayer,
-                editing: false,
-                name: 'Vegetation',
-                leafletLayer: vegLayer.makeLayer({zIndex: 13})
-            }, {
-                on: false,
-                disabled: false,
-                tileRenderer: waterLayer,
-                editing: false,
-                name: 'Water Model',
-                leafletLayer: waterLayer.makeLayer({zIndex: 14})
-            }];
+            var zIndex = 12;
+            return _.map(modelSet.models, function(model) {
+                return {
+                    name: model.name,
+                    model: model,
+                    on: false,
+                    disabled: false,
+                    editing: false,
+                    leafletLayer: model.renderer.makeLayer({zIndex: zIndex++})
+                };
+            });
         }
     };
 }]);

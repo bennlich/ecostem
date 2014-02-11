@@ -14,6 +14,9 @@ function DataModel(xs, ys, fixedGeometryWidth, modelSet) {
         active: 80
     };
 
+    this.quadtree = d3.geom.quadtree()
+        .extent([[0, 0], [this.xSize, this.ySize]])([]);
+
     this.run();
 }
 
@@ -49,6 +52,7 @@ DataModel.prototype = {
                 for (var key in obj) {
                     this.world[i][j][key] = obj[key];
                 }
+                this.quadtree.add([i, j]);
             }
         }
     },

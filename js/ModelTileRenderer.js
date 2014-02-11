@@ -18,7 +18,7 @@ ModelTileRenderer.prototype = {
         var canvasRect = new Rect(tileX, tileY, canvas.width, canvas.height);
         var scenarioRect = this.map.scenarioBBox.toRect(zoom);
 
-        // the sub-rectangle of the canvas that intersects the scenario
+        // the rectangular area of canvas that intersects the scenario
         var intersection = canvasRect.intersect(scenarioRect);
 
         if (intersection == null) {
@@ -33,37 +33,63 @@ ModelTileRenderer.prototype = {
         // scenario width / number of cells in the x dimension
         var patchSize = scenarioRect.width / this.model.xSize;
 
-        if (paintSize < patchSize)
+        // if (paintSize < patchSize)
             paintSize = patchSize;
 
         // number of objects to skip while iterating
         var skip = paintSize / patchSize;
 
-        // the offset of the intersection's top-left corner relative to
-        // the scenario top-left corner
-        var offsetX = Math.abs(scenarioRect.left - intersection.left);
-        var offsetY = Math.abs(scenarioRect.top - intersection.top);
+        // top-left corner of the intersection
+        // relative to the top-left corner of the scenario in pixels
+        var offsetX = Math.abs(scenarioRect.left - intersection.left); // in range [0, scenarioRect.width]
+        var offsetY = Math.abs(scenarioRect.top - intersection.top); // in range [0, scenarioRect.height]
 
-        // top-left corner of the world relevant to this tile
-        var startX = Math.floor(offsetX / patchSize);
-        var startY = Math.floor(offsetY / patchSize);
-        // where to stop drawing patches (exclusive)
-        var endX = Math.floor((offsetX + intersection.width)/patchSize)+1;
-        var endY = Math.floor((offsetY + intersection.height)/patchSize)+1;
+        // top-left corner of the intersection in world coordinates
+        var startWorldX = Math.floor(offsetX / patchSize); // in range [0, model.xSize]
+        var startWorldY = Math.floor(offsetY / patchSize); // in range [0, model.ySize]
+        
+        // 1 patch beyond the bottom-right corner of the intersection in world coordinates
+        var endX = Math.floor((offsetX + intersection.width)/patchSize)+1; // in range [0, model.xSize+1]
+        var endY = Math.floor((offsetY + intersection.height)/patchSize)+1; // in range [0, model.ySize+1]
 
-        // min-x and min-y pixel positions where to begin drawing patches
+        // pixel coordinates of the top-left patch for this tile
         var drawStartX = intersection.left - tileX - (offsetX % paintSize);
         var drawStartY = intersection.top - tileY - (offsetY % paintSize);
+
+        function worldToPixel(worldCoord) {
+            return [
+                drawStartX + Math.floor(worldCoord[0]-startWorldX)*paintSize,
+                drawStartY + Math.floor(worldCoord[1]-startWorldY)*paintSize
+            ];
+        }
 
         var renderStep = function(world) {
             ctx.clearRect(0,0,canvas.width,canvas.height);
 
-            for (var i = startX, p = drawStartX; i < endX; i += skip, p += paintSize) {
-                for (var j = startY, k = drawStartY; j < endY; j += skip, k += paintSize) {
-                    var intI = Math.floor(i);
-                    var intJ = Math.floor(j);
+            this.model.quadtree.visit(function(node, x1, y1, x2, y2) {
+                if (node.filled) {
+                    ctx.fillStyle = 'rgb(0,0,0)';
+                    if (node.leaf && node.point) {
+                        var pixelTopLeft = worldToPixel(node.point);
+                        ctx.fillRect(pixelTopLeft[0], pixelTopLeft[1], paintSize, paintSize);
+                    }
+                    else {
+                        var pixelTopLeft = worldToPixel([x1, y1]);
+                        var pixelBottomRight = worldToPixel([x2, y2]);
+                        var drawWidth = pixelBottomRight[0] - pixelTopLeft[0];
+                        var drawHeight = pixelBottomRight[1] - pixelTopLeft[1];
+                        ctx.fillRect(pixelTopLeft[0], pixelTopLeft[1], drawWidth, drawHeight);
+                    }
+                    return true;
+                }
+            });
 
-                    this.patchRenderer.render(ctx, world, intI, intJ, p, k, paintSize, paintSize);
+            for (var worldX = startWorldX, p = drawStartX; worldX < endX; worldX += skip, p += paintSize) {
+                for (var worldY = startWorldY, k = drawStartY; worldY < endY; worldY += skip, k += paintSize) {
+                    var intWorldX = Math.floor(worldX);
+                    var intWorldY = Math.floor(worldY);
+
+                    this.patchRenderer.render(ctx, world, intWorldX, intWorldY, p, k, paintSize, paintSize);
                 }
             }
 
@@ -71,8 +97,8 @@ ModelTileRenderer.prototype = {
             // console.log(imageData);
 
             // this shows the tile boundaries
-            // ctx.strokeStyle = '#888';
-            // ctx.strokeRect(0,0,canvas.width,canvas.height);
+            ctx.strokeStyle = '#888';
+            ctx.strokeRect(0,0,canvas.width,canvas.height);
         }.bind(this);
 
         return renderStep;

@@ -24,7 +24,7 @@ DataModel.prototype = {
         for (var i = 0; i < this.xSize; ++i) {
             world[i] = new Array(this.ySize);
             for (var j = 0; j < this.ySize; ++j) {
-                world[i][j] = {};
+                world[i][j] = { x: i, y: j };
                 /* make sure we make a copy of the default value */
                 _.extend(world[i][j], defaultValue);
             }

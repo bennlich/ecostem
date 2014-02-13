@@ -63,6 +63,11 @@
       <div id="quad" ng-show="showQuad">
         <canvas id="quadCanvas"/>
       </div>
+      <div id="slope" ng-show="showSlope">
+        <canvas id="slopeCanvas1"></canvas>
+        <canvas id="slopeCanvas2"></canvas>
+        <canvas id="slopeCanvas3"></canvas>
+      </div>
       <div class="editor uibox" ng-show="editedLayer">
         <div class="header">
           Editing {{editedLayer.name}}
@@ -127,6 +132,12 @@
             <span ng-show="!showQuad">Show Quad</span>
             <span ng-show="showQuad">Hide Quad</span>
           </a>
+          <br/>
+          <a ng-click="toggleSlope()" ng-show="elevationLoaded && map.dataLayers[2].model.dataModel.patchHeights.data.length > 0">
+            <span ng-show="!showSlope">Show Slopes</span>
+            <span ng-show="showSlope">Hide Slopes</span>
+          </a>
+          <br/>
         </div>
       </div>
       <div class="uibox transfer-function-test" ng-show="false">

@@ -13,6 +13,8 @@ function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
     this.isAnimated = true;
     this.elevationSampled = false;
 
+    this.patchHeights = new ABM.DataSet();
+
     this.reset();
 }
 
@@ -35,11 +37,19 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
         if (this.elevationSampled)
             return;
 
+        this.patchHeights.reset(this.xSize, this.ySize, new Array(this.xSize*this.ySize));
+
         for (var i = 0; i < this.xSize; ++i) {
             for (var j = 0; j < this.ySize; ++j) {
-                this.world[i][j].elevation = this.sampleElevationXY(sampler, i,j);
+                var curPatch = this.world[i][j];
+                curPatch.elevation = this.sampleElevationXY(sampler, i,j);
+                this.patchHeights.setXY(i,j, curPatch.elevation + curPatch.volume);
             }
         }
+
+        var slopeAndAspect = this.patchHeights.slopeAndAspect();
+        this.patchHeightsSlope = slopeAndAspect.slope;
+        this.patchHeightsAspect = slopeAndAspect.aspect;
 
         this.elevationSampled = true;
     },
@@ -74,8 +84,55 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
 
                 patch.volume -= transferVolume;
                 minNeighbor.volume += transferVolume;
+
+                if (transferVolume != 0) {
+                    // update patchHeights
+                    this.patchHeights.setXY(patch.x, patch.y, patch.elevation+patch.volume);
+                    this.patchHeights.setXY(minNeighbor.x, minNeighbor.y, minNeighbor.elevation+minNeighbor.volume);
+
+                    this.updateSlopeAndAspect(patch.x, patch.y);
+                    this.updateSlopeAndAspect(minNeighbor.x, minNeighbor.y);
+                }
+
             }
         }
+    },
+
+    updateSlopeAndAspect: function(x, y) {
+        // recalculate local slope and aspect around the current patch
+        var kernelSize = 3,
+            kernelRadius = Math.floor(kernelSize/2),
+            subsetSize = kernelSize + 2*kernelRadius;
+        
+        var clamp = ABM.util.clamp;
+
+        var subsetX = clamp(x-2*kernelRadius, 0, this.xSize-subsetSize),
+            subsetY = clamp(y-2*kernelRadius, 0, this.ySize-subsetSize),
+            subset = this.patchHeights.subset(subsetX, subsetY, subsetSize, subsetSize);
+
+        var subsetSlopeAndAspect = subset.slopeAndAspect(),
+            subsetSlope = subsetSlopeAndAspect.slope,
+            subsetAspect = subsetSlopeAndAspect.aspect;
+
+        var iiStart = clamp(x-kernelRadius, 0, this.xSize-1),
+            iiEnd = clamp(x+kernelRadius, 0, this.xSize-1),
+            jjStart = clamp(y-kernelRadius, 0, this.ySize-1),
+            jjEnd = clamp(y+kernelRadius, 0, this.ySize-1);
+
+        for (var ii = iiStart, iiSubset = 1; ii <= iiEnd; ++ii, ++iiSubset) {
+            for (var jj = jjStart, jjSubset = 1; jj <= jjEnd; ++jj, ++jjSubset) {
+                this.patchHeightsSlope.setXY(ii, jj, subsetSlope.getXY(iiSubset, jjSubset));
+                this.patchHeightsAspect.setXY(ii, jj, subsetAspect.getXY(iiSubset, jjSubset));
+            }
+        }
+    },
+
+    getSlope: function() {
+        return this.patchHeightsSlope;
+    },
+
+    calculateSlope: function() {
+        return this.patchHeights.slopeAndAspect().slope;
     }
 });
 

@@ -10,7 +10,7 @@ Ecostem.run(['$rootScope', function($rootScope) {
     console.log('Ecostem is running.');
 }]);
 
-var elevationToDroplets;
+var elevationToDroplets, curSlope, calculatedSlope, slopeDiff;
 
 Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', function($scope, $q, map, elevationSampler) {
     $scope.simulationStarted = false;
@@ -116,6 +116,41 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
         $scope.editedLayer.editing = false;
         $scope.editedLayer = null;
     };
+
+    $scope.toggleSlope = function() {
+        if ($scope.showSlope) {
+            $scope.showSlope = false;
+        }
+        else {
+            var waterModel = $scope.map.dataLayers[2].model.dataModel;
+            curSlope = waterModel.getSlope();
+            calculatedSlope = waterModel.calculateSlope();
+            
+            var curSlopeImage = curSlope.toImage(),
+                calculatedSlopeImage = calculatedSlope.toImage();
+
+
+            var slopeDiffData = [];
+            for (var i = 0; i < curSlope.data.length; i++) {
+                slopeDiffData.push(curSlope.data[i] - calculatedSlope.data[i]);
+            }
+            slopeDiff = new ABM.DataSet(curSlopeImage.width, curSlopeImage.height, slopeDiffData);
+            var slopeDiffImage = slopeDiff.toImage();
+
+            var slopeCanvas1 = document.getElementById('slopeCanvas1'),
+                slopeCanvas2 = document.getElementById('slopeCanvas2'),
+                slopeCanvas3 = document.getElementById('slopeCanvas3');
+
+            slopeCanvas1.width = slopeCanvas2.width = slopeCanvas3.width = 2*curSlopeImage.width;
+            slopeCanvas1.height = slopeCanvas2.height = slopeCanvas3.height = 2*curSlopeImage.height;
+            
+            slopeCanvas1.getContext('2d').drawImage(curSlopeImage, 0, 0, slopeCanvas1.width, slopeCanvas1.height);
+            slopeCanvas2.getContext('2d').drawImage(calculatedSlopeImage, 0, 0, slopeCanvas1.width, slopeCanvas1.height);
+            slopeCanvas3.getContext('2d').drawImage(slopeDiffImage, 0, 0, slopeCanvas1.width, slopeCanvas1.height);
+
+            $scope.showSlope = true;
+        }
+    }
 
     elevationToDroplets = $scope.elevationToDroplets =
         new TransferFunction([0, 200], 'm', [0, 400], 'droplets / m^2', 'Rainfall vs. elevation');

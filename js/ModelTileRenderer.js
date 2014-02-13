@@ -18,7 +18,7 @@ ModelTileRenderer.prototype = {
         var canvasRect = new Rect(tileX, tileY, canvas.width, canvas.height);
         var scenarioRect = this.map.scenarioBBox.toRect(zoom);
 
-        // the sub-rectangle of the canvas that intersects the scenario
+        // the rectangular area of canvas tile that intersects the scenario
         var intersection = canvasRect.intersect(scenarioRect);
 
         if (intersection == null) {
@@ -26,44 +26,45 @@ ModelTileRenderer.prototype = {
             return null;
         }
 
-        // size of patches to render visually
-        var paintSize = 8;
-
-        // patch size relative to the bounding box:
-        // scenario width / number of cells in the x dimension
+        // size of a patch in pixels at current zoom
         var patchSize = scenarioRect.width / this.model.xSize;
 
+        // minimum size of brush, in pixels (i.e. finest resolution at which to render patches)
+        // (really only used when rendering multiple patches in a single brushstroke)
+        var paintSize = 8;
+
         if (paintSize < patchSize)
-            paintSize = patchSize;
+            paintSize = patchSize; // every patch rendered as its own square
 
-        // number of objects to skip while iterating
-        var skip = paintSize / patchSize;
+        var patchesPerBrush = paintSize / patchSize;
 
-        // the offset of the intersection's top-left corner relative to
-        // the scenario top-left corner
-        var offsetX = Math.abs(scenarioRect.left - intersection.left);
-        var offsetY = Math.abs(scenarioRect.top - intersection.top);
+        // top-left corner of the intersection, relative to 
+        // the top-left corner of the scenario, in pixels
+        var intersectionX = Math.abs(scenarioRect.left - intersection.left); // in range [0, scenarioRect.width]
+        var intersectionY = Math.abs(scenarioRect.top - intersection.top); // in range [0, scenarioRect.height]
 
-        // top-left corner of the world relevant to this tile
-        var startX = Math.floor(offsetX / patchSize);
-        var startY = Math.floor(offsetY / patchSize);
-        // where to stop drawing patches (exclusive)
-        var endX = Math.floor((offsetX + intersection.width)/patchSize)+1;
-        var endY = Math.floor((offsetY + intersection.height)/patchSize)+1;
+        // same as above, in world coordinates
+        var startWorldX = Math.floor(intersectionX / patchSize); // in range [0, model.xSize]
+        var startWorldY = Math.floor(intersectionY / patchSize); // in range [0, model.ySize]
 
-        // min-x and min-y pixel positions where to begin drawing patches
-        var drawStartX = intersection.left - tileX - (offsetX % paintSize);
-        var drawStartY = intersection.top - tileY - (offsetY % paintSize);
+        // 1 patch beyond the bottom-right corner of the intersection, in world coordinates
+        var endWorldX = Math.floor((intersectionX + intersection.width)/patchSize)+1; // in range [0, model.xSize+1]
+        var endWorldY = Math.floor((intersectionY + intersection.height)/patchSize)+1; // in range [0, model.ySize+1]
+
+        // coordinates of the top-left patch in this tile, relative to
+        // the top-left corner of the tile, in pixels
+        var drawStartX = intersection.left - tileX - (intersectionX % paintSize);
+        var drawStartY = intersection.top - tileY - (intersectionY % paintSize);
 
         var renderStep = function(world) {
             ctx.clearRect(0,0,canvas.width,canvas.height);
 
-            for (var i = startX, p = drawStartX; i < endX; i += skip, p += paintSize) {
-                for (var j = startY, k = drawStartY; j < endY; j += skip, k += paintSize) {
-                    var intI = Math.floor(i);
-                    var intJ = Math.floor(j);
+            for (var worldX = startWorldX, p = drawStartX; worldX < endWorldX; worldX += patchesPerBrush, p += paintSize) {
+                for (var worldY = startWorldY, k = drawStartY; worldY < endWorldY; worldY += patchesPerBrush, k += paintSize) {
+                    var intWorldX = Math.floor(worldX);
+                    var intWorldY = Math.floor(worldY);
 
-                    this.patchRenderer.render(ctx, world, intI, intJ, p, k, paintSize, paintSize);
+                    this.patchRenderer.render(ctx, world, intWorldX, intWorldY, p, k, paintSize, paintSize);
                 }
             }
 

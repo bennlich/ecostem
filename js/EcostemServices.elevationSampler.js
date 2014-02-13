@@ -1,5 +1,78 @@
 'use strict';
 
+var LocalStorage = {
+    filer: new Filer(),
+
+    filerOnError: function(e) {
+        console.log('Error');
+        console.log('Filer Error: ', e.name);
+    },
+
+    initialized: function(callback) {
+        var filer = this.filer,
+            filerOnError = this.filerOnError;
+
+        filer.init({persistent: false, size: 1024*1024*20}, function(fs) {
+            callback(filer);
+        }, filerOnError);
+    },
+
+    withDir: function(dir, callback) {
+        var filerOnError = this.filerOnError;
+
+        this.initialized(function(filer) {
+            filer.ls(dir, function() {
+                console.log('found dir', dir);
+                callback(dir);
+            }, function() {
+                console.log('creating dir', dir);
+                filer.mkdir(dir);
+                callback(dir);
+            });
+        });
+    },
+
+    dirGetFile: function(dir, fileName, successCallback, notFoundCallback) {
+        this.initialized(function(filer) {
+            filer.ls(dir, function(contents) {
+                var cachedFile = _.find(contents, function(c) {
+                    return c.isFile && c.name === fileName;
+                });
+                
+                if (cachedFile) {
+                    console.log('found file', dir, cachedFile.name);
+                    successCallback(cachedFile);
+                } else {
+                    console.log('file not found', dir, fileName);
+                    notFoundCallback();
+                }
+            });
+        });
+    },
+
+    readFileAsByteArray: function(fileObj, callback) {
+        var filerOnError = this.filerOnError;
+
+        this.initialized(function(filer) {
+            filer.open(fileObj.fullPath, function(file) {
+                var reader = new FileReader();
+                reader.onload = function(data) {
+                    callback(new Uint8Array(reader.result));
+                };
+                reader.readAsArrayBuffer(file);
+            }, filerOnError);
+        });
+    },
+
+    writeFile: function(filePath, data, callback) {
+        var filerOnError = filerOnError;
+
+        this.initialized(function(filer) {
+            filer.write(filePath, {data: data}, callback);
+        }, filerOnError);
+    }
+};
+
 EcostemServices.service('elevationSampler', ['$rootScope', '$q', function($rootScope, $q) {
     return {
         deferred: $q.defer(),
@@ -9,6 +82,7 @@ EcostemServices.service('elevationSampler', ['$rootScope', '$q', function($rootS
         imageData: null,
         width: 0,
         fixedScenarioWidth: 1024,
+        elevationCacheDir: '/elevation_cache',
 
         init: function(canvas) {
             this.canvas = canvas;
@@ -22,6 +96,31 @@ EcostemServices.service('elevationSampler', ['$rootScope', '$q', function($rootS
             return this.imageData != null;
         },
 
+        _bboxToString: function(bbox) {
+            return '{s}_{w}_{n}_{e}'.namedFormat({
+                s : bbox.getSouth(),
+                w : bbox.getWest(),
+                n : bbox.getNorth(),
+                e : bbox.getEast()
+            });
+        },
+
+        _getCachedElevation: function(bbox, successCb, notFoundCb) {
+            var bboxString = this._bboxToString(bbox);
+            LocalStorage.withDir(this.elevationCacheDir, function(dir) {
+                LocalStorage.dirGetFile(dir, bboxString, function(fileObj) {
+                    LocalStorage.readFileAsByteArray(fileObj, successCb);
+                }, notFoundCb);
+            });
+        },
+
+        _putCachedElevation :function(bbox, data) {
+            var bboxString = this._bboxToString(bbox);
+            LocalStorage.withDir(this.elevationCacheDir, function(dir) {
+                LocalStorage.writeFile('{0}/{1}'.format(dir, bboxString), data);
+            });
+        },
+
         /* Loads elevation data for the current map bounds. Downloads the
          * elevation image and writes it into a canvas. The canvas is used
          * for pixel-level access into the image, as well as for optionally
@@ -31,32 +130,55 @@ EcostemServices.service('elevationSampler', ['$rootScope', '$q', function($rootS
             var img = new Image();
             var height = Math.floor(scenario.pixelHeight() * this.width/scenario.pixelWidth());
 
-            img.crossOrigin = '';
+            this.canvas.width = this.width;
+            this.canvas.height = height;
 
-            img.onload = function() {
-                this.canvas.width = this.width;
-                this.canvas.height = height;
+            this._getCachedElevation(scenario.bbox, function(data) {
+                /* cached data was found */
 
-                this.ctx.drawImage(img, 0, 0);
+                var imageData = this.ctx.createImageData(this.canvas.width, this.canvas.height);
 
-                this.imageData = this.ctx.getImageData(0, 0, this.width, height).data;
+                _.each(data, function(d, idx) {
+                    imageData.data[idx] = d;
+                });
+
+                this.imageData = data;
+                this.ctx.putImageData(imageData, 0, 0);
 
                 computeQuad(this);
 
                 if (typeof callback === 'function') {
                     $rootScope.$apply(callback);
                 }
-            }.bind(this);
+            }.bind(this), function() {
+                /* cached data was not found. We have to hit the server. */
 
-            img.src = this.elevationServer.namedFormat({
-                s : scenario.bbox.getSouth(),
-                w : scenario.bbox.getWest(),
-                n : scenario.bbox.getNorth(),
-                e : scenario.bbox.getEast(),
-                width: this.width,
-                height: height
-            });
+                img.crossOrigin = '';
 
+                img.onload = function() {
+                    this.ctx.drawImage(img, 0, 0);
+
+                    this.imageData = this.ctx.getImageData(0, 0, this.width, height).data;
+
+                    /* cache the elevation */
+                    this._putCachedElevation(scenario.bbox, this.imageData);
+
+                    computeQuad(this);
+
+                    if (typeof callback === 'function') {
+                        $rootScope.$apply(callback);
+                    }
+                }.bind(this);
+
+                img.src = this.elevationServer.namedFormat({
+                    s : scenario.bbox.getSouth(),
+                    w : scenario.bbox.getWest(),
+                    n : scenario.bbox.getNorth(),
+                    e : scenario.bbox.getEast(),
+                    width: this.width,
+                    height: height
+                });
+            }.bind(this));
         },
 
         /* Gives the elevation value at a given pixel. The value is

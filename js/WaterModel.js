@@ -108,7 +108,9 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
 
         var subsetX = clamp(x-2*kernelRadius, 0, this.xSize-subsetSize),
             subsetY = clamp(y-2*kernelRadius, 0, this.ySize-subsetSize),
-            subset = this.patchHeights.subset(subsetX, subsetY, subsetSize, subsetSize);
+            subset = this.patchHeights.subset(subsetX, subsetY, subsetSize, subsetSize),
+            subsetStartX = (x-2*kernelRadius < 0) ? 0 : 1,
+            subsetStartY = (y-2*kernelRadius < 0) ? 0 : 1;
 
         var subsetSlopeAndAspect = subset.slopeAndAspect(),
             subsetSlope = subsetSlopeAndAspect.slope,
@@ -119,8 +121,8 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
             jjStart = clamp(y-kernelRadius, 0, this.ySize-1),
             jjEnd = clamp(y+kernelRadius, 0, this.ySize-1);
 
-        for (var ii = iiStart, iiSubset = 1; ii <= iiEnd; ++ii, ++iiSubset) {
-            for (var jj = jjStart, jjSubset = 1; jj <= jjEnd; ++jj, ++jjSubset) {
+        for (var ii = iiStart, iiSubset = subsetStartX; ii <= iiEnd; ++ii, ++iiSubset) {
+            for (var jj = jjStart, jjSubset = subsetStartY; jj <= jjEnd; ++jj, ++jjSubset) {
                 this.patchHeightsSlope.setXY(ii, jj, subsetSlope.getXY(iiSubset, jjSubset));
                 this.patchHeightsAspect.setXY(ii, jj, subsetAspect.getXY(iiSubset, jjSubset));
             }

@@ -31,7 +31,7 @@ ModelTileRenderer.prototype = {
 
         // minimum size of brush, in pixels (i.e. finest resolution at which to render patches)
         // (really only used when rendering multiple patches in a single brushstroke)
-        var paintSize = 8;
+        var paintSize = patchSize;
 
         if (paintSize < patchSize)
             paintSize = patchSize; // every patch rendered as its own square

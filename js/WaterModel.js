@@ -85,6 +85,7 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
                 patch.volume -= transferVolume;
                 minNeighbor.volume += transferVolume;
 
+                /*
                 if (transferVolume != 0) {
                     // update patchHeights
                     this.patchHeights.setXY(patch.x, patch.y, patch.elevation+patch.volume);
@@ -93,7 +94,7 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
                     this.updateSlopeAndAspect(patch.x, patch.y);
                     this.updateSlopeAndAspect(minNeighbor.x, minNeighbor.y);
                 }
-
+                */
             }
         }
     },

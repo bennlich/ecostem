@@ -19,6 +19,31 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
     $scope.elevationIsLoading = false;
     $scope.map = map;
 
+    $scope.draw = function() {
+        var modelSet = map.modelSet;
+        var m = modelSet.getDataModel('Vegetation');
+        var water = modelSet.getDataModel('Water Model');
+
+        for (var i = 0; i < m.xSize; ++i) {
+            for (var j = 0; j < m.ySize; ++j) {
+                /* hacky way to sample elevation by sampling the water layer */
+                var waterPatch = modelSet.sample(i, j, m, water);
+
+                if (waterPatch.elevation > 2300 && waterPatch.elevation < 2500) {
+                    if (Math.random() > 0.5) {
+                        m.putData(i, j, 1, 1, {vegetation: VegetationModel.vegTypes.GRASS});
+                    }
+                } 
+
+                if (waterPatch.elevation > 2200 && waterPatch.elevation < 2300) {
+                    if (Math.random() > 0.3) {
+                        m.putData(i, j, 1, 1, {vegetation: VegetationModel.vegTypes.STEPPE});
+                    }
+                } 
+            }
+        }
+    };
+
     $scope.brushSizes = [40, 30, 20, 10];
     $scope.selectedBrushSize = $scope.brushSizes[0];
     $scope.selectBrushSize = function(s) {

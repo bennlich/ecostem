@@ -138,14 +138,19 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
 });
 
 var WaterPatchRenderer = function() {
-    var colorMap = _.map(_.range(0,21), function(num) {
-        return 'rgba(40,105,186,{0})'.format(num/20);
-    });
+    var colorMap = Gradient.multiGradient(
+        '#9cf', 
+        [{color: '#137', steps: 15}, 
+         {color: '#123', steps: 5}]
+    );
+
+    var maxVolume = 30;
+    var step = colorMap.length / maxVolume;
 
     function getColor(volume) {
-        var idx = Math.floor(volume*2);
-        if (idx > 19)
-            idx = 19;
+        var idx = Math.floor(volume * step);
+        if (idx >= colorMap.length)
+            idx = colorMap.length-1;
         return colorMap[idx];
     }
 
@@ -158,7 +163,7 @@ var WaterPatchRenderer = function() {
 
         if (patch.volume > 0) {
             ctx.fillStyle = getColor(patch.volume);
-            ctx.fillRect(drawX, drawY, drawWidth, drawHeight);
+            ctx.fillRect(Math.floor(drawX), Math.floor(drawY), Math.ceil(drawWidth), Math.ceil(drawHeight));
         }
     }
 

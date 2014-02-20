@@ -76,12 +76,17 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
             this.leafletMap = new L.Map(id,{ minZoom: 3, maxZoom: 15 });
 
-            this.leafletMap.setView(new L.LatLng(35.68832407198268, -105.91811656951903), 12);
-
             L.control.scale().addTo(this.leafletMap);
 
             this.scenarioBBox = this.createScenarioBBox();
             this.addBBoxPolygon(this.scenarioBBox.bbox);
+
+            var bbox = this.scenarioBBox.bbox;
+
+            var centerLat = bbox.getSouthWest().lat + (bbox.getNorthEast().lat - bbox.getSouthWest().lat)/2;
+            var centerLng = bbox.getSouthWest().lng - (bbox.getSouthWest().lng - bbox.getNorthEast().lng)/2;
+
+            this.leafletMap.setView(new L.LatLng(centerLat, centerLng), 11);
 
             this.baseLayers = this._makeBaseLayers();
             this.setBaseLayer(this.baseLayers[3]);
@@ -118,10 +123,10 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
         /* creates a hardcoded bbox for now */
         createScenarioBBox: function() {
-            var south = 35.624512193132595,
-                west = -106.03282928466797,
-                north = 35.75403529302012,
-                east = -105.77739715576172;
+            var south = 36.29852498935906,
+                west = -105.85052490234375,
+                north = 36.558187766360675,
+                east = -105.41656494140625;
 
             var bounds = L.latLngBounds(
                 new L.LatLng(south, west),
@@ -265,7 +270,9 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
         /* editable data layers */
         _makeDataLayers: function() {
-            this.modelSet = new ModelSet(map);
+            var ratio = this.scenarioBBox.pixelHeight() / this.scenarioBBox.pixelWidth();
+
+            this.modelSet = new ModelSet(map, ratio);
 
             var zIndex = 12;
             return _.map(this.modelSet.models, function(model) {
@@ -275,7 +282,7 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
                     on: false,
                     disabled: false,
                     editing: false,
-                    leafletLayer: model.renderer.makeLayer({zIndex: zIndex++})
+                    leafletLayer: model.renderer.makeLayer({zIndex: zIndex++, opacity: 0.85})
                 };
             });
         }

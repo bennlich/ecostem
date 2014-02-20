@@ -19,13 +19,13 @@ var VegetationPatchRenderer = function() {
     var t = VegetationModel.vegTypes;
 
     var colors = {};
-    colors[t.FIR] = 'rgba(50,99,32,0.9)';
-    colors[t.WOODLAND] = 'rgba(102,133,82,0.9)';
-    colors[t.SAGEBRUSH] = 'rgba(55, 105, 93, 0.9)';
-    colors[t.PRAIRIE] = 'rgba(130, 115, 83, 0.9)';
-    colors[t.STEPPE] = 'rgba(214, 173, 84, 0.9)';
-    colors[t.GRASS] = 'rgba(59, 153, 54, 0.9)';
-    colors[t.NONE] = 'rgba(255,255,255,0.0)';
+    colors[t.FIR] = 'rgb(50,99,32)';
+    colors[t.WOODLAND] = 'rgb(102,133,82)';
+    colors[t.SAGEBRUSH] = 'rgb(55, 105, 93)';
+    colors[t.PRAIRIE] = 'rgb(130, 115, 83)';
+    colors[t.STEPPE] = 'rgb(214, 173, 84)';
+    colors[t.GRASS] = 'rgb(59, 153, 54)';
+    colors[t.NONE] = 'rgb(255,255,255)';
 
     function render(ctx, world, i, j, drawX, drawY, drawWidth, drawHeight) {
         var patch;
@@ -38,7 +38,7 @@ var VegetationPatchRenderer = function() {
             return;
 
         ctx.fillStyle = colors[patch.vegetation];
-        ctx.fillRect(drawX, drawY, drawWidth, drawHeight);
+        ctx.fillRect(Math.floor(drawX), Math.floor(drawY), Math.ceil(drawWidth), Math.ceil(drawHeight));
     }
 
     var scale = [

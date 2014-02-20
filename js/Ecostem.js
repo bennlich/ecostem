@@ -22,7 +22,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
     $scope.draw = function() {
         var modelSet = map.modelSet;
         var m = modelSet.getDataModel('Vegetation');
-        var water = modelSet.getDataModel('Water Model');
+        var water = modelSet.getDataModel('Water Flow');
 
         for (var i = 0; i < m.xSize; ++i) {
             for (var j = 0; j < m.ySize; ++j) {

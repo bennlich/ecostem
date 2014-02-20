@@ -1,41 +1,38 @@
 'use strict';
 
-function ModelSet(map) {
+function ModelSet(map, ratio) {
     this.map = map;
     this.virtualWidth = 1024;
+    this.ratio = ratio;
     this.models = this._makeModels();
 }
 
 ModelSet.prototype = {
+    _getHeight: function(w) {
+        var h = Math.floor(w * this.ratio);
+        console.log(h, w, this.ratio);
+        return h;
+    },
+
+    _makeModel: function(name, constructor, width, patchRenderer) {
+        var model = new constructor(width, this._getHeight(width), this.virtualWidth, this),
+            tileRenderer = new ModelTileRenderer(this.map, model, patchRenderer),
+            tileServer = new ModelTileServer(tileRenderer);
+
+        return {
+            name: name,
+            dataModel: model,
+            renderer: tileRenderer,
+            server: tileServer
+        };
+    },
+
     _makeModels: function() {
-        var waterModel = new WaterModel(256, 160, this.virtualWidth, this),
-            waterRenderer = new ModelTileRenderer(this.map, waterModel, WaterPatchRenderer),
-            waterTileServer = new ModelTileServer(waterRenderer),
-
-            fireModel = new FireSeverityModel(512, 320, this.virtualWidth, this),
-            fireRenderer = new ModelTileRenderer(this.map, fireModel, FirePatchRenderer),
-            fireTileServer = new ModelTileServer(fireRenderer),
-
-            vegModel = new VegetationModel(512, 320, this.virtualWidth, this),
-            vegRenderer = new ModelTileRenderer(this.map, vegModel, VegetationPatchRenderer),
-            vegTileServer = new ModelTileServer(vegRenderer);
-
-        return [{
-            name: 'Fire Severity',
-            dataModel: fireModel,
-            renderer: fireRenderer,
-            server: fireTileServer
-        }, {
-            name: 'Vegetation',
-            dataModel: vegModel,
-            renderer: vegRenderer,
-            server: vegTileServer
-        }, {
-            name: 'Water Model',
-            dataModel: waterModel,
-            renderer: waterRenderer,
-            server: waterTileServer
-        }];
+        return [
+            this._makeModel('Fire Severity', FireSeverityModel, 512, FirePatchRenderer),
+            this._makeModel('Vegetation', VegetationModel, 512, VegetationPatchRenderer),
+            this._makeModel('Water Flow', WaterModel, 256, WaterPatchRenderer)
+        ];
     },
 
     getDataModel: function(name) {

@@ -110,6 +110,12 @@ ModelTileRenderer.prototype = {
             this.model.clearCallbacks();
         }.bind(this));
 
+        this.map.leafletMap.on('layerremove', function(e) {
+            if (e.layer === this.canvasLayer) {
+                this.model.clearCallbacks();
+            }
+        }.bind(this));
+
         return this.canvasLayer;
     }
 };

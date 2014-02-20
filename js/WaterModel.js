@@ -3,6 +3,8 @@
 /* Water model inherits from DataModel */
 
 function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
+    var waterModel = this;
+
     DataModel.call(this, xs, ys, fixedGeometryWidth, modelSet);
 
     this.init({ 
@@ -15,10 +17,53 @@ function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
 
     this.patchHeights = new ABM.DataSet();
 
+    ABM.Model.prototype.setup = function() {
+        this.agentBreeds('droplets');
+
+        var numDroplets = 100;
+        this.droplets.create(numDroplets, function(droplet) {
+            var newPos = this.patches.randomPt();
+            droplet.setXY(newPos[0], newPos[1]);
+            if (typeof droplet.p == 'undefined') {
+                console.log('UNDEFINED', droplet);
+            }
+        }.bind(this));
+    }
+
+    ABM.Model.prototype.step = function() {
+        this.droplets.forEach(function(droplet) {
+            var sampleCoord = this.patches.patchXYtoPixelXY(droplet.x, droplet.y);
+            var aspect = waterModel.patchHeightsAspect.sample(sampleCoord[0], sampleCoord[1]);
+            droplet.heading = aspect;
+            droplet.forward(1);
+            if (typeof droplet.p == 'undefined') {
+                console.log('UNDEFINED', droplet);
+                throw new Error();
+            }
+        }.bind(this));
+    }
+
+    this.dropletModel = new ABM.Model({
+        size: 1,
+        minX: 0,
+        maxX: xs-2,
+        minY: 0,
+        maxY: ys-2,
+        hasNeighbors: false
+    });
+
     this.reset();
 }
 
 WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
+    start: function() {
+        this.dropletModel.start();
+    },
+    
+    stop: function() {
+        this.dropletModel.stop();
+    },
+
     reset: function() {
         this.putData(0, 0, this.xSize, this.ySize, { volume: 0 });
         this.putData(60, 20, 10, 10, { volume: 50 });

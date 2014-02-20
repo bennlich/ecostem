@@ -19,7 +19,7 @@ FireSeverityModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
 
 /* Renderer for a single fire severity patch */
 
-var FirePatchRenderer = function() {
+var FirePatchRenderer = function(model) {
     var colorHigh = 'rgb(105,82,58)';
     var colorMedium = 'rgb(173,147,118)';
     var colorLow = 'rgb(240,217,192)';
@@ -64,4 +64,4 @@ var FirePatchRenderer = function() {
         render: render,
         scale: scale
     };
-}();
+};

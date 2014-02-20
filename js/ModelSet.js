@@ -16,7 +16,7 @@ ModelSet.prototype = {
 
     _makeModel: function(name, constructor, width, patchRenderer) {
         var model = new constructor(width, this._getHeight(width), this.virtualWidth, this),
-            tileRenderer = new ModelTileRenderer(this.map, model, patchRenderer),
+            tileRenderer = new ModelTileRenderer(this.map, model, patchRenderer(model)),
             tileServer = new ModelTileServer(tileRenderer);
 
         return {
@@ -29,18 +29,23 @@ ModelSet.prototype = {
 
     _makeModels: function() {
         return [
+            this._makeModel('Elevation', ElevationModel, 1024, ElevationPatchRenderer),
             this._makeModel('Fire Severity', FireSeverityModel, 512, FirePatchRenderer),
             this._makeModel('Vegetation', VegetationModel, 512, VegetationPatchRenderer),
-            this._makeModel('Water Flow', WaterModel, 256, WaterPatchRenderer)
+            this._makeModel('Water Flow', WaterModel, 400, WaterPatchRenderer)
         ];
     },
 
-    getDataModel: function(name) {
+    getModel: function(name) {
         var model = _.find(this.models, function(model) {
             return model.name === name;
         });
 
-        return model.dataModel;
+        return model;
+    },
+
+    getDataModel: function(name) {
+        return this.getModel(name).dataModel;
     },
 
     sample: function(x, y, fromModel, sampledModel) {

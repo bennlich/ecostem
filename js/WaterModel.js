@@ -27,7 +27,7 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
 
     sampleElevationXY: function(sampler, x,y) {
         var offset = function(p) { 
-            return p * this.sampleSpacing + Math.floor(this.sampleSpacing/2);
+            return Math.floor(p * this.sampleSpacing + this.sampleSpacing/2);
         }.bind(this);
 
         return sampler.sample(offset(x), offset(y));
@@ -137,7 +137,7 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
     }
 });
 
-var WaterPatchRenderer = function() {
+var WaterPatchRenderer = function(model) {
     var colorMap = Gradient.multiGradient(
         '#9cf', 
         [{color: '#137', steps: 15}, 
@@ -178,4 +178,4 @@ var WaterPatchRenderer = function() {
         render: render,
         scale: scale
     };
-}();
+};

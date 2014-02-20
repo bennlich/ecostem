@@ -94,6 +94,7 @@ ModelTileRenderer.prototype = {
             numPatches = 1;
 
         this.model.putData(worldX,worldY,numPatches,numPatches,value);
+        this.canvasLayer.redraw();
     },
 
     makeLayer: function(layerOpts) {
@@ -103,7 +104,12 @@ ModelTileRenderer.prototype = {
 
         this.canvasLayer.drawTile = function(canvas, tilePoint, zoom) {
             var renderStep = this.getDrawTileClosure(canvas, tilePoint.x, tilePoint.y, zoom);
-            this.model.onChange(renderStep);
+            if (this.model.isAnimated)
+                this.model.onChange(renderStep);
+            if (!this.model.isAnimated || !this.model.isRunning) {
+                if (renderStep)
+                    renderStep(this.model.world);
+            }
         }.bind(this);
 
         this.map.leafletMap.on('zoomstart', function() {

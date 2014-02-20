@@ -3,18 +3,13 @@
 function DataModel(xs, ys, fixedGeometryWidth, modelSet) {
     this.xSize = xs;
     this.ySize = ys;
-    this.sampleSpacing = Math.floor(fixedGeometryWidth / xs);
+    this.sampleSpacing = fixedGeometryWidth / xs;
     this.modelSet = modelSet;
     this.world = null;
     this.callbacks = [];
     this.isAnimated = false;
     this.isRunning = false;
-    this.refreshRates = {
-        idle: 200,
-        active: 80
-    };
-
-    this.run();
+    this.timeoutValue = 100;
 }
 
 DataModel.prototype = {
@@ -70,28 +65,27 @@ DataModel.prototype = {
     step: function() { },
 
     run: function() {
-        if (this.isRunning) {
-            this.step();
-        }
+        var $this = this;
 
-        var world = this.world;
+        if (! this.isRunning)
+            return;
+
+        this.step();
+
         _.each(this.callbacks, function(cb) {
             setTimeout(function() {
-                cb(world);
+                cb($this.world);
             }, 0);
         });
 
-        var timeout = this.isRunning 
-                ? this.refreshRates.active 
-                : this.refreshRates.idle;
-
         setTimeout(function() { 
-            this.run(); 
-        }.bind(this), timeout);
+            $this.run(); 
+        }, this.timeoutValue);
     },
 
     start: function() {
         this.isRunning = true;
+        this.run();
     },
 
     stop: function() {

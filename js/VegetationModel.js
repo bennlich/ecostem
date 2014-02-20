@@ -15,7 +15,7 @@ VegetationModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
     }
 });
 
-var VegetationPatchRenderer = function() {
+var VegetationPatchRenderer = function(model) {
     var t = VegetationModel.vegTypes;
 
     var colors = {};
@@ -55,4 +55,4 @@ var VegetationPatchRenderer = function() {
         render: render,
         scale: scale
     };
-}();
+};

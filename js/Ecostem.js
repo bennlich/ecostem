@@ -21,27 +21,30 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
 
     $scope.draw = function() {
         var modelSet = map.modelSet;
-        var m = modelSet.getDataModel('Vegetation');
-        var water = modelSet.getDataModel('Water Flow');
+        var vegModel = modelSet.getModel('Vegetation');
+        var m = vegModel.dataModel;
+        var elev = modelSet.getDataModel('Elevation');
 
         for (var i = 0; i < m.xSize; ++i) {
             for (var j = 0; j < m.ySize; ++j) {
                 /* hacky way to sample elevation by sampling the water layer */
-                var waterPatch = modelSet.sample(i, j, m, water);
+                var elevValue = modelSet.sample(i, j, m, elev).elevation;
 
-                if (waterPatch.elevation > 2300 && waterPatch.elevation < 2500) {
+                if (elevValue > 2300 && elevValue < 2500) {
                     if (Math.random() > 0.5) {
                         m.putData(i, j, 1, 1, {vegetation: VegetationModel.vegTypes.GRASS});
                     }
                 } 
 
-                if (waterPatch.elevation > 2200 && waterPatch.elevation < 2300) {
+                if (elevValue > 2200 && elevValue < 2300) {
                     if (Math.random() > 0.3) {
                         m.putData(i, j, 1, 1, {vegetation: VegetationModel.vegTypes.STEPPE});
                     }
                 } 
             }
         }
+
+        vegModel.renderer.canvasLayer.redraw();
     };
 
     $scope.brushSizes = [40, 30, 20, 10];
@@ -175,7 +178,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
 
             $scope.showSlope = true;
         }
-    }
+    };
 
     elevationToDroplets = $scope.elevationToDroplets =
         new TransferFunction([0, 200], 'm', [0, 400], 'droplets / m^2', 'Rainfall vs. elevation');
@@ -183,6 +186,9 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
     $q.all([map.deferred.promise, elevationSampler.deferred.promise]).then(function() {
         $scope.elevationIsLoading = true;
         elevationSampler.loadElevationData(map.scenarioBBox, function() {
+            var elevationModel = map.modelSet.getDataModel('Elevation');
+            elevationModel.loadElevation(elevationSampler);
+
             $scope.elevationIsLoading = false;
             $scope.elevationLoaded = true;
         });

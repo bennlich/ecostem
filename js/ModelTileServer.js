@@ -95,10 +95,15 @@ ModelTileServer.prototype = {
         var tileClosure = this.renderer.getDrawTileClosure(canvas, x, y, z);
 
         if (tileClosure) {
-            this.installTileUpdateLoop(fbHandle, function(world) {
-                tileClosure(world);
+            if (this.renderer.model.isAnimated) {
+                this.installTileUpdateLoop(fbHandle, function(world) {
+                    tileClosure(world);
+                    this._layerRef.child(fbHandle).set(canvas.toDataURL());
+                }.bind(this));
+            } else {
+                tileClosure(this.renderer.model.world);
                 this._layerRef.child(fbHandle).set(canvas.toDataURL());
-            }.bind(this));
-        }
+            }
+        } 
     }
 };

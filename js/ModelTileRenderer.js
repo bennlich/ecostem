@@ -94,7 +94,8 @@ ModelTileRenderer.prototype = {
             numPatches = 1;
 
         this.model.putData(worldX,worldY,numPatches,numPatches,value);
-        this.canvasLayer.redraw();
+        if (!this.model.isRunning)
+            this.canvasLayer.redraw();
     },
 
     makeLayer: function(layerOpts) {
@@ -123,5 +124,9 @@ ModelTileRenderer.prototype = {
         }.bind(this));
 
         return this.canvasLayer;
+    },
+
+    refreshLayer: function() {
+        this.canvasLayer.redraw();
     }
 };

@@ -44,7 +44,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
             }
         }
 
-        vegModel.renderer.canvasLayer.redraw();
+        vegModel.renderer.refreshLayer();
     };
 
     $scope.brushSizes = [40, 30, 20, 10];
@@ -60,9 +60,10 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
     };
 
     $scope.resetSimulation = function(layer) {
-        var model = layer.model.dataModel;
+        var model = layer.model;
         $scope.pauseSimulation(layer);
-        model.reset();
+        model.dataModel.reset();
+        model.renderer.refreshLayer();
     };
 
     $scope.pauseSimulation = function(layer) {
@@ -186,6 +187,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
     $q.all([map.deferred.promise, elevationSampler.deferred.promise]).then(function() {
         $scope.elevationIsLoading = true;
         elevationSampler.loadElevationData(map.scenarioBBox, function() {
+            /* TODO: Maybe the sampler can be merged into ElevationModel */
             var elevationModel = map.modelSet.getDataModel('Elevation');
             elevationModel.loadElevation(elevationSampler);
 

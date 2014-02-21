@@ -1,3 +1,7 @@
+text {
+	fill: #eee;
+}
+
 .x-axis line, .x-axis path, .y-axis line, .y-axis path {
 	stroke-width: 1px;
 	stroke: #777;

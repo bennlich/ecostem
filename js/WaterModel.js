@@ -14,6 +14,7 @@ function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
     this.elevationSampled = false;
 
     this.patchHeights = new ABM.DataSet();
+    this.slopeToVelocity = new TransferFunction([0, 50], 'degrees', [0, 1], 'm / s', 'Flow velocity vs. slope');
 
     this.reset();
 }
@@ -23,6 +24,14 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
         this.putData(0, 0, this.xSize, this.ySize, { volume: 0 });
         this.putData(60, 20, 10, 10, { volume: 50 });
         this.putData(100, 60, 10, 10, { volume: 50 });
+    },
+
+    show: function() {
+        this.slopeToVelocity.show();
+    },
+
+    hide: function() {
+        this.slopeToVelocity.hide();
     },
 
     sampleElevationXY: function(sampler, x,y) {
@@ -78,6 +87,11 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
 
                 var transferVolumeBalancePoint = (neighborHeight + patchHeight) / 2;
                 var transferVolume = patch.volume - (transferVolumeBalancePoint - patch.elevation);
+
+                // TODO: Smarter velocity calculation
+                var velocity = this.slopeToVelocity(Math.abs(patchHeight - neighborHeight)/2);
+                transferVolume *= velocity;
+                // console.log('vel', velocity);
 
                 if (transferVolume > patch.volume)
                     transferVolume = patch.volume;

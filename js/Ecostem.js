@@ -138,11 +138,13 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
 
         $scope.editedLayer = layer;
         $scope.scaleValue = layer.model.renderer.patchRenderer.scale[0];
+        layer.model.dataModel.show();
     };
 
     $scope.doneEditingDataLayer = function() {
         $scope.editedLayer.disabled = false;
         $scope.editedLayer.editing = false;
+        $scope.editedLayer.model.dataModel.hide();
         $scope.editedLayer = null;
     };
 
@@ -181,8 +183,8 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
         }
     };
 
-    elevationToDroplets = $scope.elevationToDroplets =
-        new TransferFunction([0, 200], 'm', [0, 400], 'droplets / m^2', 'Rainfall vs. elevation');
+    // elevationToDroplets = $scope.elevationToDroplets =
+    //     new TransferFunction([0, 200], 'm', [0, 400], 'droplets / m^2', 'Rainfall vs. elevation');
 
     $q.all([map.deferred.promise, elevationSampler.deferred.promise]).then(function() {
         $scope.elevationIsLoading = true;

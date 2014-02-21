@@ -87,8 +87,20 @@
           <select ng-model="scaleValue" ng-options="v.name for v in editedLayer.model.renderer.patchRenderer.scale">
           </select>
         </div>
-        <hr/>
-        <div class="section" style="height: 400px; width: 100%;">
+        <div class="section" style="height: 400px; width: 100%;" ng-show="editedLayer.name == 'Vegetation'">
+          <hr/>
+          <svg id="svg-fir" ng-show="scaleValue.name == 'Fir'"></svg>
+          <svg id="svg-sagebrush" ng-show="scaleValue.name == 'Sagebrush'"></svg>
+          <svg id="svg-steppe" ng-show="scaleValue.name == 'Steppe'"></svg>
+          <svg id="svg-grass" ng-show="scaleValue.name == 'Grass'"></svg>
+        </div>
+        <div class="section" style="width: 100%" ng-show="editedLayer.name == 'Vegetation'">
+          <hr/>
+          <button ng-click="drawVegetation(scaleValue.value.vegetation)">Autofill {{scaleValue.name}}</button>
+          <button ng-click="clearVegetation(scaleValue.value.vegetation)">Clear {{scaleValue.name}}</button>
+        </div>
+        <div class="section" style="height: 400px; width: 100%;" ng-show="editedLayer.name == 'Water Flow'">
+          <hr/>
           <svg id="transfer-function-svg"></svg>
         </div>
       </div>
@@ -110,7 +122,8 @@
           <label for="dl{{$index}}">{{ layer.name }}</label>
           <br/>
           <div class="action-buttons">
-            <button ng-class="{'active-button':layer.editing}"
+            <button ng-show="layer.model.dataModel.editable"
+                    ng-class="{'active-button':layer.editing}"
                     ng-click="editDataLayer(layer)">Edit</button>
             <button class="active-button"
                     ng-show="layer.model.dataModel.isAnimated && layer.model.dataModel.isRunning"

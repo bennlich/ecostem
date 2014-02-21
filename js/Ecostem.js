@@ -19,28 +19,42 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
     $scope.elevationIsLoading = false;
     $scope.map = map;
 
-    $scope.draw = function() {
-        var modelSet = map.modelSet;
-        var vegModel = modelSet.getModel('Vegetation');
-        var m = vegModel.dataModel;
-        var elev = modelSet.getDataModel('Elevation');
+    $scope.drawVegetation = function(vegType) {
+        console.log('draw veg', vegType);
 
-        for (var i = 0; i < m.xSize; ++i) {
-            for (var j = 0; j < m.ySize; ++j) {
-                /* hacky way to sample elevation by sampling the water layer */
-                var elevValue = modelSet.sample(i, j, m, elev).elevation;
+        var modelSet = map.modelSet,
+            vegModel = modelSet.getModel('Vegetation'),
+            dataModel = vegModel.dataModel,
+            elevationModel = modelSet.getDataModel('Elevation'),
+            tf = dataModel.tf[vegType];
 
-                if (elevValue > 2300 && elevValue < 2500) {
-                    if (Math.random() > 0.5) {
-                        m.putData(i, j, 1, 1, {vegetation: VegetationModel.vegTypes.GRASS});
-                    }
-                } 
+        for (var i = 0; i < dataModel.xSize; ++i) {
+            for (var j = 0; j < dataModel.ySize; ++j) {
+                var elevationValue = modelSet.sample(i, j, dataModel, elevationModel).elevation;
+                var density = tf(elevationValue) / 100;
+                if (i % 10 === 0 && j % 10 === 0)
+                    console.log(i, j, elevationValue, density);
+                if (Math.random() <= density) {
+                    dataModel.putData(i, j, 1, 1, {vegetation: vegType});
+                }
+            }
+        }
 
-                if (elevValue > 2200 && elevValue < 2300) {
-                    if (Math.random() > 0.3) {
-                        m.putData(i, j, 1, 1, {vegetation: VegetationModel.vegTypes.STEPPE});
-                    }
-                } 
+        vegModel.renderer.refreshLayer();
+    };
+
+    $scope.clearVegetation = function(vegType) {
+        console.log('clear veg', vegType);
+
+        var vegModel = map.modelSet.getModel('Vegetation'),
+            vegDataModel = vegModel.dataModel,
+            vegTypes = VegetationModel.vegTypes;
+
+        for (var i = 0; i < vegDataModel.xSize; ++i) {
+            for (var j = 0; j < vegDataModel.ySize; ++j) {
+                if (vegDataModel.world[i][j].vegetation === vegType) {
+                    vegDataModel.world[i][j].vegetation = vegTypes.NONE;
+                }
             }
         }
 

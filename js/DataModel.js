@@ -10,6 +10,7 @@ function DataModel(xs, ys, fixedGeometryWidth, modelSet) {
     this.isAnimated = false;
     this.isRunning = false;
     this.timeoutValue = 100;
+    this.editable = true;
 }
 
 DataModel.prototype = {

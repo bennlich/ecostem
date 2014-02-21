@@ -3,10 +3,22 @@
 function VegetationModel(xs, ys, fixedGeometryWidth) {
     DataModel.call(this, xs, ys, fixedGeometryWidth);
     this.reset();
+
+    var t = VegetationModel.vegTypes;
+
+    this.tf = {};
+    this.tf[t.FIR] = new TransferFunction([0, 10000], 'm', [0, 100], '%', 'Fir Density at Elevation', 'svg-fir');
+    this.tf[t.SAGEBRUSH] = new TransferFunction([0, 10000], 'm', [0, 100], '%', 'Sagebrush Density at Elevation', 'svg-sagebrush');
+    this.tf[t.STEPPE] = new TransferFunction([0, 10000], 'm', [0, 100], '%', 'Steppe Density at Elevation', 'svg-steppe');
+    this.tf[t.GRASS] = new TransferFunction([0, 10000], 'm', [0, 100], '%', 'Grass Density at Elevation', 'svg-grass');
+
+    for (var x in this.tf) { 
+        this.tf[x].show();
+    }
 }
 
 VegetationModel.vegTypes = {
-    NONE: 0, FIR: 1, WOODLAND: 2, SAGEBRUSH: 3, PRAIRIE: 4, STEPPE: 5, GRASS: 6
+    NONE: 0, FIR: 1, SAGEBRUSH: 2, STEPPE: 3, GRASS: 4
 };
 
 VegetationModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
@@ -20,9 +32,7 @@ var VegetationPatchRenderer = function(model) {
 
     var colors = {};
     colors[t.FIR] = 'rgb(50,99,32)';
-    colors[t.WOODLAND] = 'rgb(102,133,82)';
     colors[t.SAGEBRUSH] = 'rgb(55, 105, 93)';
-    colors[t.PRAIRIE] = 'rgb(130, 115, 83)';
     colors[t.STEPPE] = 'rgb(214, 173, 84)';
     colors[t.GRASS] = 'rgb(59, 153, 54)';
     colors[t.NONE] = 'rgb(255,255,255)';
@@ -43,9 +53,7 @@ var VegetationPatchRenderer = function(model) {
 
     var scale = [
         { value: { vegetation: t.FIR }, color: colors[t.FIR], name: 'Fir' },
-        { value: { vegetation: t.WOODLAND }, color: colors[t.WOODLAND], name: 'Woodland' },
         { value: { vegetation: t.SAGEBRUSH }, color: colors[t.SAGEBRUSH], name: 'Sagebrush' },
-        { value: { vegetation: t.PRAIRIE }, color: colors[t.PRAIRIE], name: 'Prairie' },
         { value: { vegetation: t.STEPPE }, color: colors[t.STEPPE], name: 'Steppe' },
         { value: { vegetation: t.GRASS }, color: colors[t.GRASS], name: 'Grass' },
         { value: { vegetation: t.NONE }, color: colors[t.NONE], name: 'None (Erase)' }

@@ -78,7 +78,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
         var model = layer.model;
         $scope.pauseSimulation(layer);
         model.dataModel.reset();
-        model.renderer.refreshLayer();
+        model.dataModel.runCallbacks();
     };
 
     $scope.pauseSimulation = function(layer) {

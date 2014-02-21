@@ -77,15 +77,21 @@ DataModel.prototype = {
 
         this.step();
 
+        this.runCallbacks();
+
+        setTimeout(function() { 
+            $this.run(); 
+        }, this.timeoutValue);
+    },
+
+    runCallbacks: function() {
+        var $this = this;
+
         _.each(this.callbacks, function(cb) {
             setTimeout(function() {
                 cb($this.world);
             }, 0);
         });
-
-        setTimeout(function() { 
-            $this.run(); 
-        }, this.timeoutValue);
     },
 
     start: function() {

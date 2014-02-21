@@ -64,6 +64,10 @@ DataModel.prototype = {
 
     step: function() { },
 
+    show: function() { },
+
+    hide: function() { },
+
     run: function() {
         var $this = this;
 

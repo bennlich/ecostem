@@ -86,6 +86,8 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
             var centerLat = bbox.getSouthWest().lat + (bbox.getNorthEast().lat - bbox.getSouthWest().lat)/2;
             var centerLng = bbox.getSouthWest().lng - (bbox.getSouthWest().lng - bbox.getNorthEast().lng)/2;
 
+            console.log(centerLat, centerLng);
+
             this.leafletMap.setView(new L.LatLng(centerLat, centerLng), 11);
 
             this.baseLayers = this._makeBaseLayers();

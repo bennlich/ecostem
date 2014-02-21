@@ -28,29 +28,35 @@
     <script src="js/livetexture.js"></script>
 
     <script>
+
       $(document).ready(function() {
         var map = new L.Map('map',{
           minZoom: 3, 
           maxZoom: 15
         });
 
-        map.setView(new L.LatLng(35.68832407198268, -105.91811656951903), 12);
+        map.setView(new L.LatLng(36.42835637785987, -105.633544921875), 12);
         map.addLayer(new L.Google('TERRAIN'));
 
         var liveTexture = new LiveTexture(map);
 
         liveTexture.onLayerAppeared(function(id, name, layer) {
+          if (!name)
+            return;
+
           $('#layers').append('<div id="{0}"><input id="cb{0}" type="checkbox"></input>&nbsp<label for="cb{0}">{1}</label></div>'.format(id, name));
         });
 
         liveTexture.onLayerDisappeared(function(id, name, layer) {
           map.removeLayer(layer);
+
           $('#' + id).remove();
         });
 
         $(document).on('click', 'input[type=checkbox]', function() {
           var checked = $(this).prop('checked'),
               id = $(this).parent().attr('id'),
+              name = $(this).parent().children('label').text(),
               layer = liveTexture.findLayer(id);
 
           checked ? map.addLayer(layer) : map.removeLayer(layer);

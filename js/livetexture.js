@@ -5,7 +5,7 @@ function LiveTexture(leafletMap) {
     this._disappearedCallbacks = [];
     this._map = leafletMap;
     this._layers = [];
-
+    this._zIndex = 10;
     this._init();
 }
 
@@ -49,7 +49,7 @@ LiveTexture.prototype = {
     },
 
     _leafletLayer: function(ref) {
-        var liveLayer = new L.tileLayer.canvas(),
+        var liveLayer = new L.tileLayer.canvas({zIndex: this._zIndex++}),
             map = this._map;
 
         liveLayer.drawTile = function(canvas, tilePoint, zoom) {

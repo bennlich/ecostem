@@ -18,8 +18,12 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title, svgcanvas
     // with debugging
 
     function transfer(x) {
-		var idx = transfer.search(transfer.lookupTable, x),
-		    point = transfer.lookupTable[idx];
+		var idx = transfer.search(transfer.lookupTable, x);
+		
+		if (idx >= transfer.lookupTable.length)
+			idx = transfer.lookupTable.length-1;
+		
+		var point = transfer.lookupTable[idx];
 
 		// debug: show interpolated points on plot
 		// transfer.container.append('circle')
@@ -34,6 +38,14 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title, svgcanvas
     transfer.search = d3.bisector(function(d) {
 		return d[0];
     }).left;
+
+    transfer.show = function() {
+    	$(this.container[0]).show();
+    }
+
+    transfer.hide = function() {
+    	$(this.container[0]).hide();
+    }
 
     transfer.render = function() {
 		
@@ -228,6 +240,8 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title, svgcanvas
 		});
 
     transfer.render();
+
+    $(transfer.container[0]).hide();
 
     return transfer;
 }

@@ -7,10 +7,10 @@ function VegetationModel(xs, ys, fixedGeometryWidth) {
     var t = VegetationModel.vegTypes;
 
     this.tf = {};
-    this.tf[t.FIR] = new TransferFunction([0, 10000], 'm', [0, 100], '%', 'Fir Density at Elevation', 'svg-fir');
-    this.tf[t.SAGEBRUSH] = new TransferFunction([0, 10000], 'm', [0, 100], '%', 'Sagebrush Density at Elevation', 'svg-sagebrush');
-    this.tf[t.STEPPE] = new TransferFunction([0, 10000], 'm', [0, 100], '%', 'Steppe Density at Elevation', 'svg-steppe');
-    this.tf[t.GRASS] = new TransferFunction([0, 10000], 'm', [0, 100], '%', 'Grass Density at Elevation', 'svg-grass');
+    this.tf[t.FIR] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Fir Density at Elevation', 'svg-fir');
+    this.tf[t.SAGEBRUSH] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Sagebrush Density at Elevation', 'svg-sagebrush');
+    this.tf[t.STEPPE] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Steppe Density at Elevation', 'svg-steppe');
+    this.tf[t.GRASS] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Grass Density at Elevation', 'svg-grass');
 
     for (var x in this.tf) { 
         this.tf[x].show();

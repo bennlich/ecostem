@@ -94,9 +94,8 @@ ModelTileRenderer.prototype = {
             numPatches = 1;
 
         this.model.putData(worldX,worldY,numPatches,numPatches,value);
-        if (!this.model.isRunning) {
-            this.model.runCallbacks();
-        }
+
+        this.refreshLayer();
     },
 
     makeLayer: function(layerOpts) {
@@ -128,6 +127,11 @@ ModelTileRenderer.prototype = {
     },
 
     refreshLayer: function() {
-        this.canvasLayer.redraw();
+        if (this.model.isAnimated) {
+            if (!this.model.isRunning)
+                this.model.runCallbacks();
+        } else {
+            this.canvasLayer.redraw();
+        }
     }
 };

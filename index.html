@@ -87,14 +87,16 @@
           <select ng-model="scaleValue" ng-options="v.name for v in editedLayer.model.renderer.patchRenderer.scale">
           </select>
         </div>
-        <div class="section" style="height: 400px; width: 100%;" ng-show="editedLayer.name == 'Vegetation'">
+        <div class="section" style="height: 400px; width: 100%;" 
+             ng-show="editedLayer.name == 'Vegetation' && scaleValue.value.vegetation != 0">
           <hr/>
           <svg id="svg-fir" ng-show="scaleValue.name == 'Fir'"></svg>
           <svg id="svg-sagebrush" ng-show="scaleValue.name == 'Sagebrush'"></svg>
           <svg id="svg-steppe" ng-show="scaleValue.name == 'Steppe'"></svg>
           <svg id="svg-grass" ng-show="scaleValue.name == 'Grass'"></svg>
         </div>
-        <div class="section" style="width: 100%" ng-show="editedLayer.name == 'Vegetation'">
+        <div class="section" style="width: 100%" 
+             ng-show="editedLayer.name == 'Vegetation' && scaleValue.value.vegetation != 0">
           <hr/>
           <button ng-click="drawVegetation(scaleValue.value.vegetation)">Autofill {{scaleValue.name}}</button>
           <button ng-click="clearVegetation(scaleValue.value.vegetation)">Clear {{scaleValue.name}}</button>
@@ -156,8 +158,6 @@
             <span ng-show="!showSlope">Show Slopes</span>
             <span ng-show="showSlope">Hide Slopes</span>
           </a>
-          <br/>
-          <a ng-click="draw()">Draw Vegetation</a>
         </div>
       </div>
       <div class="uibox transfer-function-test" ng-show="false">

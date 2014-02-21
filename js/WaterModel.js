@@ -15,7 +15,9 @@ function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
 
     this.patchHeights = new ABM.DataSet();
     this.slopeToVelocity = new TransferFunction([0, 50], 'degrees', [0, 1], 'm / s', 'Flow velocity vs. slope');
-
+    this.slopeToVelocity.controlPoints[0] = [0,0.4];
+    this.slopeToVelocity.controlPoints[1] = [22,0.55];
+    this.slopeToVelocity.render();
     this.reset();
 }
 

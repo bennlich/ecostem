@@ -32,13 +32,14 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
             for (var j = 0; j < dataModel.ySize; ++j) {
                 var elevationValue = modelSet.sample(i, j, dataModel, elevationModel).elevation;
                 var density = tf(elevationValue) / 100;
-                if (i % 10 === 0 && j % 10 === 0)
-                    console.log(i, j, elevationValue, density);
+
                 if (Math.random() <= density) {
                     dataModel.putData(i, j, 1, 1, {vegetation: vegType});
                 }
             }
         }
+
+        console.log(tf.controlPoints);
 
         vegModel.renderer.refreshLayer();
     };

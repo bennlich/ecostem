@@ -7,10 +7,22 @@ function VegetationModel(xs, ys, fixedGeometryWidth) {
     var t = VegetationModel.vegTypes;
 
     this.tf = {};
+
     this.tf[t.FIR] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Fir Density at Elevation', 'svg-fir');
+    this.tf[t.FIR].controlPoints = [[2214,0], [2442,15], [2728,1], [4000,0]];
+    this.tf[t.FIR].render();
+
     this.tf[t.SAGEBRUSH] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Sagebrush Density at Elevation', 'svg-sagebrush');
+    this.tf[t.SAGEBRUSH].controlPoints = [[1842,0], [1985,47.5], [2100,0], [4000,0]];
+    this.tf[t.SAGEBRUSH].render();
+
     this.tf[t.STEPPE] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Steppe Density at Elevation', 'svg-steppe');
+    this.tf[t.STEPPE].controlPoints = [[0,0], [2657,0], [2871,26], [3042,0]];
+    this.tf[t.STEPPE].render();
+
     this.tf[t.GRASS] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Grass Density at Elevation', 'svg-grass');
+    this.tf[t.GRASS].controlPoints = [[0,0], [2114,0], [2199,18], [2330,0]];
+    this.tf[t.GRASS].render();
 
     for (var x in this.tf) { 
         this.tf[x].show();

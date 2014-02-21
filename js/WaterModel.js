@@ -89,7 +89,7 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
                 var transferVolume = patch.volume - (transferVolumeBalancePoint - patch.elevation);
 
                 // TODO: Smarter velocity calculation
-                var velocity = this.slopeToVelocity((patchHeight - neighborHeight)/2);
+                var velocity = this.slopeToVelocity(Math.abs(patchHeight - neighborHeight)/2);
                 transferVolume *= velocity;
                 // console.log('vel', velocity);
 

@@ -114,7 +114,7 @@ a {
 }
 .container .editor {
     position: absolute;
-    top: 10; right: 280;
+    top: 10; right: 10;
     width: 400px;
     z-index: 120;
 }

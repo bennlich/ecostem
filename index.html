@@ -104,7 +104,7 @@
           <svg id="transfer-function-svg"></svg>
         </div>
       </div>
-      <div class="layers uibox" ng-show="elevationLoaded">
+      <div class="layers uibox" ng-show="elevationLoaded && !editedLayer">
         <h3>EcoStem</h3>
         <hr/>
         <div class="layer-container"  ng-repeat="layer in map.baseLayers">

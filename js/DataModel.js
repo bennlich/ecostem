@@ -9,6 +9,7 @@ function DataModel(xs, ys, fixedGeometryWidth, modelSet) {
     this.callbacks = [];
     this.isAnimated = false;
     this.isRunning = false;
+    this.hasControls = false;
     this.timeoutValue = 100;
     this.editable = true;
 }

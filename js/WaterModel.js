@@ -11,7 +11,10 @@ function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
     });
 
     this.isAnimated = true;
+    this.hasControls = true;
     this.elevationSampled = false;
+
+    this.erosionModel = null;
 
     this.patchHeights = new ABM.DataSet();
     this.slopeToVelocity = new TransferFunction([0, 50], 'degrees', [0, 1], 'm / s', 'Flow velocity vs. slope');
@@ -22,10 +25,23 @@ function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
 }
 
 WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
+    _erosionModel: function() {
+        if (!this.erosionModel)
+            this.erosionModel = this.modelSet.getDataModel('Erosion & Deposit');
+        return this.erosionModel;
+    },
+
     reset: function() {
         this.putData(0, 0, this.xSize, this.ySize, { volume: 0 });
         this.putData(60, 20, 10, 10, { volume: 50 });
         this.putData(100, 60, 10, 10, { volume: 50 });
+
+        var erosionModel = this._erosionModel();
+
+        if (erosionModel) {
+            erosionModel.reset();
+            erosionModel.runCallbacks();
+        }
     },
 
     show: function() {
@@ -36,24 +52,28 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
         this.slopeToVelocity.hide();
     },
 
-    sampleElevationXY: function(sampler, x,y) {
-        var offset = function(p) { 
-            return Math.floor(p * this.sampleSpacing + this.sampleSpacing/2);
-        }.bind(this);
-
-        return sampler.sample(offset(x), offset(y));
+    start: function() {
+        DataModel.prototype.start.call(this);
+        this._erosionModel().start();
     },
 
-    sampleElevation: function(sampler) {
+    stop: function() {
+        DataModel.prototype.stop.call(this);
+        this._erosionModel().stop();
+    },
+
+    sampleElevation: function() {
         if (this.elevationSampled)
             return;
 
         this.patchHeights.reset(this.xSize, this.ySize, new Array(this.xSize*this.ySize));
 
+        var elevationModel = this.modelSet.getDataModel('Elevation');
+
         for (var i = 0; i < this.xSize; ++i) {
             for (var j = 0; j < this.ySize; ++j) {
                 var curPatch = this.world[i][j];
-                curPatch.elevation = this.sampleElevationXY(sampler, i,j);
+                curPatch.elevation = this.modelSet.sample(i, j, this, elevationModel).elevation;
                 this.patchHeights.setXY(i,j, curPatch.elevation + curPatch.volume);
             }
         }
@@ -93,7 +113,8 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
                 // TODO: Smarter velocity calculation
                 var velocity = this.slopeToVelocity(Math.abs(patchHeight - neighborHeight)/2);
                 transferVolume *= velocity;
-                // console.log('vel', velocity);
+
+                this._erosionModel().setValueForVelocity(i, j, velocity);
 
                 if (transferVolume > patch.volume)
                     transferVolume = patch.volume;

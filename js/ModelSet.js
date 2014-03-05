@@ -46,7 +46,11 @@ ModelSet.prototype = {
     },
 
     getDataModel: function(name) {
-        return this.getModel(name).dataModel;
+        var model = this.getModel(name);
+        if (model)
+            return model.dataModel;
+        else
+            return null;
     },
 
     sample: function(x, y, fromModel, sampledModel) {

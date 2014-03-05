@@ -70,7 +70,6 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
 
     $scope.startSimulation = function(layer) {
         var model = layer.model.dataModel;
-        model.sampleElevation(elevationSampler);
         model.start();
     };
 
@@ -206,7 +205,11 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', fu
         elevationSampler.loadElevationData(map.scenarioBBox, function() {
             /* TODO: Maybe the sampler can be merged into ElevationModel */
             var elevationModel = map.modelSet.getDataModel('Elevation');
+            var waterModel = map.modelSet.getDataModel('Water Flow');
+
             elevationModel.loadElevation(elevationSampler);
+            console.log('here');
+            waterModel.sampleElevation();
 
             $scope.elevationIsLoading = false;
             $scope.elevationLoaded = true;

@@ -134,11 +134,11 @@
                     ng-class="{'active-button':layer.editing}"
                     ng-click="editDataLayer(layer)">Edit</button>
             <button class="active-button"
-                    ng-show="layer.model.dataModel.isAnimated && layer.model.dataModel.isRunning"
+                    ng-show="layer.model.dataModel.hasControls && layer.model.dataModel.isRunning"
                     ng-click="pauseSimulation(layer)">Pause</button>
-            <button ng-show="layer.model.dataModel.isAnimated && ! layer.model.dataModel.isRunning"
+            <button ng-show="layer.model.dataModel.hasControls && ! layer.model.dataModel.isRunning"
                     ng-click="startSimulation(layer)">Start</button>
-            <button ng-show="layer.model.dataModel.isAnimated"
+            <button ng-show="layer.model.dataModel.hasControls"
                     ng-click="resetSimulation(layer)">Reset</button>
             <button class="active-button"
                     ng-show="layer.model.server.isRunning" 

@@ -2,6 +2,9 @@
 
 function ErosionModel(xs, ys, fixedGeometryWidth) {
     DataModel.call(this, xs, ys, fixedGeometryWidth);
+
+    this.isAnimated = true;
+
     this.reset();
 
     this.tf = new TransferFunction([0, 1], 'm/s', [-100, 100], 'cm', 'Erosion vs. Water Speed', 'svg-erosion');
@@ -13,6 +16,11 @@ function ErosionModel(xs, ys, fixedGeometryWidth) {
 ErosionModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
     reset: function() {
         this.init({ erosion: 0 });
+    },
+
+    setValueForVelocity: function(i,j,velocity) {
+        var erosionValue = this.tf(velocity);
+        this.world[i][j].erosion += erosionValue;
     }
 });
 

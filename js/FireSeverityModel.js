@@ -2,8 +2,8 @@
 
 /* Fire severity model inherits from DataModel */
 
-function FireSeverityModel(xs, ys, fixedGeometryWidth) {
-    DataModel.call(this, xs, ys, fixedGeometryWidth);
+function FireSeverityModel(xs, ys, fixedGeometryWidth, modelSet) {
+    DataModel.call(this, xs, ys, fixedGeometryWidth, modelSet);
     this.reset();
 }
 

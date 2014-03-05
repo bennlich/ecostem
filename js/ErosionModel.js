@@ -1,7 +1,7 @@
 'use strict';
 
-function ErosionModel(xs, ys, fixedGeometryWidth) {
-    DataModel.call(this, xs, ys, fixedGeometryWidth);
+function ErosionModel(xs, ys, fixedGeometryWidth, modelSet) {
+    DataModel.call(this, xs, ys, fixedGeometryWidth, modelSet);
 
     this.isAnimated = true;
 
@@ -25,23 +25,25 @@ ErosionModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
 });
 
 var ErosionPatchRenderer = function(model) {
-    var gradientSteps = 20,
+    var gradientSteps = 100,
         negativeGradient = Gradient.gradient('#ffebeb', '#e03838', gradientSteps),
         positiveGradient = Gradient.gradient('#dbecff', '#2e7ad1', gradientSteps);
 
     function getColor(value) {
-        var idx = Math.abs(value);
+        var idx = Math.floor(Math.abs(value));
 
-        if (idx > gradientSteps-1)
-            idx = gradientSteps-1;
+        if (idx >= negativeGradient.length)
+            idx = negativeGradient.length - 1;
 
         if (value > 0) {
             return positiveGradient[idx];
-        } else if (value < 0) {
+        }
+
+        if (value < 0) {
             return negativeGradient[idx];
         }
 
-        return null;
+        return 'rgb(0,0,0)';
     }
 
     function render(ctx, world, i, j, drawX, drawY, drawWidth, drawHeight) {
@@ -53,7 +55,8 @@ var ErosionPatchRenderer = function(model) {
 
         if (patch.erosion === 0)
             return;
-
+        var color = getColor(patch.erosion);
+        console.log(color, patch.erosion);
         ctx.fillStyle = getColor(patch.erosion);
         ctx.fillRect(Math.floor(drawX), Math.floor(drawY), Math.ceil(drawWidth), Math.ceil(drawHeight));
     }

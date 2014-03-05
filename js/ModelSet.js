@@ -57,8 +57,8 @@ ModelSet.prototype = {
         var fromX = x * fromModel.sampleSpacing,
             fromY = y * fromModel.sampleSpacing,
 
-            toX = Math.floor(fromX / sampledModel.sampleSpacing),
-            toY = Math.floor(fromY / sampledModel.sampleSpacing);
+            toX = Math.floor(fromX / sampledModel.sampleSpacing + sampledModel.sampleSpacing/2),
+            toY = Math.floor(fromY / sampledModel.sampleSpacing + sampledModel.sampleSpacing/2);
 
         /* TODO this is very crude sampling */
         return sampledModel.world[toX][toY];

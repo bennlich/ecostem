@@ -7,8 +7,8 @@ function ErosionModel(xs, ys, fixedGeometryWidth, modelSet) {
 
     this.reset();
 
-    this.tf = new TransferFunction([0, 1], 'm/s', [-100, 100], 'cm', 'Erosion vs. Water Speed', 'svg-erosion');
-    this.tf.controlPoints = [[0, 20], [0.4, 5], [0.8, -20], [1, -40]];
+    this.tf = new TransferFunction([0, 1], 'm/s', [-1, 1], 'm', 'Erosion vs. Water Speed', 'svg-erosion');
+    this.tf.controlPoints = [[0, .2], [.4, .5], [.8, -.2], [1, -.4]];
     this.tf.render();
     this.tf.show();
 }
@@ -16,21 +16,16 @@ function ErosionModel(xs, ys, fixedGeometryWidth, modelSet) {
 ErosionModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
     reset: function() {
         this.init({ erosion: 0 });
-    },
-
-    setValueForVelocity: function(i,j,velocity) {
-        var erosionValue = this.tf(velocity);
-        this.world[i][j].erosion += erosionValue;
     }
 });
 
 var ErosionPatchRenderer = function(model) {
-    var gradientSteps = 100,
+    var gradientSteps = 200,
         negativeGradient = Gradient.gradient('#ffebeb', '#e03838', gradientSteps),
         positiveGradient = Gradient.gradient('#dbecff', '#2e7ad1', gradientSteps);
 
     function getColor(value) {
-        var idx = Math.floor(Math.abs(value));
+        var idx = Math.floor(Math.abs(value*100));
 
         if (idx >= negativeGradient.length)
             idx = negativeGradient.length - 1;
@@ -56,7 +51,7 @@ var ErosionPatchRenderer = function(model) {
         if (patch.erosion === 0)
             return;
         var color = getColor(patch.erosion);
-        console.log(color, patch.erosion);
+
         ctx.fillStyle = getColor(patch.erosion);
         ctx.fillRect(Math.floor(drawX), Math.floor(drawY), Math.ceil(drawWidth), Math.ceil(drawHeight));
     }

@@ -7,7 +7,9 @@ function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
 
     this.init({ 
         elevation: 0,
-        volume: 0
+        volume: 0,
+        siltFloating: 0,
+        siltDeposit: 0
     });
 
     this.isAnimated = true;
@@ -53,11 +55,13 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
     },
 
     start: function() {
+        /* call superclass */
         DataModel.prototype.start.call(this);
         this._erosionModel().start();
     },
 
     stop: function() {
+        /* call superclass */
         DataModel.prototype.stop.call(this);
         this._erosionModel().stop();
     },
@@ -114,13 +118,37 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
                 var velocity = this.slopeToVelocity(Math.abs(patchHeight - neighborHeight)/2);
                 transferVolume *= velocity;
 
-                this._erosionModel().setValueForVelocity(i, j, velocity);
+                var erosionModel = this._erosionModel();
+                var erosionValue = erosionModel.tf(velocity); /* meters */
+
+                if (erosionValue < 0) { /* erosion */
+                    patch.siltFloating += -erosionValue;
+                    patch.siltDeposit += erosionValue;
+                }
+
+                if (erosionValue > 0 && patch.siltFloating > 0) { /* deposit */
+                    var value = erosionValue;
+
+                    if (erosionValue > patch.siltFloating)
+                        value = patch.siltFloating;
+
+                    patch.siltFloating -= value;
+                    patch.siltDeposit += value;
+                }
+
+                this._erosionModel().world[i][j].erosion = patch.siltDeposit;
 
                 if (transferVolume > patch.volume)
                     transferVolume = patch.volume;
 
                 patch.volume -= transferVolume;
                 minNeighbor.volume += transferVolume;
+
+                /* TODO transfer all the silt for now -- should probalby be a function
+                 * of velocity -- ie transfer an amount proportional to the amount of 
+                 * transfered water */
+                minNeighbor.siltFloating = patch.siltFloating;
+                patch.siltFloating = 0;
 
                 /*
                 if (transferVolume != 0) {

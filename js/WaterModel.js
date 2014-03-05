@@ -165,8 +165,10 @@ var WaterPatchRenderer = function(model) {
 
     function getColor(volume) {
         var idx = Math.floor(volume * step);
+
         if (idx >= colorMap.length)
             idx = colorMap.length-1;
+
         return colorMap[idx];
     }
 

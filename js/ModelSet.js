@@ -32,6 +32,7 @@ ModelSet.prototype = {
             this._makeModel('Elevation', ElevationModel, 1024, ElevationPatchRenderer),
             this._makeModel('Fire Severity', FireSeverityModel, 512, FirePatchRenderer),
             this._makeModel('Vegetation', VegetationModel, 512, VegetationPatchRenderer),
+            this._makeModel('Erosion & Deposit', ErosionModel, 400, ErosionPatchRenderer),
             this._makeModel('Water Flow', WaterModel, 400, WaterPatchRenderer)
         ];
     },

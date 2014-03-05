@@ -33,6 +33,7 @@
 
     <script src="js/DataModel.js"></script>
     <script src="js/FireSeverityModel.js"></script>
+    <script src="js/ErosionModel.js"></script>
     <script src="js/WaterModel.js"></script>
     <script src="js/VegetationModel.js"></script>
     <script src="js/ElevationModel.js"></script>
@@ -86,6 +87,11 @@
           <h2>Choose a value:</h2>
           <select ng-model="scaleValue" ng-options="v.name for v in editedLayer.model.renderer.patchRenderer.scale">
           </select>
+        </div>
+        <div class="section" style="height: 400px; width: 100%;" 
+             ng-show="editedLayer.name == 'Erosion & Deposit'">
+          <hr/>
+          <svg id="svg-erosion"></svg>
         </div>
         <div class="section" style="height: 400px; width: 100%;" 
              ng-show="editedLayer.name == 'Vegetation' && scaleValue.value.vegetation != 0">

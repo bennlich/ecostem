@@ -7,8 +7,9 @@ function ErosionModel(xs, ys, fixedGeometryWidth, modelSet) {
 
     this.reset();
 
-    this.tf = new TransferFunction([0, 1], 'm/s', [-1, 1], 'm', 'Erosion vs. Water Speed', 'svg-erosion');
-    this.tf.controlPoints = [[0, .2], [.4, .5], [.8, -.2], [1, -.4]];
+    this.tf = new TransferFunction([0, 100], 'cm/s', [-1, 1], 'm', 'Erosion vs. Water Speed', 'svg-erosion');
+    this.tf.controlPoints = [[0,1],[40,.5],[60,-.2],[85,-1]];
+
     this.tf.render();
     this.tf.show();
 }

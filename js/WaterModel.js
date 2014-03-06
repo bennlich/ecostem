@@ -119,7 +119,7 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
                 transferVolume *= velocity;
 
                 var erosionModel = this._erosionModel();
-                var erosionValue = erosionModel.tf(velocity); /* meters */
+                var erosionValue = erosionModel.tf(velocity*100);
 
                 if (erosionValue < 0) { /* erosion */
                     patch.siltFloating += -erosionValue;

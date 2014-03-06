@@ -40,16 +40,37 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
 
             var id = $scope.sensorId++;
 
-            $scope.sensors[id] = {
-                x: e.containerPoint.x - bbox_x,
-                y: e.containerPoint.y - bbox_y,
-                latlng: e.latlng,
-                visible: true
+            var x = e.containerPoint.x - bbox_x,
+                y = e.containerPoint.y - bbox_y;
+
+            var elev = map.modelSet.models['Elevation'].dataModel;
+            var water = map.modelSet.models['Water Flow'].dataModel;
+            var veg = map.modelSet.models['Vegetation'].dataModel;
+            var sev = map.modelSet.models['Fire Severity'].dataModel;
+
+            var elevData = map.modelSet.samplePixel(x, y, elev);
+            var waterData = map.modelSet.samplePixel(x, y, water);
+            var vegData = map.modelSet.samplePixel(x, y, veg);
+            var sevData = map.modelSet.samplePixel(x, y, sev);
+
+            var sensor = {
+                elevData : elevData,
+                waterData : waterData,
+                vegData : vegData,
+                sevData : sevData
             };
 
-            var html = $compile('<div sensor-info="{0}"></div>'.format(id))($scope);
-            marker.bindPopup(html[0]);
-        });
+            $scope.sensors[id] = sensor;
+
+            var html = ('<div>Elevation: {{sensors[{0}].elevData.elevation}}<br/>'
+                     + 'Fire Severity: {{sensors[{0}].sevData.severity}}<br/>'
+                     + 'Water Volume: {{sensors[{0}].waterData.volume}}<br/>'
+                     + 'Floating Silt: {{sensors[{0}].waterData.siltFloating}}<br/>'
+                     + 'Deposited Silt: {{sensors[{0}].waterData.siltDeposit}}</div>').format(id);
+
+            var compiledHtml = $compile(html)($scope);
+            marker.bindPopup(compiledHtml[0]);
+        });     
     }
 
     $scope.addSensor = function() {

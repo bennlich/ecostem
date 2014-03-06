@@ -280,7 +280,7 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
             this.modelSet = new ModelSet(map, ratio);
 
             var zIndex = 12;
-            return _.map(this.modelSet.models, function(model) {
+            return _.map(_.values(this.modelSet.models), function(model) {
                 return {
                     name: model.name,
                     model: model,

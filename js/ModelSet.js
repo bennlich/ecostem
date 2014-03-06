@@ -28,29 +28,23 @@ ModelSet.prototype = {
     },
 
     _makeModels: function() {
-        return [
-            this._makeModel('Elevation', ElevationModel, 1024, ElevationPatchRenderer),
-            this._makeModel('Fire Severity', FireSeverityModel, 512, FirePatchRenderer),
-            this._makeModel('Vegetation', VegetationModel, 512, VegetationPatchRenderer),
-            this._makeModel('Erosion & Deposit', ErosionModel, 400, ErosionPatchRenderer),
-            this._makeModel('Water Flow', WaterModel, 400, WaterPatchRenderer)
-        ];
+        return {
+            'Elevation'         : this._makeModel('Elevation', ElevationModel, 1024, ElevationPatchRenderer),
+            'Fire Severity'     : this._makeModel('Fire Severity', FireSeverityModel, 512, FirePatchRenderer),
+            'Vegetation'        : this._makeModel('Vegetation', VegetationModel, 512, VegetationPatchRenderer),
+            'Erosion & Deposit' : this._makeModel('Erosion & Deposit', ErosionModel, 400, ErosionPatchRenderer),
+            'Water Flow'        : this._makeModel('Water Flow', WaterModel, 400, WaterPatchRenderer)
+        };
     },
 
     getModel: function(name) {
-        var model = _.find(this.models, function(model) {
-            return model.name === name;
-        });
-
-        return model;
+        return this.models[name];
     },
 
     getDataModel: function(name) {
         var model = this.getModel(name);
-        if (model)
-            return model.dataModel;
-        else
-            return null;
+
+        return model ? model.dataModel : null;
     },
 
     sample: function(x, y, fromModel, sampledModel) {

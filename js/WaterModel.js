@@ -28,7 +28,7 @@ function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
 
 WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
     _erosionModel: function() {
-        if (!this.erosionModel)
+        if (!this.erosionModel && this.modelSet.models)
             this.erosionModel = this.modelSet.getDataModel('Erosion & Deposit');
         return this.erosionModel;
     },

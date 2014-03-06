@@ -10,7 +10,7 @@ Ecostem.run(['$rootScope', function($rootScope) {
     console.log('Ecostem is running.');
 }]);
 
-var elevationToDroplets, curSlope, calculatedSlope, slopeDiff;
+var curSlope, calculatedSlope, slopeDiff;
 
 Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevationSampler', 
                           function( $scope,   $q,   $compile,   map,   elevationSampler) 
@@ -259,9 +259,6 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
             $scope.showSlope = true;
         }
     };
-
-    // elevationToDroplets = $scope.elevationToDroplets =
-    //     new TransferFunction([0, 200], 'm', [0, 400], 'droplets / m^2', 'Rainfall vs. elevation');
 
     $q.all([map.deferred.promise, elevationSampler.deferred.promise]).then(function() {
         $scope.elevationIsLoading = true;

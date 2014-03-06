@@ -22,7 +22,7 @@ circle.control {
 	stroke-width: 2;
 }
 
-circle.handle {
+.handle {
 	fill: rgba(0,0,0,0);
 	stroke: none;
 }
@@ -31,8 +31,35 @@ g.control:hover circle.control {
 	stroke: #6A9CCD;
 }
 
+g.control:hover rect.control {
+	fill: #225585;
+}
+
 path.plot {
 	stroke: #6A9CCD;
 	stroke-width: 3;
 	fill: none;
+}
+
+/* stacked bars ctrl */
+.color-c {
+	fill: #6A9CCD;
+}
+
+.color-b {
+	fill: #FFE67A;
+}
+
+.color-a {
+	fill: #FF947A;
+}
+
+text.bar-label {
+	text-anchor: middle;
+	fill: black;
+	font-size: 12px;
+}
+
+g.stacked-bars .x-axis path {
+	display: none;
 }

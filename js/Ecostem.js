@@ -74,6 +74,11 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
     }
 
     $scope.addSensor = function() {
+        if ($scope.addingSensor) {
+            $scope.addingSensor = false;
+            return;
+        }
+
         $scope.addingSensor = true;
         map.scenarioPolygon.on('click', addSensor);
     };

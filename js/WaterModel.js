@@ -19,10 +19,23 @@ function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
     this.erosionModel = null;
 
     this.patchHeights = new ABM.DataSet();
-    this.slopeToVelocity = new TransferFunction([0, 50], 'degrees', [0, 1], 'm / s', 'Flow velocity vs. slope');
-    this.slopeToVelocity.controlPoints[0] = [0,0.4];
-    this.slopeToVelocity.controlPoints[1] = [22,0.55];
-    this.slopeToVelocity.render();
+
+    var slopeToVelocity = new TransferFunction([0, 50], 'degrees', [0, 1], 'm / s', 'Flow velocity vs. slope');
+    slopeToVelocity.controlPoints[0] = [0,0.4];
+    slopeToVelocity.controlPoints[1] = [22,0.55];
+    slopeToVelocity.render();
+
+    this.controls = {
+        slopeToVelocity: slopeToVelocity,
+        evapPercRunoff: new StackedBars({
+            domain: ['low', 'medium', 'high'],
+            domainTitle: "burn severity",
+            range: ["Evaporation", "Percolation", "Runoff"],
+            rangeTitle: "% of water volume"
+        })
+    };
+    this.curControl = 'evapPercRunoff';
+
     this.reset();
 }
 
@@ -46,12 +59,20 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
         }
     },
 
-    show: function() {
-        this.slopeToVelocity.show();
+    show: function(key) {
+        this.hide();
+        if (key) {
+            this.curControl = key;
+        }
+        this.controls[this.curControl].show();
     },
 
     hide: function() {
-        this.slopeToVelocity.hide();
+        for (var key in this.controls) {
+            if (this.controls.hasOwnProperty(key)) {
+                this.controls[key].hide();
+            }
+        }
     },
 
     start: function() {
@@ -115,7 +136,7 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
                 var transferVolume = patch.volume - (transferVolumeBalancePoint - patch.elevation);
 
                 // TODO: Smarter velocity calculation
-                var velocity = this.slopeToVelocity(Math.abs(patchHeight - neighborHeight)/2);
+                var velocity = this.controls.slopeToVelocity(Math.abs(patchHeight - neighborHeight)/2);
                 transferVolume *= velocity;
 
                 var erosionModel = this._erosionModel();

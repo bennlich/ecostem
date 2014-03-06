@@ -47,6 +47,7 @@
     <script src="js/EcostemDirectives.js"></script>
     <script src="js/EcostemServices.map.js"></script>
     <script src="js/EcostemServices.elevationSampler.js"></script>
+    <script src="js/StackedBars.js"></script>
     <script src="js/TransferFunction.js"></script>
 
   </head>
@@ -83,7 +84,8 @@
                ng-click="selectBrushSize(b)"
                class="brush" ng-class="{'selected':selectedBrushSize==b}" 
                style="width: {{b}}; height: {{b}}; background-color: {{scaleValue.color}}"></div>
-        </div><div class="section">
+        </div>
+        <div class="section">
           <h2>Choose a value:</h2>
           <select ng-model="scaleValue" ng-options="v.name for v in editedLayer.model.renderer.patchRenderer.scale">
           </select>
@@ -107,9 +109,14 @@
           <button ng-click="drawVegetation(scaleValue.value.vegetation)">Autofill {{scaleValue.name}}</button>
           <button ng-click="clearVegetation(scaleValue.value.vegetation)">Clear {{scaleValue.name}}</button>
         </div>
-        <div class="section" style="height: 400px; width: 100%;" ng-show="editedLayer.name == 'Water Flow'">
+        <div class="section" style="width: 100%;" ng-show="editedLayer.name == 'Water Flow'">
           <hr/>
-          <svg id="transfer-function-svg"></svg>
+          <div ng-repeat="(key, control) in editedLayer.model.dataModel.controls">
+            <button ng-click="editedLayer.model.dataModel.show(key)" ng-class="{ 'active-button': key == editedLayer.model.dataModel.curControl }">{{ control.title }}</button>
+          </div>
+          <div class="section" style="height: 400px; width: 100%;">
+            <svg id="transfer-function-svg"></svg>
+          </div>
         </div>
       </div>
 

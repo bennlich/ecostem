@@ -94,7 +94,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
             vegModel = modelSet.getModel('Vegetation'),
             dataModel = vegModel.dataModel,
             elevationModel = modelSet.getDataModel('Elevation'),
-            tf = dataModel.tf[vegType];
+            tf = dataModel.controls[vegType];
 
         for (var i = 0; i < dataModel.xSize; ++i) {
             for (var j = 0; j < dataModel.ySize; ++j) {

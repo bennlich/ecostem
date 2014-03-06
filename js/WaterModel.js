@@ -59,22 +59,6 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
         }
     },
 
-    show: function(key) {
-        this.hide();
-        if (key) {
-            this.curControl = key;
-        }
-        this.controls[this.curControl].show();
-    },
-
-    hide: function() {
-        for (var key in this.controls) {
-            if (this.controls.hasOwnProperty(key)) {
-                this.controls[key].hide();
-            }
-        }
-    },
-
     start: function() {
         /* call superclass */
         DataModel.prototype.start.call(this);
@@ -140,7 +124,7 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
                 transferVolume *= velocity;
 
                 var erosionModel = this._erosionModel();
-                var erosionValue = erosionModel.tf(velocity*100);
+                var erosionValue = erosionModel.controls.velocityToErosion(velocity*100);
 
                 if (erosionValue < 0) { /* erosion */
                     patch.siltFloating += -erosionValue;

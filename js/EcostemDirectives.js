@@ -1,5 +1,24 @@
 'use strict';
 
+EcostemDirectives.directive('sensorInfo', ['map', function(map) {
+    return function(scope, element, attrs) {
+        var id = attrs.sensorInfo,
+            sensor = scope.sensors[id];
+
+        var content = '';
+
+        _.each(map.modelSet.models, function(m) {
+            content += '<h2>{0}</h2>'.format(m.name);
+            var info = map.modelSet.samplePixel(sensor.x, sensor.y, m.dataModel);
+            for (var k in info) {
+                content += '{0}: {1}<br/>'.format(k, info[k]);
+            }
+        });
+
+        element.html(content);
+    };
+}]);
+
 EcostemDirectives.directive('drawingSurface', ['map', function(map) {
     return function(scope, element, attrs) {
         function mouseHandler(e) {

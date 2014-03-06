@@ -60,7 +60,19 @@ ModelSet.prototype = {
             toX = Math.floor(fromX / sampledModel.sampleSpacing + sampledModel.sampleSpacing/2),
             toY = Math.floor(fromY / sampledModel.sampleSpacing + sampledModel.sampleSpacing/2);
 
-        /* TODO this is very crude sampling */
+        return sampledModel.world[toX][toY];
+    },
+
+    samplePixel: function(x, y, sampledModel) {
+        var bboxWidth = this.map.scenarioBBox.pixelWidth(),
+            sampleSpacing = this.virtualWidth/bboxWidth,
+
+            fromX = x * sampleSpacing,
+            fromY = y * sampleSpacing,
+
+            toX = Math.floor(fromX / sampledModel.sampleSpacing + sampledModel.sampleSpacing/2),
+            toY = Math.floor(fromY / sampledModel.sampleSpacing + sampledModel.sampleSpacing/2);
+
         return sampledModel.world[toX][toY];
     }
 };

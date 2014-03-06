@@ -178,11 +178,14 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
                 this.bboxCallback({
                     x: e.containerPoint.x - bbox_x,
-                    y: e.containerPoint.y - bbox_y
+                    y: e.containerPoint.y - bbox_y,
+                    latlng: e.latlng
                 });
             }.bind(this));
 
             polygon.addTo(this.leafletMap);
+
+            this.scenarioPolygon = polygon;
         },
 
         onBBoxClickDrag: function(callback) {
@@ -287,6 +290,14 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
                     leafletLayer: model.renderer.makeLayer({zIndex: zIndex++, opacity: 0.85})
                 };
             });
+        },
+
+        addSensor: function() {
+            this.onBBoxClickDrag(function(pos) {
+                var marker = L.marker(pos.latlng);
+                marker.bindPopup('Hello').openPopup();
+                marker.addTo(this.leafletMap);
+            }.bind(this));
         }
     };
 }]);

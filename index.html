@@ -112,10 +112,12 @@
           <svg id="transfer-function-svg"></svg>
         </div>
       </div>
+
       <div class="layers uibox" ng-show="elevationLoaded && !editedLayer">
-        <h3>EcoStem</h3>
+        <h3 ng-click="showMapLayers=!showMapLayers">Map Layers</h3>
+        <div ng-show="showMapLayers">
         <hr/>
-        <div class="layer-container"  ng-repeat="layer in map.baseLayers">
+        <div class="layer-container" ng-repeat="layer in map.baseLayers">
           <input id="bl{{$index}}" name="baseLayer" type="radio" checked-base-layer="layer"></input>
           <label for="bl{{$index}}">{{ layer.name }}</label><br/>
         </div>
@@ -124,50 +126,64 @@
           <input id="l{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
           <label for="l{{$index}}">{{ layer.name }}</label><br/>
         </div>
-        <hr/>
-        <div class="layer-container" ng-repeat="layer in map.dataLayers">
-          <input id="dl{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
-          <label for="dl{{$index}}">{{ layer.name }}</label>
-          <br/>
-          <div class="action-buttons">
-            <button ng-show="layer.model.dataModel.editable"
-                    ng-class="{'active-button':layer.editing}"
-                    ng-click="editDataLayer(layer)">Edit</button>
-            <button class="active-button"
-                    ng-show="layer.model.dataModel.hasControls && layer.model.dataModel.isRunning"
-                    ng-click="pauseSimulation(layer)">Pause</button>
-            <button ng-show="layer.model.dataModel.hasControls && ! layer.model.dataModel.isRunning"
-                    ng-click="startSimulation(layer)">Start</button>
-            <button ng-show="layer.model.dataModel.hasControls"
-                    ng-click="resetSimulation(layer)">Reset</button>
-            <button class="active-button"
-                    ng-show="layer.model.server.isRunning" 
-                    ng-click="stopServingTiles(layer)">Unpublish</button>
-            <button ng-show="! layer.model.server.isRunning" 
-                    ng-click="serveTiles(layer)">Publish</button>
-          </div>
-          <br/>
-        </div>
-        <hr/>
-        <div class="simulation">
-          <a ng-click="showElevation=!showElevation" ng-show="elevationLoaded">
-            <span ng-show="!showElevation">Show Raw Elevation</span>
-            <span ng-show="showElevation">Hide Raw Elevation</span>
-          </a>
-          <br/>
-          <a ng-click="showQuad=!showQuad" ng-show="elevationLoaded">
-            <span ng-show="!showQuad">Show Quad</span>
-            <span ng-show="showQuad">Hide Quad</span>
-          </a>
-          <br/>
-          <a ng-click="toggleSlope()" ng-show="elevationLoaded && map.dataLayers[2].model.dataModel.patchHeights.data.length > 0">
-            <span ng-show="!showSlope">Show Slopes</span>
-            <span ng-show="showSlope">Hide Slopes</span>
-          </a>
         </div>
       </div>
-      <div class="uibox transfer-function-test" ng-show="false">
-        <svg id="transfer-function-svg"></svg>
+
+      <div class="layers uibox" style="right: 550px" ng-show="elevationLoaded && !editedLayer">
+        <h3 ng-click="addSensor()">Add Sensor</h3>
+        <div ng-show="addingSensor">
+          <hr/>
+          Click in the scenario box to add a sensor at that point.
+          <hr/>
+          <button ng-click="cancelAddingSensor()">Cancel</button>
+        </div>
+      </div>
+
+      <div class="layers uibox" style="right: 280px" ng-show="elevationLoaded && !editedLayer">
+        <h3 ng-click="showModels=!showModels">Models</h3>
+        <div ng-show="showModels">
+          <hr/>
+          <div class="layer-container" ng-repeat="layer in map.dataLayers">
+            <input id="dl{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
+            <label for="dl{{$index}}">{{ layer.name }}</label>
+            <br/>
+            <div class="action-buttons">
+              <button ng-show="layer.model.dataModel.editable"
+                      ng-class="{'active-button':layer.editing}"
+                      ng-click="editDataLayer(layer)">Edit</button>
+              <button class="active-button"
+                      ng-show="layer.model.dataModel.hasControls && layer.model.dataModel.isRunning"
+                      ng-click="pauseSimulation(layer)">Pause</button>
+              <button ng-show="layer.model.dataModel.hasControls && ! layer.model.dataModel.isRunning"
+                      ng-click="startSimulation(layer)">Start</button>
+              <button ng-show="layer.model.dataModel.hasControls"
+                      ng-click="resetSimulation(layer)">Reset</button>
+              <button class="active-button"
+                      ng-show="layer.model.server.isRunning" 
+                      ng-click="stopServingTiles(layer)">Unpublish</button>
+              <button ng-show="! layer.model.server.isRunning" 
+                      ng-click="serveTiles(layer)">Publish</button>
+            </div>
+            <br/>
+          </div>
+          <hr/>
+          <div class="simulation">
+            <a ng-click="showElevation=!showElevation" ng-show="elevationLoaded">
+              <span ng-show="!showElevation">Show Raw Elevation</span>
+              <span ng-show="showElevation">Hide Raw Elevation</span>
+            </a>
+            <br/>
+            <a ng-click="showQuad=!showQuad" ng-show="elevationLoaded">
+              <span ng-show="!showQuad">Show Quad</span>
+              <span ng-show="showQuad">Hide Quad</span>
+            </a>
+            <br/>
+            <a ng-click="toggleSlope()" ng-show="elevationLoaded && map.dataLayers[2].model.dataModel.patchHeights.data.length > 0">
+              <span ng-show="!showSlope">Show Slopes</span>
+              <span ng-show="showSlope">Hide Slopes</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </body>

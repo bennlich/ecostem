@@ -12,12 +12,54 @@ Ecostem.run(['$rootScope', function($rootScope) {
 
 var elevationToDroplets, curSlope, calculatedSlope, slopeDiff;
 
-Ecostem.controller('EcostemCtrl', ['$scope', '$q', 'map', 'elevationSampler', function($scope, $q, map, elevationSampler) {
+Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevationSampler', 
+                          function( $scope,   $q,   $compile,   map,   elevationSampler) 
+{
     $scope.simulationStarted = false;
     $scope.showElevation = false;
     $scope.elevationLoaded = false;
     $scope.elevationIsLoading = false;
+
+    $scope.addingSensor = false;
+    $scope.sensorId = 0;
+    $scope.sensors = {};
+
     $scope.map = map;
+
+    function addSensor(e) {
+        console.log('click');
+        var marker = L.marker(e.latlng);
+        marker.addTo(map.leafletMap);
+        map.scenarioPolygon.off('click', addSensor);
+
+        var bbox_x = map.scenarioBBox.xOffsetFromTopLeft();
+        var bbox_y = map.scenarioBBox.yOffsetFromTopLeft();
+
+        $scope.$apply(function() {
+            $scope.addingSensor = false;
+
+            var id = $scope.sensorId++;
+
+            $scope.sensors[id] = {
+                x: e.containerPoint.x - bbox_x,
+                y: e.containerPoint.y - bbox_y,
+                latlng: e.latlng,
+                visible: true
+            };
+
+            var html = $compile('<div sensor-info="{0}"></div>'.format(id))($scope);
+            marker.bindPopup(html[0]);
+        });
+    }
+
+    $scope.addSensor = function() {
+        $scope.addingSensor = true;
+        map.scenarioPolygon.on('click', addSensor);
+    };
+
+    $scope.cancelAddingSensor = function() {
+        $scope.addingSensor = false;
+    };
 
     $scope.drawVegetation = function(vegType) {
         console.log('draw veg', vegType);

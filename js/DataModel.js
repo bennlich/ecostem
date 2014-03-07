@@ -11,7 +11,12 @@ function DataModel(xs, ys, fixedGeometryWidth, modelSet) {
     this.isRunning = false;
     this.hasControls = false;
     this.timeoutValue = 100;
+
+    /* TODO -- this is iffy ... the distinction between whether 
+     * there is an "Edit" button and whether you can manually paint */
+
     this.editable = true;
+    this.canPaint = true;
 }
 
 DataModel.prototype = {

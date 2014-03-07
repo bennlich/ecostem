@@ -20,9 +20,9 @@ function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
 
     this.patchHeights = new ABM.DataSet();
 
-    var slopeToVelocity = new TransferFunction([0, 50], 'degrees', [0, 1], 'm / s', 'Flow velocity vs. slope');
-    slopeToVelocity.controlPoints[0] = [0,0.4];
-    slopeToVelocity.controlPoints[1] = [22,0.55];
+    var slopeToVelocity = new TransferFunction([0, 50], 'degrees', [0, 100], 'cm / s', 'Flow velocity vs. slope');
+    slopeToVelocity.controlPoints[0] = [0,50];
+    slopeToVelocity.controlPoints[1] = [22,55];
     slopeToVelocity.render();
 
     this.controls = {
@@ -110,38 +110,18 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
                     continue;
 
                 var minNeighbor = _.min(this.neighbors(i,j), function(neighbor) {
-                    return neighbor.volume + neighbor.elevation;
+                    return neighbor.volume + neighbor.elevation + neighbor.siltDeposit;
                 });
 
-                var patchHeight = patch.volume + patch.elevation;
-                var neighborHeight = minNeighbor.volume + minNeighbor.elevation;
+                var patchHeight = patch.volume + patch.elevation + patch.siltDeposit;
+                var neighborHeight = minNeighbor.volume + minNeighbor.elevation + minNeighbor.siltDeposit;
 
                 var transferVolumeBalancePoint = (neighborHeight + patchHeight) / 2;
                 var transferVolume = patch.volume - (transferVolumeBalancePoint - patch.elevation);
 
                 // TODO: Smarter velocity calculation
                 var velocity = this.controls.slopeToVelocity(Math.abs(patchHeight - neighborHeight)/2);
-                transferVolume *= velocity;
-
-                var erosionModel = this._erosionModel();
-                var erosionValue = erosionModel.controls.velocityToErosion(velocity*100);
-
-                if (erosionValue < 0) { /* erosion */
-                    patch.siltFloating += -erosionValue;
-                    patch.siltDeposit += erosionValue;
-                }
-
-                if (erosionValue > 0 && patch.siltFloating > 0) { /* deposit */
-                    var value = erosionValue;
-
-                    if (erosionValue > patch.siltFloating)
-                        value = patch.siltFloating;
-
-                    patch.siltFloating -= value;
-                    patch.siltDeposit += value;
-                }
-
-                this._erosionModel().world[i][j].erosion = patch.siltDeposit;
+                transferVolume *= velocity/100;
 
                 if (transferVolume > patch.volume)
                     transferVolume = patch.volume;
@@ -149,11 +129,45 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
                 patch.volume -= transferVolume;
                 minNeighbor.volume += transferVolume;
 
-                /* TODO transfer all the silt for now -- should probalby be a function
-                 * of velocity -- ie transfer an amount proportional to the amount of 
-                 * transfered water */
-                minNeighbor.siltFloating = patch.siltFloating;
-                patch.siltFloating = 0;
+                /* Code below deals with erosion and deposit -- silting */
+
+                var erosionModel = this._erosionModel(),
+                    /* soil height to be eroded */
+                    erosionValue = erosionModel.controls.velocityToErosion(velocity),
+                    /* percentage of floating silt to be deposited */
+                    depositValue = erosionModel.controls.velocityToDeposit(velocity)/100;
+
+                if (erosionValue < 0) {
+                    throw new Error('neg erosion');
+                }
+
+                /* dislodge silt and make it float */
+                patch.siltFloating += erosionValue;
+                patch.siltDeposit -= erosionValue;
+
+                if (patch.siltFloating > 0) {
+                    var value = depositValue * patch.siltFloating;
+                    if (value > patch.siltFloating) {
+                        console.log(patch.siltFloating, value, depositValue);
+                        throw new Error('shit');
+                    }
+                    patch.siltFloating -= value;
+                    patch.siltDeposit += value;
+                }
+
+                this._erosionModel().world[i][j].erosion = patch.siltDeposit;
+
+                if (patch.volume === 0) {
+                    /* if we passed all the water to the neighbor, 
+                     * pass all the floating silt along with it.
+                     */
+                    minNeighbor.siltFloating += patch.siltFloating;
+                    patch.siltFloating = 0;
+                } else {
+                    var siltTransfer = patch.siltFloating * velocity/100;
+                    minNeighbor.siltFloating += siltTransfer;
+                    patch.siltFloating -= siltTransfer;
+                }
 
                 /*
                 if (transferVolume != 0) {

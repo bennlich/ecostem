@@ -4,16 +4,22 @@ function ErosionModel(xs, ys, fixedGeometryWidth, modelSet) {
     DataModel.call(this, xs, ys, fixedGeometryWidth, modelSet);
 
     this.isAnimated = true;
-    this.editable = false;
+    this.editable = true;
+    this.canPaint = false;
 
     this.reset();
 
-    var velocityToErosion = new TransferFunction([0, 100], 'cm/s', [-1, 1], 'm', 'Erosion vs. Water Speed');
-    velocityToErosion.controlPoints = [[0,1],[40,.5],[60,-.2],[85,-1]];
+    var velocityToErosion = new TransferFunction([0, 100], 'cm/s', [0, 1], 'm', 'Erosion vs. Water Speed');
+    velocityToErosion.controlPoints = [[0,0],[40,.4],[60,.6],[100,1]];
     velocityToErosion.render();
 
+    var velocityToDeposit = new TransferFunction([0, 100], 'cm/s', [0, 100], '% (of floating silt)', 'Deposit vs. Water Speed');
+    velocityToDeposit.controlPoints = [[0,100],[40,60],[60,40],[100,0]];
+    velocityToDeposit.render();
+
     this.controls = {
-        velocityToErosion: velocityToErosion
+        velocityToErosion: velocityToErosion,
+        velocityToDeposit: velocityToDeposit
     };
 
     this.curControl = 'velocityToErosion';

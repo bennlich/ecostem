@@ -1,5 +1,16 @@
 'use strict';
 
+/* leaflet "hack" that forces openPopup() to leave current popups open */
+L.Map = L.Map.extend({
+    openPopup: function(popup) {
+        this._popup = popup;
+
+        return this.addLayer(popup).fire('popupopen', {
+            popup: this._popup
+        });
+    }
+});
+
 /* Angular application */
 
 var Ecostem = angular.module('Ecostem', ['EcostemDirectives', 'EcostemServices']);
@@ -88,14 +99,14 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
                      + 'Water Volume: {{sensors[{0}].waterData.volume | format}}<br/>'
                      + 'Floating Silt: {{sensors[{0}].waterData.siltFloating | format}}<br/>'
                      + 'Deposited Silt: {{sensors[{0}].waterData.siltDeposit | format}}<hr/>'
-                     + '<button ng-click="deleteSensor({0})">Delete</button></div>').format(id);
+                     + '<button ng-click="deleteSensor({0})">Delete Sensor</button></div>').format(id);
 
             var compiledHtml = $compile(html)($scope);
 
             var popup = L.popup({maxWidth: 160, minWidth: 160}).setContent(compiledHtml[0]);
 
             marker.bindPopup(popup).update().openPopup();
-        });     
+        });
     }
 
     $scope.fireTypeToString = FireSeverityModel.typeToString;

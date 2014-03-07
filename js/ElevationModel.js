@@ -9,6 +9,7 @@ function ElevationModel(xs, ys, fixedGeometryWidth, modelSet) {
     this.max = 0;
 
     this.editable = false;
+    this.canPaint = false;
 }
 
 ElevationModel.prototype = _.extend(clonePrototype(DataModel.prototype), {

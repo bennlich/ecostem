@@ -1,10 +1,11 @@
 'use strict';
 
-function ModelSet(map, ratio) {
+function ModelSet(map, ratio, scope) {
     this.map = map;
     this.virtualWidth = 1024;
     this.ratio = ratio;
     this.models = this._makeModels();
+    this.scope = scope;
 }
 
 ModelSet.prototype = {
@@ -68,6 +69,10 @@ ModelSet.prototype = {
             toY = Math.floor(fromY / sampledModel.sampleSpacing + sampledModel.sampleSpacing/2);
 
         return sampledModel.world[toX][toY];
+    },
+
+    safeApply: function(fn) {
+        this.scope.safeApply(fn);
     }
 };
 

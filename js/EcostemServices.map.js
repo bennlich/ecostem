@@ -277,7 +277,7 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
         _makeDataLayers: function() {
             var ratio = this.scenarioBBox.pixelHeight() / this.scenarioBBox.pixelWidth();
 
-            this.modelSet = new ModelSet(map, ratio);
+            this.modelSet = new ModelSet(map, ratio, $rootScope);
 
             var zIndex = 12;
             return _.map(_.values(this.modelSet.models), function(model) {

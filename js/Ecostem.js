@@ -8,6 +8,18 @@ var EcostemServices = angular.module('EcostemServices', []);
 
 Ecostem.run(['$rootScope', function($rootScope) {
     console.log('Ecostem is running.');
+    
+    $rootScope.safeApply = function(fn) {
+      var phase = this.$root.$$phase;
+      if(phase == '$apply' || phase == '$digest') {
+        if(fn && (typeof(fn) === 'function')) {
+          fn();
+        }
+      } else {
+        this.$apply(fn);
+      }
+    };
+    
 }]);
 
 var curSlope, calculatedSlope, slopeDiff;

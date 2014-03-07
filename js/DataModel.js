@@ -89,7 +89,9 @@ DataModel.prototype = {
         if (! this.isRunning)
             return;
 
-        this.step();
+        $this.modelSet.safeApply(function() {
+            $this.step();
+        });
 
         this.runCallbacks();
 

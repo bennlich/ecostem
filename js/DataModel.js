@@ -41,13 +41,15 @@ DataModel.prototype = {
         if (y + height > this.ySize)
             height = this.ySize - y;
 
-        for (var i = x; i < x + width; ++i) {
-            for (var j = y; j < y + height; ++j) {
-                for (var key in obj) {
-                    this.world[i][j][key] = obj[key];
+        this.modelSet.safeApply(function() {
+            for (var i = x; i < x + width; ++i) {
+                for (var j = y; j < y + height; ++j) {
+                    for (var key in obj) {
+                        this.world[i][j][key] = obj[key];
+                    }
                 }
             }
-        }
+        }.bind(this));
     },
 
     neighbors: function(x,y) {
@@ -103,10 +105,12 @@ DataModel.prototype = {
     runCallbacks: function() {
         var $this = this;
 
-        _.each(this.callbacks, function(cb) {
-            setTimeout(function() {
-                cb($this.world);
-            }, 0);
+        $this.modelSet.safeApply(function() {
+            _.each($this.callbacks, function(cb) {
+                setTimeout(function() {
+                    cb($this.world);
+                }, 0);
+            });
         });
     },
 

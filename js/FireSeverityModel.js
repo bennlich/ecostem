@@ -8,7 +8,18 @@ function FireSeverityModel(xs, ys, fixedGeometryWidth, modelSet) {
 }
 
 FireSeverityModel.severityTypes = {
-    NONE: 0, LOW: 1, MEDIUM: 2, HIGH: 3
+    LOW: 1, MEDIUM: 2, HIGH: 3, NONE: 0
+};
+
+FireSeverityModel.typeToString = function(type) {
+    var t = FireSeverityModel.severityTypes;
+    switch (type) {
+    case t.LOW    : return 'Low';
+    case t.MEDIUM : return 'Medium';
+    case t.HIGH   : return 'High';
+    case t.NONE   : 
+    default       : return 'No Data';
+    }
 };
 
 FireSeverityModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
@@ -34,8 +45,9 @@ var FirePatchRenderer = function(model) {
         case t.MEDIUM:
             return colorMedium;
         case t.LOW:
-        default:
             return colorLow;
+        default:
+            return colorNone;
         }
     }
 
@@ -53,12 +65,13 @@ var FirePatchRenderer = function(model) {
         ctx.fillRect(Math.floor(drawX), Math.floor(drawY), Math.ceil(drawWidth), Math.ceil(drawHeight));
     }
 
-    var scale = [
-        { value: { severity: t.LOW }, color: colorLow, name: 'Low Severity' },
-        { value: { severity: t.MEDIUM }, color: colorMedium, name: 'Medium Severity' },
-        { value: { severity: t.HIGH }, color: colorHigh, name: 'High Severity' },
-        { value: { severity: t.NONE }, color: colorNone, name: 'None (Erase)' }
-    ];
+    var scale = _.map(_.values(t), function(severity) {
+        return { 
+            value: { severity: severity }, 
+            color: getColor(severity),
+            name: FireSeverityModel.typeToString(severity)
+        };
+    });
 
     return { 
         render: render,

@@ -75,7 +75,9 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
             $scope.sensors[id] = sensor;
 
             var html = ('<div>Elevation: {{sensors[{0}].elevData.elevation}}<br/>'
-                     + 'Fire Severity: {{sensors[{0}].sevData.severity}}<br/>'
+                     + 'Fire Severity: {{fireTypeToString(sensors[{0}].sevData.severity)}}<br/>'
+                     + 'Vegetation: {{vegTypeToString(sensors[{0}].vegData.vegetation)}}<br/>'
+                     + '<hr/>'
                      + 'Water Volume: {{sensors[{0}].waterData.volume}}<br/>'
                      + 'Floating Silt: {{sensors[{0}].waterData.siltFloating}}<br/>'
                      + 'Deposited Silt: {{sensors[{0}].waterData.siltDeposit}}</div>').format(id);
@@ -84,6 +86,9 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
             marker.bindPopup(compiledHtml[0]);
         });     
     }
+
+    $scope.fireTypeToString = FireSeverityModel.typeToString;
+    $scope.vegTypeToString = VegetationModel.typeToString;
 
     $scope.addSensor = function() {
         if ($scope.addingSensor) {

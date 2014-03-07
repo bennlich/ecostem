@@ -28,7 +28,19 @@ function VegetationModel(xs, ys, fixedGeometryWidth, modelSet) {
 }
 
 VegetationModel.vegTypes = {
-    NONE: 0, FIR: 1, SAGEBRUSH: 2, STEPPE: 3, GRASS: 4
+    FIR: 1, SAGEBRUSH: 2, STEPPE: 3, GRASS: 4, NONE: 0
+};
+
+VegetationModel.typeToString = function(type) {
+    var t = VegetationModel.vegTypes;
+    switch (type) {
+    case t.FIR: return 'Fir';
+    case t.SAGEBRUSH: return 'Sagebrush';
+    case t.STEPPE: return 'Steppe';
+    case t.GRASS: return 'Grass';
+    case t.NONE:
+    default: return 'No Data';
+    }
 };
 
 VegetationModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
@@ -65,13 +77,13 @@ var VegetationPatchRenderer = function(model) {
         ctx.fillRect(Math.floor(drawX), Math.floor(drawY), Math.ceil(drawWidth), Math.ceil(drawHeight));
     }
 
-    var scale = [
-        { value: { vegetation: t.FIR }, color: colors[t.FIR], name: 'Fir' },
-        { value: { vegetation: t.SAGEBRUSH }, color: colors[t.SAGEBRUSH], name: 'Sagebrush' },
-        { value: { vegetation: t.STEPPE }, color: colors[t.STEPPE], name: 'Steppe' },
-        { value: { vegetation: t.GRASS }, color: colors[t.GRASS], name: 'Grass' },
-        { value: { vegetation: t.NONE }, color: colors[t.NONE], name: 'None (Erase)' }
-    ];
+    var scale = _.map(_.values(t), function(vegType) {
+        return {
+            value: { vegetation: vegType },
+            color: colors[vegType],
+            name: VegetationModel.typeToString(vegType)
+        };
+    });
 
     return { 
         render: render,

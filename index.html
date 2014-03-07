@@ -87,7 +87,9 @@
         </div>
         <div class="section">
           <h2>Choose a value:</h2>
-          <select ng-model="scaleValue" ng-options="v.name for v in editedLayer.model.renderer.patchRenderer.scale" ng-change="editedLayer.model.dataModel.scaleChanged(scaleValue)">
+          <select ng-model="scaleValue" 
+                  ng-options="v.name for v in editedLayer.model.renderer.patchRenderer.scale" 
+                  ng-change="editedLayer.model.dataModel.scaleChanged(scaleValue)">
           </select>
         </div>
         <div class="section" style="width: 100%" 
@@ -99,12 +101,13 @@
         <div ng-show="editedLayer.name == 'Water Flow'">
           <hr/>
           <div ng-repeat="(key, control) in editedLayer.model.dataModel.controls">
-            <button ng-click="editedLayer.model.dataModel.show(key)" ng-class="{ 'active-button': key == editedLayer.model.dataModel.curControl }">{{ control.title }}</button>
+            <button ng-click="editedLayer.model.dataModel.show(key)" 
+                    ng-class="{ 'active-button': key == editedLayer.model.dataModel.curControl }">{{ control.title }}</button>
           </div>
         </div>
-        <div class="section" style="width: 100%;">
+        <div class="section" style="width: 100%;" ng-show="editedLayer.model.dataModel.curControl">
           <hr/>
-          <div class="section" style="height: 400px; width: 100%;" ng-show="editedLayer.model.dataModel.curControl">
+          <div class="section" style="height: 400px; width: 100%;">
             <svg id="transfer-function-svg"></svg>
           </div>
         </div>

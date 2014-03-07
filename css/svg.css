@@ -4,67 +4,67 @@
 }
 
 text {
-	fill: #eee;
+    fill: #eee;
 }
 
 .x-axis line, .x-axis path, .y-axis line, .y-axis path {
-	stroke-width: 1px;
-	stroke: #777;
-	fill: none;
+    stroke-width: 1px;
+    stroke: #777;
+    fill: none;
 }
 
 .x-axis text, .y-axis text {
-	font-size: 75%;
+    font-size: 75%;
 }
 
 text.x-label, text.y-label {
-	font-size: 80%;
+    font-size: 80%;
 }
 
 circle.control {
-	fill: white;
-	stroke: #ace;
-	stroke-width: 2;
+    fill: white;
+    stroke: #ace;
+    stroke-width: 2;
 }
 
 .handle {
-	fill: rgba(0,0,0,0);
-	stroke: none;
+    fill: rgba(0,0,0,0);
+    stroke: none;
 }
 
 g.control:hover circle.control {
-	stroke: #6A9CCD;
+    stroke: #6A9CCD;
 }
 
 g.control:hover rect.control {
-	fill: #225585;
+    fill: #225585;
 }
 
 path.plot {
-	stroke: #6A9CCD;
-	stroke-width: 3;
-	fill: none;
+    stroke: #6A9CCD;
+    stroke-width: 3;
+    fill: none;
 }
 
 /* stacked bars ctrl */
 .color-c {
-	fill: #6A9CCD;
+    fill: #6A9CCD;
 }
 
 .color-b {
-	fill: #FFE67A;
+    fill: #FFE67A;
 }
 
 .color-a {
-	fill: #FF947A;
+    fill: #FF947A;
 }
 
 text.bar-label {
-	text-anchor: middle;
-	fill: black;
-	font-size: 12px;
+    text-anchor: middle;
+    fill: black;
+    font-size: 12px;
 }
 
 g.stacked-bars .x-axis path {
-	display: none;
+    display: none;
 }

@@ -4,6 +4,7 @@ function ErosionModel(xs, ys, fixedGeometryWidth, modelSet) {
     DataModel.call(this, xs, ys, fixedGeometryWidth, modelSet);
 
     this.isAnimated = true;
+    this.isEditable = false;
 
     this.reset();
 

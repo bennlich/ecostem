@@ -5,6 +5,13 @@
 var Ecostem = angular.module('Ecostem', ['EcostemDirectives', 'EcostemServices']);
 var EcostemDirectives = angular.module('EcostemDirectives', ['EcostemServices']);
 var EcostemServices = angular.module('EcostemServices', []);
+var EcostemFilters = angular.module('EcostemFilters', []);
+
+Ecostem.filter('format', [function() {
+    return function(input) {
+        return Number(input).toFixed(2);
+    };
+}]);
 
 Ecostem.run(['$rootScope', function($rootScope) {
     console.log('Ecostem is running.');
@@ -39,8 +46,8 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
     $scope.map = map;
 
     function addSensor(e) {
-        console.log('click');
         var marker = L.marker(e.latlng);
+
         marker.addTo(map.leafletMap);
         map.scenarioPolygon.off('click', addSensor);
 
@@ -49,8 +56,6 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
 
         $scope.$apply(function() {
             $scope.addingSensor = false;
-
-            var id = $scope.sensorId++;
 
             var x = e.containerPoint.x - bbox_x,
                 y = e.containerPoint.y - bbox_y;
@@ -72,18 +77,22 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
                 sevData : sevData
             };
 
+            var id = $scope.sensorId++;
             $scope.sensors[id] = sensor;
 
-            var html = ('<div>Elevation: {{sensors[{0}].elevData.elevation}}<br/>'
+            var html = ('<div>Elevation: {{sensors[{0}].elevData.elevation | format}}<br/>'
                      + 'Fire Severity: {{fireTypeToString(sensors[{0}].sevData.severity)}}<br/>'
                      + 'Vegetation: {{vegTypeToString(sensors[{0}].vegData.vegetation)}}<br/>'
                      + '<hr/>'
-                     + 'Water Volume: {{sensors[{0}].waterData.volume}}<br/>'
-                     + 'Floating Silt: {{sensors[{0}].waterData.siltFloating}}<br/>'
-                     + 'Deposited Silt: {{sensors[{0}].waterData.siltDeposit}}</div>').format(id);
+                     + 'Water Volume: {{sensors[{0}].waterData.volume | format}}<br/>'
+                     + 'Floating Silt: {{sensors[{0}].waterData.siltFloating | format}}<br/>'
+                     + 'Deposited Silt: {{sensors[{0}].waterData.siltDeposit | format}}</div>').format(id);
 
             var compiledHtml = $compile(html)($scope);
-            marker.bindPopup(compiledHtml[0]);
+
+            var popup = L.popup({maxWidth: 160, minWidth: 160}).setContent(compiledHtml[0]);
+
+            marker.bindPopup(popup).update().openPopup();
         });     
     }
 

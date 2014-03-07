@@ -74,7 +74,8 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
                 elevData : elevData,
                 waterData : waterData,
                 vegData : vegData,
-                sevData : sevData
+                sevData : sevData,
+                marker : marker
             };
 
             var id = $scope.sensorId++;
@@ -86,7 +87,8 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
                      + '<hr/>'
                      + 'Water Volume: {{sensors[{0}].waterData.volume | format}}<br/>'
                      + 'Floating Silt: {{sensors[{0}].waterData.siltFloating | format}}<br/>'
-                     + 'Deposited Silt: {{sensors[{0}].waterData.siltDeposit | format}}</div>').format(id);
+                     + 'Deposited Silt: {{sensors[{0}].waterData.siltDeposit | format}}<hr/>'
+                     + '<button ng-click="deleteSensor({0})">Delete</button></div>').format(id);
 
             var compiledHtml = $compile(html)($scope);
 
@@ -111,6 +113,11 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
 
     $scope.cancelAddingSensor = function() {
         $scope.addingSensor = false;
+    };
+
+    $scope.deleteSensor = function(id) {
+        map.leafletMap.removeLayer($scope.sensors[id].marker);
+        delete $scope.sensors[id];
     };
 
     $scope.drawVegetation = function(vegType) {

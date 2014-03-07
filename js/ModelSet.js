@@ -53,8 +53,8 @@ ModelSet.prototype = {
         var fromX = x * fromModel.sampleSpacing,
             fromY = y * fromModel.sampleSpacing,
 
-            toX = Math.floor(fromX / sampledModel.sampleSpacing + sampledModel.sampleSpacing/2),
-            toY = Math.floor(fromY / sampledModel.sampleSpacing + sampledModel.sampleSpacing/2);
+            toX = Math.floor(fromX / sampledModel.sampleSpacing),
+            toY = Math.floor(fromY / sampledModel.sampleSpacing);
 
         return sampledModel.world[toX][toY];
     },
@@ -66,8 +66,8 @@ ModelSet.prototype = {
             fromX = x * sampleSpacing,
             fromY = y * sampleSpacing,
 
-            toX = Math.floor(fromX / sampledModel.sampleSpacing + sampledModel.sampleSpacing/2),
-            toY = Math.floor(fromY / sampledModel.sampleSpacing + sampledModel.sampleSpacing/2);
+            toX = Math.floor(fromX / sampledModel.sampleSpacing),
+            toY = Math.floor(fromY / sampledModel.sampleSpacing);
 
         return sampledModel.world[toX][toY];
     },

@@ -4,7 +4,7 @@ function ErosionModel(xs, ys, fixedGeometryWidth, modelSet) {
     DataModel.call(this, xs, ys, fixedGeometryWidth, modelSet);
 
     this.isAnimated = true;
-    this.isEditable = false;
+    this.editable = false;
 
     this.reset();
 
@@ -66,7 +66,7 @@ var ErosionPatchRenderer = function(model) {
         var name = n;
 
         if (n === 0)
-            name = 'None (Erase)';
+            name = 'No Data';
 
         return { 
             value: { erosion: n },

@@ -241,9 +241,15 @@ var WaterPatchRenderer = function(model) {
 
     var scale = _.map([5, 10, 20, 30, 0], function(num) {
         var name = num;
+
         if (num === 0)
-            name = 'None (Erase)';
-        return { value: { volume: num }, color: getColor(num), name: name };
+            name = 'No Data';
+
+        return { 
+            value: { volume: num }, 
+            color: getColor(num), 
+            name: name 
+        };
     });
 
     return { 

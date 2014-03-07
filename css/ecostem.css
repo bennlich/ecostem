@@ -232,7 +232,12 @@ hr {
 }  
 
 .leaflet-popup-content {
-    margin: 10;
+    margin: 5;
+    font-size: 14px;
+}
+
+.leaflet-popup-content button {
+    font-size: 14px;
 }
 
 .leaflet-popup-content-wrapper {

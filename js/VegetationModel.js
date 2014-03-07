@@ -6,24 +6,25 @@ function VegetationModel(xs, ys, fixedGeometryWidth, modelSet) {
 
     var t = VegetationModel.vegTypes;
 
-    this.tf = {};
+    this.controls = {};
 
-    this.tf[t.FIR] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Fir Density at Elevation', 'svg-fir');
-    this.tf[t.FIR].controlPoints = [[2214,0], [2442,15], [2728,1], [4000,0]];
+    this.controls[t.FIR] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Fir Density at Elevation');
+    this.controls[t.FIR].controlPoints = [[2214,0], [2442,15], [2728,1], [4000,0]];
 
-    this.tf[t.SAGEBRUSH] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Sagebrush Density at Elevation', 'svg-sagebrush');
-    this.tf[t.SAGEBRUSH].controlPoints = [[1842,0], [1985,47.5], [2100,0], [4000,0]];
+    this.controls[t.SAGEBRUSH] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Sagebrush Density at Elevation');
+    this.controls[t.SAGEBRUSH].controlPoints = [[1842,0], [1985,47.5], [2100,0], [4000,0]];
 
-    this.tf[t.STEPPE] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Steppe Density at Elevation', 'svg-steppe');
-    this.tf[t.STEPPE].controlPoints = [[0,0], [2657,0], [2871,26], [3042,0]];
+    this.controls[t.STEPPE] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Steppe Density at Elevation');
+    this.controls[t.STEPPE].controlPoints = [[0,0], [2657,0], [2871,26], [3042,0]];
 
-    this.tf[t.GRASS] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Grass Density at Elevation', 'svg-grass');
-    this.tf[t.GRASS].controlPoints = [[0,0], [2114,0], [2199,18], [2330,0]];
+    this.controls[t.GRASS] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Grass Density at Elevation');
+    this.controls[t.GRASS].controlPoints = [[0,0], [2114,0], [2199,18], [2330,0]];
 
-    for (var x in this.tf) { 
-        this.tf[x].render();
-        this.tf[x].show();
+    for (var x in this.controls) { 
+        this.controls[x].render();
     }
+
+    this.curControl = t.FIR;
 }
 
 VegetationModel.vegTypes = {
@@ -33,6 +34,10 @@ VegetationModel.vegTypes = {
 VegetationModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
     reset: function() {
         this.init({ vegetation: VegetationModel.vegTypes.NONE });
+    },
+
+    scaleChanged: function(scale) {
+        this.show(scale.value.vegetation);
     }
 });
 

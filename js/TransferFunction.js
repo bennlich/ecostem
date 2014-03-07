@@ -11,9 +11,9 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title, svgcanvas
     transfer.title = title;
 
     var padding = 60,
-	numSegments = 50, // number of samples used to draw the spline
-	numCtrlPoints = 4,
-	numSamples = 5000; // number of samples used to interpolate
+		numSegments = 50, // number of samples used to draw the spline
+		numCtrlPoints = 4,
+		numSamples = 5000; // number of samples used to interpolate
 
     // currently a lot of variables belong to the 'transfer' function
     // eventually we may want to make these private, but for now it's helped

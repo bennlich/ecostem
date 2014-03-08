@@ -37,6 +37,7 @@ function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
         slopeToVelocity: slopeToVelocity,
         evapInfRunoff: evapInfRunoff
     };
+
     this.curControl = 'evapInfRunoff';
 
     this.reset();
@@ -124,7 +125,7 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
                 
                 var evapInfRunoff = this.controls.evapInfRunoff(patchSeverity);
                 
-                patch.volume = patch.volume * evapInfRunoff.Runoff;
+                //patch.volume = patch.volume * evapInfRunoff.Runoff;
 
                 // the amount of water that flows is proportional to the difference in heights
                 // between the current patch and its lowest neighbor

@@ -78,7 +78,7 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
             L.control.scale().addTo(this.leafletMap);
 
-            this.scenarioBBox = this.createScenarioBBox();
+            this.scenarioBBox = this.createRuidosoScenarioBBox();
             this.addBBoxPolygon(this.scenarioBBox.bbox);
 
             var bbox = this.scenarioBBox.bbox;
@@ -88,7 +88,7 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
             console.log(centerLat, centerLng);
 
-            this.leafletMap.setView(new L.LatLng(centerLat, centerLng), 11);
+            this.leafletMap.setView(new L.LatLng(centerLat, centerLng), 12);
 
             this.baseLayers = this._makeBaseLayers();
             this.setBaseLayer(this.baseLayers[3]);
@@ -124,11 +124,25 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
         },
 
         /* creates a hardcoded bbox for now */
-        createScenarioBBox: function() {
+        createTaosScenarioBBox: function() {
             var south = 36.29852498935906,
                 west = -105.85052490234375,
                 north = 36.558187766360675,
                 east = -105.41656494140625;
+
+            var bounds = L.latLngBounds(
+                new L.LatLng(south, west),
+                new L.LatLng(north, east)
+            );
+
+            return new ScenarioBoundingBox(bounds, this.leafletMap);
+        },
+
+        createRuidosoScenarioBBox: function() {
+            var south = 33.357555,
+                west = -105.890007,
+                north = 33.525149,
+                east = -105.584793;
 
             var bounds = L.latLngBounds(
                 new L.LatLng(south, west),

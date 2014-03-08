@@ -17,6 +17,7 @@ function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
     this.elevationSampled = false;
 
     this.erosionModel = null;
+    this.burnSeverityModel = null;
 
     this.patchHeights = new ABM.DataSet();
 
@@ -25,16 +26,18 @@ function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
     slopeToVelocity.controlPoints[1] = [22,55];
     slopeToVelocity.render();
 
+    var evapInfRunoff = new StackedBars({
+        domain: ['No Data', 'Low', 'Medium', 'High'],
+        domainTitle: 'Burn Severity',
+        range: ['Evaporation', 'Infiltration', 'Runoff'],
+        rangeTitle: 'Percentage of Water Volume'
+    });
+
     this.controls = {
         slopeToVelocity: slopeToVelocity,
-        evapPercRunoff: new StackedBars({
-            domain: ['low', 'medium', 'high'],
-            domainTitle: "burn severity",
-            range: ["Evaporation", "Percolation", "Runoff"],
-            rangeTitle: "% of water volume"
-        })
+        evapInfRunoff: evapInfRunoff
     };
-    this.curControl = 'evapPercRunoff';
+    this.curControl = 'evapInfRunoff';
 
     this.reset();
 }
@@ -44,6 +47,12 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
         if (!this.erosionModel && this.modelSet.models)
             this.erosionModel = this.modelSet.getDataModel('Erosion & Deposit');
         return this.erosionModel;
+    },
+
+    _burnSeverityModel: function() {
+        if (!this.burnSeverityModel && this.modelSet.models)
+            this.burnSeverityModel = this.modelSet.getDataModel('Fire Severity');
+        return this.burnSeverityModel;
     },
 
     reset: function() {
@@ -109,6 +118,16 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
                 if (patch.volume === 0)
                     continue;
 
+                // calculate evaporation and infiltration (what's left is runoff)
+                var burnSeverityModel = this._burnSeverityModel(),
+                    patchSeverity = FireSeverityModel.typeToString(burnSeverityModel.world[i][j].severity);
+                
+                var evapInfRunoff = this.controls.evapInfRunoff(patchSeverity);
+                
+                patch.volume = patch.volume * evapInfRunoff.Runoff;
+
+                // the amount of water that flows is proportional to the difference in heights
+                // between the current patch and its lowest neighbor
                 var minNeighbor = _.min(this.neighbors(i,j), function(neighbor) {
                     return neighbor.volume + neighbor.elevation + neighbor.siltDeposit;
                 });

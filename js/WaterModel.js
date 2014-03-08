@@ -110,11 +110,11 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
                     continue;
 
                 var minNeighbor = _.min(this.neighbors(i,j), function(neighbor) {
-                    return neighbor.volume + neighbor.elevation + neighbor.siltDeposit;
+                    return neighbor.volume + neighbor.elevation + neighbor.siltDeposit + neighbor.siltFloating;
                 });
 
-                var patchHeight = patch.volume + patch.elevation + patch.siltDeposit;
-                var neighborHeight = minNeighbor.volume + minNeighbor.elevation + minNeighbor.siltDeposit;
+                var patchHeight = patch.volume + patch.elevation + patch.siltDeposit + patch.siltFloating;
+                var neighborHeight = minNeighbor.volume + minNeighbor.elevation + minNeighbor.siltDeposit + minNeighbor.siltFloating;
 
                 var transferVolumeBalancePoint = (neighborHeight + patchHeight) / 2;
                 var transferVolume = patch.volume - (transferVolumeBalancePoint - patch.elevation);

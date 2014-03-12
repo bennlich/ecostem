@@ -32,8 +32,8 @@ function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
 
     ABM.Model.prototype.step = function() {
         this.droplets.forEach(function(droplet) {
-            var sampleCoord = this.patches.patchXYtoPixelXY(droplet.x, droplet.y);
-            var aspect = waterModel.patchHeightsAspect.sample(sampleCoord[0], sampleCoord[1]);
+            // var sampleCoord = this.patches.patchXYtoPixelXY(droplet.x, droplet.y);
+            var aspect = waterModel.patchHeightsAspect.patchSample(droplet.x, droplet.y);
             droplet.heading = aspect;
             droplet.forward(1);
             if (typeof droplet.p == 'undefined') {
@@ -46,9 +46,9 @@ function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
     this.dropletModel = new ABM.Model({
         size: 1,
         minX: 0,
-        maxX: xs-2,
+        maxX: xs-1,
         minY: 0,
-        maxY: ys-2,
+        maxY: ys-1,
         hasNeighbors: false
     });
 
@@ -57,10 +57,12 @@ function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
 
 WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
     start: function() {
+        DataModel.prototype.start.call(this);
         this.dropletModel.start();
     },
     
     stop: function() {
+        DataModel.prototype.stop.call(this);
         this.dropletModel.stop();
     },
 

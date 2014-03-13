@@ -29,16 +29,11 @@
     <script src="lib/Leaflet.CanvasLayer/leaflet_tileloader_mixin.js"></script>
     <script src="lib/Leaflet.CanvasLayer/leaflet_canvas_layer.js"></script>
 
+    <script src="lib/require.js"></script>
+
     <script src="js/Util.js"></script>
 
     <script src="js/DataModel.js"></script>
-    <script src="js/FireSeverityModel.js"></script>
-    <script src="js/ErosionModel.js"></script>
-    <script src="js/WaterModel.js"></script>
-    <script src="js/VegetationModel.js"></script>
-    <script src="js/ElevationModel.js"></script>
-
-    <script src="js/ModelSet.js"></script>
 
     <script src="js/ModelTileRenderer.js"></script>
     <script src="js/ModelTileServer.js"></script>
@@ -112,12 +107,11 @@
           </div>
         </div>
 
-        <div class="section" style="width: 100%;" ng-show="editedLayer.model.dataModel.curControl">
+        <div ng-show="editedLayer.model.dataModel.curControl">
           <hr/>
-          <div class="section" style="height: 400px; width: 100%;">
-            <svg id="transfer-function-svg"></svg>
-          </div>
+          <svg id="transfer-function-svg" width="400px" height="400px"></svg>
         </div>
+
       </div>
 
       <div class="layers uibox" ng-show="elevationLoaded && !editedLayer">

@@ -94,7 +94,6 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
             this.setBaseLayer(this.baseLayers[3]);
 
             this.layers = this._makeLayers();
-            this.dataLayers = this._makeDataLayers();
 
             // set map bounds to bbox argument in url
             var urlParams = $location.search(),
@@ -120,7 +119,9 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
                 });
             });
 
-            this.deferred.resolve(this);
+            this._makeDataLayers().then(function() {
+                this.deferred.resolve(this);
+            }.bind(this));
         },
 
         /* creates a hardcoded bbox for now */
@@ -289,21 +290,30 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
         /* editable data layers */
         _makeDataLayers: function() {
-            var ratio = this.scenarioBBox.pixelHeight() / this.scenarioBBox.pixelWidth();
+            var self = this;
+            var deferred = $q.defer();
 
-            this.modelSet = new ModelSet(map, ratio, $rootScope);
+            require(['js/ModelSet'], function(ModelSet) {
+                var ratio = self.scenarioBBox.pixelHeight() / self.scenarioBBox.pixelWidth();
 
-            var zIndex = 12;
-            return _.map(_.values(this.modelSet.models), function(model) {
-                return {
-                    name: model.name,
-                    model: model,
-                    on: false,
-                    disabled: false,
-                    editing: false,
-                    leafletLayer: model.renderer.makeLayer({zIndex: zIndex++, opacity: 0.85})
-                };
+                self.modelSet = new ModelSet(map, ratio, $rootScope);
+
+                var zIndex = 12;
+                self.dataLayers = _.map(_.values(self.modelSet.models), function(model) {
+                    return {
+                        name: model.name,
+                        model: model,
+                        on: false,
+                        disabled: false,
+                        editing: false,
+                        leafletLayer: model.renderer.makeLayer({zIndex: zIndex++, opacity: 0.85})
+                    };
+                });
+
+                deferred.resolve();
             });
+
+            return deferred.promise;
         },
 
         addSensor: function() {

@@ -109,8 +109,10 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
         });
     }
 
-    $scope.fireTypeToString = FireSeverityModel.typeToString;
-    $scope.vegTypeToString = VegetationModel.typeToString;
+    require(['js/FireSeverityModel.js', 'js/VegetationModel.js'], function() {
+        $scope.fireTypeToString = FireSeverityModel.typeToString;
+        $scope.vegTypeToString = VegetationModel.typeToString;
+    });
 
     $scope.addSensor = function() {
         if ($scope.addingSensor) {

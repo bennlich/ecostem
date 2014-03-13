@@ -116,8 +116,8 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title, svgcanvas
 		    });
     };
 
-    var width = $('#' + svgcanID).width(),
-	height = $('#' + svgcanID).height();
+    var width = $('#'+svgcanID)[0].width.baseVal.value,
+		height = $('#'+svgcanID)[0].height.baseVal.value;
 
     // these scales convert from the extent of the data to
     // the extent of the svg canvas where we want to draw

@@ -1,10 +1,6 @@
 'use strict';
 
-function DataModel(xs, ys, fixedGeometryWidth, modelSet) {
-    this.xSize = xs;
-    this.ySize = ys;
-    this.sampleSpacing = fixedGeometryWidth / xs;
-    this.modelSet = modelSet;
+function DataModel() {
     this.world = null;
     this.callbacks = [];
     this.isAnimated = false;
@@ -20,22 +16,35 @@ function DataModel(xs, ys, fixedGeometryWidth, modelSet) {
 }
 
 DataModel.prototype = {
-    init: function(defaultValue) {
+    init: function(xs, ys, fixedGeometryWidth, modelSet) {
+        this.xSize = xs;
+        this.ySize = ys;
+        this.sampleSpacing = fixedGeometryWidth / xs;
+        this.modelSet = modelSet;
+
         var world = new Array(this.xSize);
 
         for (var i = 0; i < this.xSize; ++i) {
             world[i] = new Array(this.ySize);
             for (var j = 0; j < this.ySize; ++j) {
                 world[i][j] = { x: i, y: j };
-                /* make sure we make a copy of the default value */
-                _.extend(world[i][j], defaultValue);
+
+                // TODO: this is usually redundant with DataModel.reset()
+                // below, but necessary for the water model, which overrides
+                // the reset() function.
+                _.extend(world[i][j], this.defaultValue);
             }
         }        
 
         this.world = world;
+        this.reset();
     },
 
-    putData: function(x,y,width,height,obj) {
+    reset: function(defaultValue) {
+        this.putData(0, 0, this.xSize, this.ySize, defaultValue || this.defaultValue, true);
+    },
+
+    putData: function(x, y, width, height, data, erase) {
         if (x < 0) 
             x = 0;
         if (x + width > this.xSize)
@@ -49,9 +58,10 @@ DataModel.prototype = {
         this.modelSet.safeApply(function() {
             for (var i = x; i < x + width; ++i) {
                 for (var j = y; j < y + height; ++j) {
-                    for (var key in obj) {
-                        this.world[i][j][key] = obj[key];
+                    if (erase) {
+                        this.world[i][j] = { x: i, y: j };
                     }
+                    _.extend(this.world[i][j], data);
                 }
             }
         }.bind(this));

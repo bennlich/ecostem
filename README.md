@@ -1,3 +1,5 @@
+![alt text](https://github.com/mariusnita/ecostem/raw/master/img/banner.png "EcoSTEM")
+
 EcoSTEM
 =======
 

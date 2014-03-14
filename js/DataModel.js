@@ -10,7 +10,8 @@ function DataModel(xs, ys, fixedGeometryWidth, modelSet) {
     this.isAnimated = false;
     this.isRunning = false;
     this.hasControls = false;
-    this.timeoutValue = 100;
+    this.timeoutValue = 60;
+    this.animID = null;
 
     /* TODO -- this is iffy ... the distinction between whether 
      * there is an "Edit" button and whether you can manually paint */
@@ -103,7 +104,8 @@ DataModel.prototype = {
         this.runCallbacks();
 
         setTimeout(function() { 
-            $this.run(); 
+            //$this.run(); 
+            $this.animID = window.requestAnimationFrame($this.run.bind($this));
         }, this.timeoutValue);
     },
 
@@ -121,11 +123,13 @@ DataModel.prototype = {
 
     start: function() {
         this.isRunning = true;
-        this.run();
+        //this.run();
+        this.animID = window.requestAnimationFrame(this.run.bind(this));
     },
 
     stop: function() {
         this.isRunning = false;
+        window.cancelAnimationFrame(this.animID);
     },
 
     onChange: function(cb) {

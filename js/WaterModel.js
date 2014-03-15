@@ -87,15 +87,15 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
 
         this.patchHeights.reset(this.xSize, this.ySize, new Array(this.xSize*this.ySize));
 
-        // var elevationModel = this.modelSet.getDataModel('Elevation');
+        var elevationModel = this.modelSet.getDataModel('Elevation');
 
-        // for (var i = 0; i < this.xSize; ++i) {
-        //     for (var j = 0; j < this.ySize; ++j) {
-        //         var curPatch = this.world[i][j];
-        //         curPatch.elevation = this.modelSet.sample(i, j, this, elevationModel).elevation;
-        //         this.patchHeights.setXY(i,j, curPatch.elevation + curPatch.volume);
-        //     }
-        // }
+        for (var i = 0; i < this.xSize; ++i) {
+            for (var j = 0; j < this.ySize; ++j) {
+                var curPatch = this.world[i][j];
+                curPatch.elevation = this.modelSet.sample(i, j, this, elevationModel).elevation;
+                this.patchHeights.setXY(i,j, curPatch.elevation + curPatch.volume);
+            }
+        }
 
         var slopeAndAspect = this.patchHeights.slopeAndAspect();
         this.patchHeightsSlope = slopeAndAspect.slope;

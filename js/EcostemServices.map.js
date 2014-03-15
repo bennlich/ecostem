@@ -1,70 +1,5 @@
 'use strict';
 
-function Rect(left,top,width,height) {
-    this.left = left, this.top = top,
-    this.width = width, this.height = height;
-}
-
-Rect.prototype = {
-    intersect: function(rect) {
-        var x0 = Math.max(this.left, rect.left);
-        var x1 = Math.min(this.left + this.width, rect.left + rect.width);
-
-        if (x0 <= x1) {
-            var y0 = Math.max(this.top, rect.top);
-            var y1 = Math.min(this.top + this.height, rect.top + rect.height);
-
-            if (y0 <= y1) {
-                return new Rect(x0, y0, x1-x0, y1-y0);
-            }
-        }
-        return null;
-    }
-};
-
-/* Wrapper for the scenario bounding box. Mainly encapsulates degree-to-pixel 
- * translations */
-function ScenarioBoundingBox(bbox, leafletMap, scope) {
-    this.bbox = bbox;
-    this.leafletMap = leafletMap;
-}
-
-ScenarioBoundingBox.prototype = {
-    calculatePixelBounds: function(zoom) {
-        return {
-            ne: this.leafletMap.project(this.bbox.getNorthEast(), zoom),
-            sw: this.leafletMap.project(this.bbox.getSouthWest(), zoom)
-        };
-    },
-
-    pixelWidth: function(zoom) {
-        var bounds = this.calculatePixelBounds(zoom);
-        return Math.abs(Math.floor(bounds.ne.x - bounds.sw.x));
-    },
-
-    pixelHeight: function(zoom) {
-        var bounds = this.calculatePixelBounds(zoom);
-        return Math.abs(Math.floor(bounds.ne.y - bounds.sw.y));
-    },
-
-    xOffsetFromTopLeft: function(zoom) {
-        var topLeft = this.leafletMap.getPixelBounds(),
-            bounds = this.calculatePixelBounds(zoom);
-        return Math.floor(bounds.sw.x - topLeft.min.x);
-    },
-
-    yOffsetFromTopLeft: function(zoom) {
-        var topLeft = this.leafletMap.getPixelBounds(),
-            bounds = this.calculatePixelBounds(zoom);
-        return Math.floor(bounds.ne.y - topLeft.min.y);
-    },
-
-    toRect: function(zoom) {
-        var bounds = this.calculatePixelBounds(zoom);
-        return new Rect(bounds.sw.x, bounds.ne.y, this.pixelWidth(zoom), this.pixelHeight(zoom));
-    }
-};
-
 var map;
 
 /* Leaflet wrapper */
@@ -78,10 +13,10 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
             L.control.scale().addTo(this.leafletMap);
 
-            this.scenarioBBox = this.createRuidosoScenarioBBox();
-            this.addBBoxPolygon(this.scenarioBBox.bbox);
+            this.modelBBox = this.createRuidosoScenarioBBox();
+            this.addBBoxPolygon(this.modelBBox.bbox);
 
-            var bbox = this.scenarioBBox.bbox;
+            var bbox = this.modelBBox.bbox;
 
             var centerLat = bbox.getSouthWest().lat + (bbox.getNorthEast().lat - bbox.getSouthWest().lat)/2;
             var centerLng = bbox.getSouthWest().lng - (bbox.getSouthWest().lng - bbox.getNorthEast().lng)/2;
@@ -135,7 +70,7 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
                 new L.LatLng(north, east)
             );
 
-            return new ScenarioBoundingBox(bounds, this.leafletMap);
+            return new ModelBBox(bounds, this.leafletMap);
         },
 
         createRuidosoScenarioBBox: function() {
@@ -149,7 +84,7 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
                 new L.LatLng(north, east)
             );
 
-            return new ScenarioBoundingBox(bounds, this.leafletMap);
+            return new ModelBBox(bounds, this.leafletMap);
         },
 
         addBBoxPolygon: function(bbox) {
@@ -187,8 +122,8 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
                 if (typeof this.bboxCallback !== 'function')
                     return;
 
-                var bbox_x = this.scenarioBBox.xOffsetFromTopLeft();
-                var bbox_y = this.scenarioBBox.yOffsetFromTopLeft();
+                var bbox_x = this.modelBBox.xOffsetFromTopLeft();
+                var bbox_y = this.modelBBox.yOffsetFromTopLeft();
 
                 this.bboxCallback({
                     x: e.containerPoint.x - bbox_x,
@@ -289,7 +224,7 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
         /* editable data layers */
         _makeDataLayers: function() {
-            var ratio = this.scenarioBBox.pixelHeight() / this.scenarioBBox.pixelWidth();
+            var ratio = this.modelBBox.pixelHeight() / this.modelBBox.pixelWidth();
 
             this.modelSet = new ModelSet(map, ratio, $rootScope);
 

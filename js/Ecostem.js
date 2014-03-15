@@ -62,8 +62,8 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
         marker.addTo(map.leafletMap);
         map.scenarioPolygon.off('click', addSensor);
 
-        var bbox_x = map.scenarioBBox.xOffsetFromTopLeft();
-        var bbox_y = map.scenarioBBox.yOffsetFromTopLeft();
+        var bbox_x = map.modelBBox.xOffsetFromTopLeft();
+        var bbox_y = map.modelBBox.yOffsetFromTopLeft();
 
         $scope.$apply(function() {
             $scope.addingSensor = false;
@@ -311,7 +311,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
 
     $q.all([map.deferred.promise, elevationSampler.deferred.promise]).then(function() {
         $scope.elevationIsLoading = true;
-        elevationSampler.loadElevationData(map.scenarioBBox, function() {
+        elevationSampler.loadElevationData(map.modelBBox, function() {
             /* TODO: Maybe the sampler can be merged into ElevationModel */
             var elevationModel = map.modelSet.getDataModel('Elevation');
             var waterModel = map.modelSet.getDataModel('Water Flow');

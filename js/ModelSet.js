@@ -60,7 +60,7 @@ ModelSet.prototype = {
     },
 
     samplePixel: function(x, y, sampledModel) {
-        var bboxWidth = this.map.scenarioBBox.pixelWidth(),
+        var bboxWidth = this.map.modelBBox.pixelWidth(),
             sampleSpacing = this.virtualWidth/bboxWidth,
 
             fromX = x * sampleSpacing,

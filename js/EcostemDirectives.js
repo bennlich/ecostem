@@ -3,7 +3,7 @@
 EcostemDirectives.directive('drawingSurface', ['map', function(map) {
     return function(scope, element, attrs) {
         function mouseHandler(e) {
-            var b = map.scenarioBBox,
+            var b = map.modelBBox,
                 bx = b.xOffsetFromTopLeft(),
                 by = b.yOffsetFromTopLeft(),
                 bw = b.pixelWidth(),

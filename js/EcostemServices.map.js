@@ -239,14 +239,6 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
                     leafletLayer: model.renderer.makeLayer({zIndex: zIndex++, opacity: 0.85})
                 };
             });
-        },
-
-        addSensor: function() {
-            this.onBBoxClickDrag(function(pos) {
-                var marker = L.marker(pos.latlng);
-                marker.bindPopup('Hello').openPopup();
-                marker.addTo(this.leafletMap);
-            }.bind(this));
         }
     };
 }]);

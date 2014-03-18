@@ -1,5 +1,103 @@
 'use strict';
 
+function AscParser() {
+    this.cursor = 0;
+    this.headers = {};
+    this.data = null;
+    this.parsed = false;
+
+    this.parseToken = function(stream) {
+        while (stream[this.cursor] === ' ' 
+               || stream[this.cursor] === '\n' 
+               || stream[this.cursor] === '\r')
+        {
+            this.cursor++;
+        }
+
+        var t = "";
+
+        while (stream[this.cursor] !== ' '
+               && stream[this.cursor] !== '\n'
+               && stream[this.cursor] !== '\r') 
+        {
+            t += stream[this.cursor];
+            this.cursor++;
+        }
+
+        return t;
+    };
+
+    this.parseHeaders = function(stream) {
+        for (var i = 0; i < 6; ++i) {
+            var key = this.parseToken(stream),
+                value = parseFloat(this.parseToken(stream));
+            this.headers[key] = value;
+        }
+    };
+
+    this.parseBody = function(stream) {
+        var i = 0, j = 0;
+
+        var nrows = this.headers.nrows, 
+            ncols = this.headers.ncols,
+            nodata = this.headers.NODATA_value;
+
+        var progressSteps = Math.floor((nrows * ncols)/20),
+            steps = 0,
+            fun = typeof this.progressFunction === 'function' ? this.progressFunction : undefined;
+
+        while (true) {
+            steps++;
+
+            if (fun && steps % progressSteps === 0) {
+                fun();
+            }
+
+            var t = parseFloat(this.parseToken(stream));
+
+            if (t !== nodata)
+                this.data[i][j] = t;
+
+            i++;
+
+            if (i >= ncols) {
+                i = 0;
+                j++;
+                if (j >= nrows)
+                    break;
+            }
+        }
+        console.log('done');
+    };
+
+    this.reset = function() {
+        this.cursor = 0;
+        this.headers = {};
+        this.data = null;
+        this.parsed = false;
+    };
+
+    this.parse = function(stream, progressFunction) {
+        this.reset();
+
+        this.progressFunction = progressFunction;
+
+        this.parseHeaders(stream);
+
+        this.data = new Array(this.headers.ncols);
+        for (var i = 0; i < this.headers.ncols; ++i) {
+            this.data[i] = new Array(this.headers.ncols);
+        }
+
+        this.parseBody(stream);
+        this.parsed = true;
+    };
+}
+
+/*
+ * Generic rect utility
+ */
+
 function Rect(left,top,width,height) {
     this.left = left, this.top = top,
     this.width = width, this.height = height;
@@ -22,6 +120,10 @@ Rect.prototype = {
     }
 };
 
+/*
+ * This is used for implementing prototype-based inheritance
+ */
+
 function clonePrototype(obj) {
     if (typeof obj !== 'undefined') {
 	clonePrototype.prototype = Object(obj);
@@ -33,6 +135,10 @@ function clonePrototype(obj) {
         return undefined;
     }
 }
+
+/*
+ * Add useful functions to the string prototype
+ */
 
 if (typeof String.prototype.format !== 'function') {
     String.prototype.format = function() {

@@ -134,7 +134,6 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
         _makeDataLayers: function() {
             // TODO make modelSet a service?
             this.modelSet = new ModelSet(map, $rootScope);
-
             var zIndex = 12;
             return _.map(_.values(this.modelSet.models), function(model) {
                 return {
@@ -145,6 +144,18 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
                     editing: false,
                     leafletLayer: model.renderer.makeLayer({zIndex: zIndex++, opacity: 0.85})
                 };
+            });
+        },
+
+        addDataLayer: function(obj) {
+            this.modelSet.models[obj.name] = obj;
+            this.dataLayers.push({
+                name: obj.name,
+                model: obj,
+                on: false,
+                disabled: false,
+                editing: false,
+                leafletLayer: obj.renderer.makeLayer({zIdnex:13, opacity: 0.85})
             });
         }
     };

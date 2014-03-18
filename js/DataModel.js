@@ -97,8 +97,7 @@ DataModel.prototype = {
     sample: function(latlng) {
         var xy = this.latLngToModelXY(latlng);
 
-        if (xy.x >= this.xSize || xy.y >= this.ySize) {
-            console.log('attempt to sample out of bounds: ', xy.x, xy.y);
+        if (xy.x < 0 || xy.x >= this.xSize || xy.y < 0 || xy.y >= this.ySize) {
             return undefined;
         }
 

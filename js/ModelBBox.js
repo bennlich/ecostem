@@ -2,7 +2,7 @@
 
 /* Wrapper for the scenario bounding box. Mainly encapsulates degree-to-pixel 
  * translations */
-function ModelBBox(bbox, leafletMap, scope) {
+function ModelBBox(bbox, leafletMap) {
     this.bbox = bbox;
     this.leafletMap = leafletMap;
 }

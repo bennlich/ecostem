@@ -40,8 +40,8 @@ Ecostem.run(['$rootScope', function($rootScope) {
 
 var curSlope, calculatedSlope, slopeDiff;
 
-Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevationSampler', 
-                          function( $scope,   $q,   $compile,   map,   elevationSampler) 
+Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', 'elevationSampler', 
+                          function( $scope,   $q,   $compile,   $http,   map,   elevationSampler) 
 {
     $scope.simulationStarted = false;
     $scope.showElevation = false;
@@ -54,8 +54,54 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
 
     $scope.map = map;
 
+    /* This code is a start at putting ASC grid files on the map
+       -- in particular acequia data for NNMC. It seems to work
+       except the acequia data we have seems to be in a different
+       projection. */
+
+    /*
+    $http.get('data/acequiaData/hydrology.txt')
+        .success(function(data) {
+            var p = 5;
+            var parser = new AscParser();
+
+            parser.parse(data, function() {
+                console.log('progress: ', p + '%');
+                p += 5;
+            });
+
+            var h = parser.headers;
+            var width = h.cellsize * h.ncols;
+            var height = h.cellsize * h.nrows;
+
+            var southWest = new L.LatLng(h.yllcorner, h.xllcorner);
+            var northEast = new L.LatLng(h.yllcorner+height, h.xllcorner+width);
+            var box = new L.LatLngBounds(southWest, northEast);
+            console.log(box);
+            var modelBBox = new ModelBBox(box, map.leafletMap);
+
+            var model = new GenericModel(h.ncols, h.nrows, modelBBox, map.modelSet.virtualWidth, map.modelSet);
+            model.setWorld(parser.data);
+            var tileRenderer = new ModelTileRenderer(map, model, GenericPatchRenderer(model));
+            var tileServer = new ModelTileServer(tileRenderer);
+
+            var obj = {
+                name: 'Acequias',
+                dataModel: model,
+                renderer: tileRenderer,
+                server: tileServer
+            };
+
+            map.addDataLayer(obj);
+        })
+        .error(function() {
+            console.log('asc download fail');
+        });
+     */
+
     function addSensor(e) {
         var marker = L.marker(e.latlng);
+        console.log(e.latlng);
 
         marker.addTo(map.leafletMap);
         map.leafletMap.off('click', addSensor);

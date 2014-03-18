@@ -1,9 +1,9 @@
 'use strict';
 
-function ModelTileRenderer(map, model, renderer, firebased) {
+function ModelTileRenderer(map, model, patchRenderer) {
     this.map = map;
     this.model = model;
-    this.patchRenderer = renderer;
+    this.patchRenderer = patchRenderer;
     this.canvasLayer = null;
 }
 
@@ -16,7 +16,7 @@ ModelTileRenderer.prototype = {
         var tileY = y * canvas.height;
 
         var canvasRect = new Rect(tileX, tileY, canvas.width, canvas.height);
-        var scenarioRect = this.map.modelBBox.toRect(zoom);
+        var scenarioRect = this.model.bbox.toRect(zoom);
 
         // the rectangular area of canvas tile that intersects the scenario
         var intersection = canvasRect.intersect(scenarioRect);
@@ -80,8 +80,8 @@ ModelTileRenderer.prototype = {
     },
 
     putData: function(point, brushSize, value) {
-        var scenarioScreenWidth = this.map.modelBBox.pixelWidth(),
-            scenarioScreenHeight = this.map.modelBBox.pixelHeight(),
+        var scenarioScreenWidth = this.model.bbox.pixelWidth(),
+            scenarioScreenHeight = this.model.bbox.pixelHeight(),
 
             patchSize = scenarioScreenWidth / this.model.xSize,
 

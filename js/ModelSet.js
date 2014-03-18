@@ -1,23 +1,33 @@
 'use strict';
 
-function ModelSet(map, ratio, scope) {
+function ModelSet(map, scope) {
     this.map = map;
     this.virtualWidth = 1024;
-    this.ratio = ratio;
     this.scope = scope;
 
     this.models = this._makeModels();
 }
 
 ModelSet.prototype = {
-    _getHeight: function(w) {
-        var h = Math.floor(w * this.ratio);
-        console.log(h, w, this.ratio);
-        return h;
+    _createDefaultBBox: function() {
+        var south = 33.357555,
+            west = -105.890007,
+            north = 33.525149,
+            east = -105.584793;
+
+        var bounds = L.latLngBounds(
+            new L.LatLng(south, west),
+            new L.LatLng(north, east)
+        );
+
+        return new ModelBBox(bounds, this.map.leafletMap);
     },
 
-    _makeModel: function(name, constructor, width, patchRenderer) {
-        var model = new constructor(width, this._getHeight(width), this.virtualWidth, this),
+    _makeModel: function(name, constructor, width, patchRenderer, bbox) {
+        var ratio = bbox.pixelHeight() / bbox.pixelWidth(),
+            height = Math.floor(width * ratio);
+
+        var model = new constructor(width, height, bbox, this.virtualWidth, this),
             tileRenderer = new ModelTileRenderer(this.map, model, patchRenderer(model)),
             tileServer = new ModelTileServer(tileRenderer);
 
@@ -30,12 +40,13 @@ ModelSet.prototype = {
     },
 
     _makeModels: function() {
+        var bbox = this._createDefaultBBox();
         return {
-            'Elevation'         : this._makeModel('Elevation', ElevationModel, 1024, ElevationPatchRenderer),
-            'Fire Severity'     : this._makeModel('Fire Severity', FireSeverityModel, 512, FirePatchRenderer),
-            'Vegetation'        : this._makeModel('Vegetation', VegetationModel, 512, VegetationPatchRenderer),
-            'Erosion & Deposit' : this._makeModel('Erosion & Deposit', ErosionModel, 400, ErosionPatchRenderer),
-            'Water Flow'        : this._makeModel('Water Flow', WaterModel, 400, WaterPatchRenderer)
+            'Elevation'         : this._makeModel('Elevation', ElevationModel, 1024, ElevationPatchRenderer, bbox),
+            'Fire Severity'     : this._makeModel('Fire Severity', FireSeverityModel, 512, FirePatchRenderer, bbox),
+            'Vegetation'        : this._makeModel('Vegetation', VegetationModel, 512, VegetationPatchRenderer, bbox),
+            'Erosion & Deposit' : this._makeModel('Erosion & Deposit', ErosionModel, 400, ErosionPatchRenderer, bbox),
+            'Water Flow'        : this._makeModel('Water Flow', WaterModel, 400, WaterPatchRenderer, bbox)
         };
     },
 
@@ -60,7 +71,7 @@ ModelSet.prototype = {
     },
 
     samplePixel: function(x, y, sampledModel) {
-        var bboxWidth = this.map.modelBBox.pixelWidth(),
+        var bboxWidth = sampledModel.bbox.pixelWidth(),
             sampleSpacing = this.virtualWidth/bboxWidth,
 
             fromX = x * sampleSpacing,

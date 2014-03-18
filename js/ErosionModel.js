@@ -1,7 +1,7 @@
 'use strict';
 
-function ErosionModel(xs, ys, fixedGeometryWidth, modelSet) {
-    DataModel.call(this, xs, ys, fixedGeometryWidth, modelSet);
+function ErosionModel(xs, ys, bbox, fixedGeometryWidth, modelSet) {
+    DataModel.call(this, xs, ys, bbox, fixedGeometryWidth, modelSet);
 
     this.isAnimated = true;
     this.editable = true;

@@ -2,8 +2,8 @@
 
 /* Water model inherits from DataModel */
 
-function WaterModel(xs, ys, fixedGeometryWidth, modelSet) {
-    DataModel.call(this, xs, ys, fixedGeometryWidth, modelSet);
+function WaterModel(xs, ys, bbox, fixedGeometryWidth, modelSet) {
+    DataModel.call(this, xs, ys, bbox, fixedGeometryWidth, modelSet);
 
     this.init({ 
         elevation: 0,

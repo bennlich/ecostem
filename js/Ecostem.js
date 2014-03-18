@@ -16,7 +16,6 @@ L.Map = L.Map.extend({
 var Ecostem = angular.module('Ecostem', ['EcostemDirectives', 'EcostemServices']);
 var EcostemDirectives = angular.module('EcostemDirectives', ['EcostemServices']);
 var EcostemServices = angular.module('EcostemServices', []);
-var EcostemFilters = angular.module('EcostemFilters', []);
 
 Ecostem.filter('format', [function() {
     return function(input) {
@@ -28,16 +27,15 @@ Ecostem.run(['$rootScope', function($rootScope) {
     console.log('Ecostem is running.');
     
     $rootScope.safeApply = function(fn) {
-      var phase = this.$root.$$phase;
-      if(phase == '$apply' || phase == '$digest') {
-        if(fn && (typeof(fn) === 'function')) {
-          fn();
+        var phase = this.$root.$$phase;
+        if(phase == '$apply' || phase == '$digest') {
+            if(fn && (typeof(fn) === 'function')) {
+                fn();
+            }
+        } else {
+            this.$apply(fn);
         }
-      } else {
-        this.$apply(fn);
-      }
-    };
-    
+    };    
 }]);
 
 var curSlope, calculatedSlope, slopeDiff;
@@ -60,26 +58,31 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
         var marker = L.marker(e.latlng);
 
         marker.addTo(map.leafletMap);
-        map.scenarioPolygon.off('click', addSensor);
+        map.leafletMap.off('click', addSensor);
 
-        var bbox_x = map.modelBBox.xOffsetFromTopLeft();
-        var bbox_y = map.modelBBox.yOffsetFromTopLeft();
+        // var bbox_x = map.modelBBox.xOffsetFromTopLeft();
+        // var bbox_y = map.modelBBox.yOffsetFromTopLeft();
 
         $scope.$apply(function() {
             $scope.addingSensor = false;
 
-            var x = e.containerPoint.x - bbox_x,
-                y = e.containerPoint.y - bbox_y;
+            // var x = e.containerPoint.x - bbox_x,
+            //     y = e.containerPoint.y - bbox_y;
 
             var elev = map.modelSet.models['Elevation'].dataModel;
             var water = map.modelSet.models['Water Flow'].dataModel;
             var veg = map.modelSet.models['Vegetation'].dataModel;
             var sev = map.modelSet.models['Fire Severity'].dataModel;
 
-            var elevData = map.modelSet.samplePixel(x, y, elev);
-            var waterData = map.modelSet.samplePixel(x, y, water);
-            var vegData = map.modelSet.samplePixel(x, y, veg);
-            var sevData = map.modelSet.samplePixel(x, y, sev);
+            var elevData = elev.sample(e.latlng),
+                waterData = water.sample(e.latlng),
+                vegData = veg.sample(e.latlng),
+                sevData = sev.sample(e.latlng);
+
+            // var elevData = map.modelSet.samplePixel(x, y, elev);
+            // var waterData = map.modelSet.samplePixel(x, y, water);
+            // var vegData = map.modelSet.samplePixel(x, y, veg);
+            // var sevData = map.modelSet.samplePixel(x, y, sev);
 
             var sensor = {
                 elevData : elevData,
@@ -119,7 +122,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
         }
 
         $scope.addingSensor = true;
-        map.scenarioPolygon.on('click', addSensor);
+        map.leafletMap.on('click', addSensor);
     };
 
     $scope.cancelAddingSensor = function() {
@@ -311,13 +314,14 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', 'map', 'elevation
 
     $q.all([map.deferred.promise, elevationSampler.deferred.promise]).then(function() {
         $scope.elevationIsLoading = true;
-        elevationSampler.loadElevationData(map.modelBBox, function() {
+
+        var elevationModel = map.modelSet.getDataModel('Elevation');
+        var waterModel = map.modelSet.getDataModel('Water Flow');
+
+        elevationSampler.loadElevationData(elevationModel.bbox, function() {
             /* TODO: Maybe the sampler can be merged into ElevationModel */
-            var elevationModel = map.modelSet.getDataModel('Elevation');
-            var waterModel = map.modelSet.getDataModel('Water Flow');
 
             elevationModel.loadElevation(elevationSampler);
-            console.log('here');
             waterModel.sampleElevation();
 
             $scope.elevationIsLoading = false;

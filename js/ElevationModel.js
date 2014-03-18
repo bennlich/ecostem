@@ -1,7 +1,7 @@
 'use strict';
 
-function ElevationModel(xs, ys, fixedGeometryWidth, modelSet) {
-    DataModel.call(this, xs, ys, fixedGeometryWidth, modelSet);
+function ElevationModel(xs, ys, bbox, fixedGeometryWidth, modelSet) {
+    DataModel.call(this, xs, ys, bbox, fixedGeometryWidth, modelSet);
 
     this.reset();
 

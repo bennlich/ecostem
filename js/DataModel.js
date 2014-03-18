@@ -1,8 +1,9 @@
 'use strict';
 
-function DataModel(xs, ys, fixedGeometryWidth, modelSet) {
+function DataModel(xs, ys, bbox, fixedGeometryWidth, modelSet) {
     this.xSize = xs;
     this.ySize = ys;
+    this.bbox = bbox;
     this.sampleSpacing = fixedGeometryWidth / xs;
     this.modelSet = modelSet;
     this.world = null;
@@ -56,6 +57,29 @@ DataModel.prototype = {
                 }
             }
         }.bind(this));
+    },
+
+    sample: function(latlng) {
+        /* TODO: don't want datamodel to be reliant on leafletMap */
+
+        var zoom = 15,
+            point = this.bbox.leafletMap.project(latlng, zoom),
+            ne = this.bbox.leafletMap.project(this.bbox.bbox.getNorthWest(), zoom),
+            width = this.bbox.pixelWidth(zoom),
+            height = this.bbox.pixelHeight(zoom);
+
+        var distX = point.x - ne.x,
+            distY = point.y - ne.y;
+
+        if (distX > width || distY > height) {
+            console.log('undefined bounds');
+            return undefined;
+        }
+
+        var x = Math.floor(distX * (this.xSize / width)),
+            y = Math.floor(distY * (this.ySize / height));
+
+        return this.world[x][y];
     },
 
     neighbors: function(x,y) {

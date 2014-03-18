@@ -13,17 +13,17 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
             L.control.scale().addTo(this.leafletMap);
 
-            this.modelBBox = this.createRuidosoScenarioBBox();
-            this.addBBoxPolygon(this.modelBBox.bbox);
+            //this.modelBBox = this.createRuidosoScenarioBBox();
+            //this.addBBoxPolygon(this.modelBBox.bbox);
 
-            var bbox = this.modelBBox.bbox;
+            //var bbox = this.modelBBox.bbox;
 
-            var centerLat = bbox.getSouthWest().lat + (bbox.getNorthEast().lat - bbox.getSouthWest().lat)/2;
-            var centerLng = bbox.getSouthWest().lng - (bbox.getSouthWest().lng - bbox.getNorthEast().lng)/2;
+            //var centerLat = bbox.getSouthWest().lat + (bbox.getNorthEast().lat - bbox.getSouthWest().lat)/2;
+            //var centerLng = bbox.getSouthWest().lng - (bbox.getSouthWest().lng - bbox.getNorthEast().lng)/2;
 
-            console.log(centerLat, centerLng);
+            //console.log(centerLat, centerLng);
 
-            this.leafletMap.setView(new L.LatLng(centerLat, centerLng), 12);
+            this.leafletMap.setView(new L.LatLng(33.441351999999995, -105.73740000000001), 12);
 
             this.baseLayers = this._makeBaseLayers();
             this.setBaseLayer(this.baseLayers[3]);
@@ -59,87 +59,87 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
         },
 
         /* creates a hardcoded bbox for now */
-        createTaosScenarioBBox: function() {
-            var south = 36.29852498935906,
-                west = -105.85052490234375,
-                north = 36.558187766360675,
-                east = -105.41656494140625;
+        // createTaosScenarioBBox: function() {
+        //     var south = 36.29852498935906,
+        //         west = -105.85052490234375,
+        //         north = 36.558187766360675,
+        //         east = -105.41656494140625;
 
-            var bounds = L.latLngBounds(
-                new L.LatLng(south, west),
-                new L.LatLng(north, east)
-            );
+        //     var bounds = L.latLngBounds(
+        //         new L.LatLng(south, west),
+        //         new L.LatLng(north, east)
+        //     );
 
-            return new ModelBBox(bounds, this.leafletMap);
-        },
+        //     return new ModelBBox(bounds, this.leafletMap);
+        // },
 
-        createRuidosoScenarioBBox: function() {
-            var south = 33.357555,
-                west = -105.890007,
-                north = 33.525149,
-                east = -105.584793;
+        // createRuidosoScenarioBBox: function() {
+        //     var south = 33.357555,
+        //         west = -105.890007,
+        //         north = 33.525149,
+        //         east = -105.584793;
 
-            var bounds = L.latLngBounds(
-                new L.LatLng(south, west),
-                new L.LatLng(north, east)
-            );
+        //     var bounds = L.latLngBounds(
+        //         new L.LatLng(south, west),
+        //         new L.LatLng(north, east)
+        //     );
 
-            return new ModelBBox(bounds, this.leafletMap);
-        },
+        //     return new ModelBBox(bounds, this.leafletMap);
+        // },
 
-        addBBoxPolygon: function(bbox) {
-            var south = bbox.getSouth(),
-                west = bbox.getWest(),
-                north = bbox.getNorth(),
-                east = bbox.getEast();
+        // addBBoxPolygon: function(bbox) {
+        //     var south = bbox.getSouth(),
+        //         west = bbox.getWest(),
+        //         north = bbox.getNorth(),
+        //         east = bbox.getEast();
 
-            var geoJson = {
-                type: 'Feature',
-                geometry: {
-                    type: 'Polygon',
-                    coordinates: [
-                        [[west, south], [west, north], [east, north], [east, south], 
-                         [west, south]]
-                    ]
-                }
-            };
+        //     var geoJson = {
+        //         type: 'Feature',
+        //         geometry: {
+        //             type: 'Polygon',
+        //             coordinates: [
+        //                 [[west, south], [west, north], [east, north], [east, south], 
+        //                  [west, south]]
+        //             ]
+        //         }
+        //     };
 
-            var bboxStyle = {
-                color: "#000",
-                weight: 2,
-                opacity: 0.5,
-                fillOpacity: 0
-            };
+        //     var bboxStyle = {
+        //         color: "#000",
+        //         weight: 2,
+        //         opacity: 0.5,
+        //         fillOpacity: 0
+        //     };
 
-            var polygon = L.geoJson(geoJson, { style: bboxStyle });
+        //     var polygon = L.geoJson(geoJson, { style: bboxStyle });
 
-            // pass double-clicks down to the map
-            polygon.on('dblclick', function(e) { 
-                this.leafletMap.fire('dblclick', e); 
-            }.bind(this));
+        //     // pass double-clicks down to the map
+        //     polygon.on('dblclick', function(e) { 
+        //         this.leafletMap.fire('dblclick', e); 
+        //     }.bind(this));
 
-            polygon.on('click', function(e) {
-                if (typeof this.bboxCallback !== 'function')
-                    return;
+        //     polygon.on('click', function(e) {
+        //         if (typeof this.bboxCallback !== 'function')
+        //             return;
 
-                var bbox_x = this.modelBBox.xOffsetFromTopLeft();
-                var bbox_y = this.modelBBox.yOffsetFromTopLeft();
+        //         var bbox_x = this.modelBBox.xOffsetFromTopLeft();
+        //         var bbox_y = this.modelBBox.yOffsetFromTopLeft();
 
-                this.bboxCallback({
-                    x: e.containerPoint.x - bbox_x,
-                    y: e.containerPoint.y - bbox_y,
-                    latlng: e.latlng
-                });
-            }.bind(this));
+        //         this.bboxCallback({
+        //             x: e.containerPoint.x - bbox_x,
+        //             y: e.containerPoint.y - bbox_y,
+        //             latlng: e.latlng
+        //         });
+        //     }.bind(this));
 
-            polygon.addTo(this.leafletMap);
+        //     polygon.addTo(this.leafletMap);
 
-            this.scenarioPolygon = polygon;
-        },
+        //     this.scenarioPolygon = polygon;
+        // },
 
-        onBBoxClickDrag: function(callback) {
-            this.bboxCallback = callback;
-        },
+        // onBBoxClickDrag: function(callback) {
+        //     this.bboxCallback = callback;
+        // },
 
         /* tile urls */
         _osmUrl: function() {
@@ -224,9 +224,9 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
         /* editable data layers */
         _makeDataLayers: function() {
-            var ratio = this.modelBBox.pixelHeight() / this.modelBBox.pixelWidth();
+            //var ratio = this.modelBBox.pixelHeight() / this.modelBBox.pixelWidth();
 
-            this.modelSet = new ModelSet(map, ratio, $rootScope);
+            this.modelSet = new ModelSet(map, $rootScope);
 
             var zIndex = 12;
             return _.map(_.values(this.modelSet.models), function(model) {

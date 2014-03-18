@@ -59,8 +59,11 @@ DataModel.prototype = {
         }.bind(this));
     },
 
-    sample: function(latlng) {
-        /* TODO: don't want datamodel to be reliant on leafletMap */
+    latLngToModelXY: function(latlng) {
+        /* TODO: don't want datamodel to be reliant on leafletMap
+           maybe provide an object like GISGrid that can do these
+           calculations and could be implemented both in terms of
+           leaflet and openlayers */
 
         var zoom = 15,
             point = this.bbox.leafletMap.project(latlng, zoom),
@@ -71,15 +74,35 @@ DataModel.prototype = {
         var distX = point.x - ne.x,
             distY = point.y - ne.y;
 
-        if (distX > width || distY > height) {
-            console.log('undefined bounds');
-            return undefined;
-        }
-
         var x = Math.floor(distX * (this.xSize / width)),
             y = Math.floor(distY * (this.ySize / height));
 
-        return this.world[x][y];
+        return {x:x, y:y};
+    },
+
+    modelXYToLatLng: function(xy) {
+        var zoom = 15,
+            ne = this.bbox.leafletMap.project(this.bbox.bbox.getNorthWest(), zoom),
+            width = this.bbox.pixelWidth(zoom),
+            height = this.bbox.pixelHeight(zoom);
+
+        var pixelX = xy.x * (width / this.xSize),
+            pixelY = xy.y * (height / this.ySize);
+
+        var point = new L.Point(ne.x + pixelX, ne.y + pixelY);
+
+        return this.bbox.leafletMap.unproject(point, zoom);
+    },
+
+    sample: function(latlng) {
+        var xy = this.latLngToModelXY(latlng);
+
+        if (xy.x >= this.xSize || xy.y >= this.ySize) {
+            console.log('attempt to sample out of bounds: ', xy.x, xy.y);
+            return undefined;
+        }
+
+        return this.world[xy.x][xy.y];
     },
 
     neighbors: function(x,y) {

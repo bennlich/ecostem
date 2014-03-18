@@ -60,29 +60,6 @@ ModelSet.prototype = {
         return model ? model.dataModel : null;
     },
 
-    sample: function(x, y, fromModel, sampledModel) {
-        var fromX = x * fromModel.sampleSpacing,
-            fromY = y * fromModel.sampleSpacing,
-
-            toX = Math.floor(fromX / sampledModel.sampleSpacing),
-            toY = Math.floor(fromY / sampledModel.sampleSpacing);
-
-        return sampledModel.world[toX][toY];
-    },
-
-    samplePixel: function(x, y, sampledModel) {
-        var bboxWidth = sampledModel.bbox.pixelWidth(),
-            sampleSpacing = this.virtualWidth/bboxWidth,
-
-            fromX = x * sampleSpacing,
-            fromY = y * sampleSpacing,
-
-            toX = Math.floor(fromX / sampledModel.sampleSpacing),
-            toY = Math.floor(fromY / sampledModel.sampleSpacing);
-
-        return sampledModel.world[toX][toY];
-    },
-
     safeApply: function(fn) {
         this.scope.safeApply(fn);
     }

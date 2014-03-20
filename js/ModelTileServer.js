@@ -18,7 +18,16 @@ ModelTileServer.prototype = {
     },
 
     _init: function(name) {
-        this._layerRef = this.fb.push({ name: name });
+        var bbox = this.renderer.model.bbox.bbox;
+        this._layerRef = this.fb.push({ 
+            name: name,
+            bbox: {
+                north: bbox.getNorth(),
+                west: bbox.getWest(),
+                south: bbox.getSouth(),
+                east: bbox.getEast()
+            }
+        });
 
         this._layerRef.onDisconnect().remove();
 

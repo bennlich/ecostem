@@ -44,7 +44,12 @@
           if (!name)
             return;
 
-          $('#layers').append('<div id="{0}"><input id="cb{0}" type="checkbox"></input>&nbsp<label for="cb{0}">{1}</label></div>'.format(id, name));
+          $('#layers').append(
+             ('<div id="{0}">'
+             +  '<input id="cb{0}" type="checkbox"></input>&nbsp;'
+             +  '<label for="cb{0}">{1}</label>'
+             +  '<a style="float:right;">pan</a>'
+             +'</div>').format(id, name));
         });
 
         liveTexture.onLayerDisappeared(function(id, name, layer) {
@@ -60,6 +65,12 @@
               layer = liveTexture.findLayer(id);
 
           checked ? map.addLayer(layer) : map.removeLayer(layer);
+        });
+
+        $(document).on('click', 'a', function() {
+          var id = $(this).parent().attr('id'),
+              bbox = liveTexture.findBBox(id);
+          map.fitBounds(bbox);
         });
       });
     </script>

@@ -19,10 +19,16 @@ LiveTexture.prototype = {
 
             var id = snap.name(),
                 name = snap.val().name,
-                ref = snap.ref(),
-                layer = this._leafletLayer(ref);
+                bboxObj = snap.val().bbox,
+                ref = snap.ref();
 
-            this._layers.push({ id: id, name: name, leafletLayer: layer });
+            if (!name || !bboxObj)
+                return;
+
+            var layer = this._leafletLayer(ref);
+            var bbox = this._bbox(bboxObj);
+
+            this._layers.push({ id: id, name: name, bbox: bbox, leafletLayer: layer });
 
             _.each(this._appearedCallbacks, function(cb) {
                 cb(id, name, layer);
@@ -46,6 +52,12 @@ LiveTexture.prototype = {
                 cb(id, name, layer.leafletLayer);
             });
         }.bind(this));
+    },
+
+    _bbox: function(bboxObj) {
+        var sw = new L.LatLng(bboxObj.south, bboxObj.west),
+            ne = new L.LatLng(bboxObj.north, bboxObj.east);
+        return new L.LatLngBounds(sw, ne);
     },
 
     _leafletLayer: function(ref) {
@@ -82,12 +94,19 @@ LiveTexture.prototype = {
         return liveLayer;
     },
 
-    findLayer: function(id) {
+    findLayerObj: function(id) {
         var layer = _.find(this._layers, function(layer) {
             return layer.id === id;
         });
+        return layer;
+    },
 
-        return layer.leafletLayer;
+    findLayer: function(id) {
+        return this.findLayerObj(id).leafletLayer;
+    },
+
+    findBBox: function(id) {
+        return this.findLayerObj(id).bbox;
     },
 
     onLayerAppeared: function(cb) {

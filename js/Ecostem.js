@@ -328,7 +328,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
             $scope.showSlope = false;
         }
         else {
-            var waterModel = $scope.map.dataLayers[2].model.dataModel;
+            var waterModel = $scope.map.modelLayers[2].model.dataModel;
             curSlope = waterModel.getSlope();
             calculatedSlope = waterModel.calculateSlope();
             

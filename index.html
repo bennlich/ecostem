@@ -152,7 +152,7 @@
         <h3 ng-click="showModels=!showModels">Models</h3>
         <div ng-show="showModels">
           <hr/>
-          <div class="layer-container" ng-repeat="layer in map.dataLayers">
+          <div class="layer-container" ng-repeat="layer in map.modelLayers">
             <input id="dl{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
             <label for="dl{{$index}}">{{ layer.name }}</label>
             <br/>
@@ -187,7 +187,7 @@
               <span ng-show="showQuad">Hide Quad</span>
             </a>
             <br/>
-            <a ng-click="toggleSlope()" ng-show="elevationLoaded && map.dataLayers[2].model.dataModel.patchHeights.data.length > 0">
+            <a ng-click="toggleSlope()" ng-show="elevationLoaded && map.modelLayers[2].model.dataModel.patchHeights.data.length > 0">
               <span ng-show="!showSlope">Show Slopes</span>
               <span ng-show="showSlope">Hide Slopes</span>
             </a>

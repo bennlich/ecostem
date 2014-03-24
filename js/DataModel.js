@@ -4,6 +4,14 @@ function DataModel(xs, ys, bbox, fixedGeometryWidth, modelSet) {
     this.xSize = xs;
     this.ySize = ys;
     this.bbox = bbox;
+    
+    // TODO: remove bbox, and pass in origin and patchSize as parameters
+    this.origin = {
+        x: bbox.bbox.getWest(),
+        y: bbox.bbox.getNorth()
+    };
+    this.patchSize = Math.abs(bbox.bbox.getWest() - bbox.bbox.getEast()) / xs; // e.g. degrees per patch
+
     this.sampleSpacing = fixedGeometryWidth / xs;
     this.modelSet = modelSet;
     this.world = null;
@@ -59,43 +67,22 @@ DataModel.prototype = {
         }.bind(this));
     },
 
-    latLngToModelXY: function(latlng) {
-        /* TODO: don't want datamodel to be reliant on leafletMap
-           maybe provide an object like GISGrid that can do these
-           calculations and could be implemented both in terms of
-           leaflet and openlayers */
-
-        var zoom = 15,
-            point = this.bbox.leafletMap.project(latlng, zoom),
-            ne = this.bbox.leafletMap.project(this.bbox.bbox.getNorthWest(), zoom),
-            width = this.bbox.pixelWidth(zoom),
-            height = this.bbox.pixelHeight(zoom);
-
-        var distX = point.x - ne.x,
-            distY = point.y - ne.y;
-
-        var x = Math.floor(distX * (this.xSize / width)),
-            y = Math.floor(distY * (this.ySize / height));
-
-        return {x:x, y:y};
+    globalCoordToModelCoord: function(globalCoord) {
+        return {
+            x: Math.floor((globalCoord.x - this.origin.x) / this.patchSize),
+            y: Math.floor((globalCoord.y - this.origin.y) / this.patchSize)
+        };
     },
 
-    modelXYToLatLng: function(xy) {
-        var zoom = 15,
-            ne = this.bbox.leafletMap.project(this.bbox.bbox.getNorthWest(), zoom),
-            width = this.bbox.pixelWidth(zoom),
-            height = this.bbox.pixelHeight(zoom);
-
-        var pixelX = xy.x * (width / this.xSize),
-            pixelY = xy.y * (height / this.ySize);
-
-        var point = new L.Point(ne.x + pixelX, ne.y + pixelY);
-
-        return this.bbox.leafletMap.unproject(point, zoom);
+    modelCoordToGlobalCoord: function(modelCoord) {
+        return {
+            x: (modelCoord.x * this.patchSize) + this.origin.x,
+            y: (modelCoord.y * this.patchSize) + this.origin.y
+        };
     },
 
-    sample: function(latlng) {
-        var xy = this.latLngToModelXY(latlng);
+    sample: function(globalCoord) {
+        var xy = this.globalCoordToModelCoord(globalCoord);
 
         if (xy.x < 0 || xy.x >= this.xSize || xy.y < 0 || xy.y >= this.ySize) {
             return undefined;

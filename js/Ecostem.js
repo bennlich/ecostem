@@ -119,11 +119,12 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
             var water = map.modelSet.models['Water Flow'].dataModel;
             var veg = map.modelSet.models['Vegetation'].dataModel;
             var sev = map.modelSet.models['Fire Severity'].dataModel;
+            var point = { x: e.latlng.lng, y: e.latlng.lat };
 
-            var elevData = elev.sample(e.latlng),
-                waterData = water.sample(e.latlng),
-                vegData = veg.sample(e.latlng),
-                sevData = sev.sample(e.latlng);
+            var elevData = elev.sample(point),
+                waterData = water.sample(point),
+                vegData = veg.sample(point),
+                sevData = sev.sample(point);
 
             // var elevData = map.modelSet.samplePixel(x, y, elev);
             // var waterData = map.modelSet.samplePixel(x, y, water);

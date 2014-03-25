@@ -70,14 +70,14 @@ DataModel.prototype = {
     globalCoordToModelCoord: function(globalCoord) {
         return {
             x: Math.floor((globalCoord.x - this.origin.x) / this.patchSize),
-            y: Math.floor((globalCoord.y - this.origin.y) / this.patchSize)
+            y: Math.floor(-(globalCoord.y - this.origin.y) / this.patchSize)
         };
     },
 
     modelCoordToGlobalCoord: function(modelCoord) {
         return {
             x: (modelCoord.x * this.patchSize) + this.origin.x,
-            y: (modelCoord.y * this.patchSize) + this.origin.y
+            y: -(modelCoord.y * this.patchSize) + this.origin.y
         };
     },
 

@@ -10,7 +10,8 @@ function DataModel(xs, ys, bbox, fixedGeometryWidth, modelSet) {
         x: bbox.bbox.getWest(),
         y: bbox.bbox.getNorth()
     };
-    this.patchSize = Math.abs(bbox.bbox.getWest() - bbox.bbox.getEast()) / xs; // e.g. degrees per patch
+    this.patchWidth = Math.abs((bbox.bbox.getWest() - bbox.bbox.getEast()) / xs); // e.g. degrees per patch
+    this.patchHeight = Math.abs((bbox.bbox.getNorth() - bbox.bbox.getSouth()) / ys);
 
     this.sampleSpacing = fixedGeometryWidth / xs;
     this.modelSet = modelSet;
@@ -69,15 +70,15 @@ DataModel.prototype = {
 
     globalCoordToModelCoord: function(globalCoord) {
         return {
-            x: Math.floor((globalCoord.x - this.origin.x) / this.patchSize),
-            y: Math.floor(-(globalCoord.y - this.origin.y) / this.patchSize)
+            x: Math.floor((globalCoord.x - this.origin.x) / this.patchWidth),
+            y: Math.floor(-(globalCoord.y - this.origin.y) / this.patchHeight)
         };
     },
 
     modelCoordToGlobalCoord: function(modelCoord) {
         return {
-            x: (modelCoord.x * this.patchSize) + this.origin.x,
-            y: -(modelCoord.y * this.patchSize) + this.origin.y
+            x: (modelCoord.x * this.patchWidth) + this.origin.x,
+            y: -(modelCoord.y * this.patchHeight) + this.origin.y
         };
     },
 

@@ -27,16 +27,22 @@ ModelTileRenderer.prototype = {
         }
 
         // size of a patch in pixels at current zoom
-        var patchSize = scenarioRect.width / this.model.xSize;
+        var patchWidth = scenarioRect.width / this.model.xSize,
+            patchHeight = scenarioRect.height / this.model.ySize;
 
         // minimum size of brush, in pixels (i.e. finest resolution at which to render patches)
         // (really only used when rendering multiple patches in a single brushstroke)
-        var paintSize = patchSize;
+        var paintWidth = patchWidth,
+            paintHeight = patchHeight;
 
-        if (paintSize < patchSize)
-            paintSize = patchSize; // every patch rendered as its own square
+        if (paintWidth < patchWidth)
+            paintWidth = patchWidth;
 
-        var patchesPerBrush = paintSize / patchSize;
+        if (paintHeight < patchHeight)
+            paintHeight = patchHeight;
+
+        var patchesPerBrushX = paintWidth / patchWidth;
+        var patchesPerBrushY = paintHeight / patchHeight;
 
         // top-left corner of the intersection, relative to 
         // the top-left corner of the scenario, in pixels
@@ -44,27 +50,27 @@ ModelTileRenderer.prototype = {
         var intersectionY = Math.abs(scenarioRect.top - intersection.top); // in range [0, scenarioRect.height]
 
         // same as above, in world coordinates
-        var startWorldX = Math.floor(intersectionX / patchSize); // in range [0, model.xSize]
-        var startWorldY = Math.floor(intersectionY / patchSize); // in range [0, model.ySize]
+        var startWorldX = Math.floor(intersectionX / patchWidth); // in range [0, model.xSize]
+        var startWorldY = Math.floor(intersectionY / patchHeight); // in range [0, model.ySize]
 
         // 1 patch beyond the bottom-right corner of the intersection, in world coordinates
-        var endWorldX = Math.floor((intersectionX + intersection.width)/patchSize)+1; // in range [0, model.xSize+1]
-        var endWorldY = Math.floor((intersectionY + intersection.height)/patchSize)+1; // in range [0, model.ySize+1]
+        var endWorldX = Math.floor((intersectionX + intersection.width)/patchWidth)+1; // in range [0, model.xSize+1]
+        var endWorldY = Math.floor((intersectionY + intersection.height)/patchHeight)+1; // in range [0, model.ySize+1]
 
         // coordinates of the top-left patch in this tile, relative to
         // the top-left corner of the tile, in pixels
-        var drawStartX = intersection.left - tileX - (intersectionX % paintSize);
-        var drawStartY = intersection.top - tileY - (intersectionY % paintSize);
+        var drawStartX = intersection.left - tileX - (intersectionX % paintWidth);
+        var drawStartY = intersection.top - tileY - (intersectionY % paintHeight);
 
         var renderStep = function(world) {
             ctx.clearRect(0,0,canvas.width,canvas.height);
 
-            for (var worldX = startWorldX, p = drawStartX; worldX < endWorldX; worldX += patchesPerBrush, p += paintSize) {
-                for (var worldY = startWorldY, k = drawStartY; worldY < endWorldY; worldY += patchesPerBrush, k += paintSize) {
+            for (var worldX = startWorldX, p = drawStartX; worldX < endWorldX; worldX += patchesPerBrushX, p += paintWidth) {
+                for (var worldY = startWorldY, k = drawStartY; worldY < endWorldY; worldY += patchesPerBrushY, k += paintHeight) {
                     var intWorldX = Math.floor(worldX);
                     var intWorldY = Math.floor(worldY);
 
-                    this.patchRenderer.render(ctx, world, intWorldX, intWorldY, p, k, paintSize, paintSize);
+                    this.patchRenderer.render(ctx, world, intWorldX, intWorldY, p, k, paintWidth, paintHeight);
                 }
             }
 

@@ -76,7 +76,7 @@ var LocalStorage = {
 EcostemServices.service('elevationSampler', ['$rootScope', '$q', function($rootScope, $q) {
     return {
         deferred: $q.defer(),
-        elevationServer: "http://70.90.201.217/cgi-bin/elevation.py?bbox={s},{w},{n},{e}&res={width},{height}",
+        elevationServer: "http://node.redfish.com/cgi-bin/elevation.py?bbox={s},{w},{n},{e}&res={width},{height}",
         canvas: null,
         ctx: null,
         imageData: null,

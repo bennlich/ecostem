@@ -1,7 +1,7 @@
 'use strict';
 
-function GenericModel(xs, ys, bbox, fixedGeometryWidth, modelSet) {
-    DataModel.call(this, xs, ys, bbox, fixedGeometryWidth, modelSet);
+function GenericModel(xs, ys, bbox, modelSet) {
+    DataModel.call(this, xs, ys, bbox, modelSet);
 
     this.isAnimated = false;
     this.editable = false;

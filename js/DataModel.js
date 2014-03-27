@@ -1,6 +1,6 @@
 'use strict';
 
-function DataModel(xs, ys, bbox, fixedGeometryWidth, modelSet) {
+function DataModel(xs, ys, bbox, modelSet) {
     this.xSize = xs;
     this.ySize = ys;
     this.bbox = bbox;
@@ -13,7 +13,6 @@ function DataModel(xs, ys, bbox, fixedGeometryWidth, modelSet) {
     this.patchWidth = Math.abs((bbox.bbox.getWest() - bbox.bbox.getEast()) / xs); // e.g. degrees per patch
     this.patchHeight = Math.abs((bbox.bbox.getNorth() - bbox.bbox.getSouth()) / ys);
 
-    this.sampleSpacing = fixedGeometryWidth / xs;
     this.modelSet = modelSet;
     this.world = null;
     this.callbacks = [];

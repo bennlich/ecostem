@@ -2,7 +2,6 @@
 
 function ModelSet(map, scope) {
     this.map = map;
-    this.virtualWidth = 1024;
     this.scope = scope;
 
     this.models = this._makeModels();
@@ -27,7 +26,7 @@ ModelSet.prototype = {
         var ratio = bbox.pixelHeight() / bbox.pixelWidth(),
             height = Math.floor(width * ratio);
 
-        var model = new constructor(width, height, bbox, this.virtualWidth, this),
+        var model = new constructor(width, height, bbox, this),
             tileRenderer = new ModelTileRenderer(this.map, model, patchRenderer(model)),
             tileServer = new ModelTileServer(tileRenderer);
 

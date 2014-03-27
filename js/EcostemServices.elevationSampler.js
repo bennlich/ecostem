@@ -1,78 +1,5 @@
 'use strict';
 
-var LocalStorage = {
-    filer: new Filer(),
-
-    filerOnError: function(e) {
-        console.log('Error');
-        console.log('Filer Error: ', e.name);
-    },
-
-    initialized: function(callback) {
-        var filer = this.filer,
-            filerOnError = this.filerOnError;
-
-        filer.init({persistent: false, size: 1024*1024*20}, function(fs) {
-            callback(filer);
-        }, filerOnError);
-    },
-
-    withDir: function(dir, callback) {
-        var filerOnError = this.filerOnError;
-
-        this.initialized(function(filer) {
-            filer.ls(dir, function() {
-                console.log('found dir', dir);
-                callback(dir);
-            }, function() {
-                console.log('creating dir', dir);
-                filer.mkdir(dir);
-                callback(dir);
-            });
-        });
-    },
-
-    dirGetFile: function(dir, fileName, successCallback, notFoundCallback) {
-        this.initialized(function(filer) {
-            filer.ls(dir, function(contents) {
-                var cachedFile = _.find(contents, function(c) {
-                    return c.isFile && c.name === fileName;
-                });
-                
-                if (cachedFile) {
-                    console.log('found file', dir, cachedFile.name);
-                    successCallback(cachedFile);
-                } else {
-                    console.log('file not found', dir, fileName);
-                    notFoundCallback();
-                }
-            });
-        });
-    },
-
-    readFileAsByteArray: function(fileObj, callback) {
-        var filerOnError = this.filerOnError;
-
-        this.initialized(function(filer) {
-            filer.open(fileObj.fullPath, function(file) {
-                var reader = new FileReader();
-                reader.onload = function(data) {
-                    callback(new Uint8Array(reader.result));
-                };
-                reader.readAsArrayBuffer(file);
-            }, filerOnError);
-        });
-    },
-
-    writeFile: function(filePath, data, callback) {
-        var filerOnError = filerOnError;
-
-        this.initialized(function(filer) {
-            filer.write(filePath, {data: data}, callback);
-        }, filerOnError);
-    }
-};
-
 EcostemServices.service('elevationSampler', ['$rootScope', '$q', function($rootScope, $q) {
     return {
         deferred: $q.defer(),
@@ -81,13 +8,13 @@ EcostemServices.service('elevationSampler', ['$rootScope', '$q', function($rootS
         ctx: null,
         imageData: null,
         width: 0,
-        fixedScenarioWidth: 1024,
+        samplingWidth: 1024,
         elevationCacheDir: '/elevation_cache',
 
         init: function(canvas) {
             this.canvas = canvas;
             this.ctx = canvas.getContext('2d');
-            this.width = this.fixedScenarioWidth;
+            this.width = this.samplingWidth;
             
             this.deferred.resolve(this);
         },
@@ -202,60 +129,3 @@ EcostemServices.service('elevationSampler', ['$rootScope', '$q', function($rootS
     };
 }]);
 
-function computeQuad(sampler) {
-    var height = sampler.canvas.height;
-    var width = sampler.canvas.width;
-
-    var canvas = document.getElementById('quadCanvas');
-
-    canvas.height = Math.floor(height);
-    canvas.width = Math.floor(width);
-
-    var ctx = canvas.getContext('2d');
-
-    ctx.fillStyle='#fff';
-    ctx.fillRect(0,0,width,height);
-
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 1;
-
-    doQuad(ctx,sampler,0,0,width,height);
-}
-
-function drawLine(ctx, x1,y1,x2,y2) {
-    x1 = Math.floor(x1);
-    y1 = Math.floor(y1);
-    x2 = Math.floor(x2);
-    y2 = Math.floor(y2);
-    ctx.beginPath();
-    ctx.moveTo(x1,y1);
-    ctx.lineTo(x2,y2);
-    ctx.stroke();
-}
-
-function doQuad(ctx, sampler, x, y, width, height) {
-    var min=1000000, max=0;
-
-    for (var i = x; i < x+width; ++i) {
-        for (var j = y; j < y+height; ++j) {
-            var val = sampler.sample(i,j);
-            if (val < min)
-                min = val;
-            if (val > max)
-                max = val;
-        }
-    }
-
-    if (max - min > 40) {
-        drawLine(ctx, x+width/2, y, x+width/2, y+height);
-        drawLine(ctx, x, y+height/2, x+width, y+height/2);
-
-        var w = width/2,
-            h = height/2;
-
-        doQuad(ctx,sampler,x,y,w,h);
-        doQuad(ctx,sampler,x+w,y,w,h);
-        doQuad(ctx,sampler,x,y+h,w,h);
-        doQuad(ctx,sampler,x+w,y+h,w,h);
-    }
-}

@@ -1,7 +1,7 @@
 'use strict';
 
-function ElevationModel(xs, ys, bbox, fixedGeometryWidth, modelSet) {
-    DataModel.call(this, xs, ys, bbox, fixedGeometryWidth, modelSet);
+function ElevationModel(xs, ys, bbox, modelSet) {
+    DataModel.call(this, xs, ys, bbox, modelSet);
 
     this.reset();
 
@@ -18,8 +18,10 @@ ElevationModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
     },
 
     sampleElevationXY: function(sampler, x,y) {
+        var sampleSpacing = sampler.samplingWidth / this.xSize;
+
         var offset = function(p) { 
-            return p * this.sampleSpacing + Math.floor(this.sampleSpacing/2);
+            return p * sampleSpacing + Math.floor(sampleSpacing/2);
         }.bind(this);
 
         return sampler.sample(offset(x), offset(y));

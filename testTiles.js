@@ -108,7 +108,7 @@ var map;
 function setup(addFixed) {
     var opts = {minZoom:10, maxZoom:14};
     if (addFixed) {
-        opts.minZoom = 8;
+        opts.minZoom = 9;
         opts.maxZoom = 12;
     }
 

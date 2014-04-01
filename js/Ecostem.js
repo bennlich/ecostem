@@ -192,7 +192,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
 
         for (var i = 0; i < dataModel.xSize; ++i) {
             for (var j = 0; j < dataModel.ySize; ++j) {
-                var elevationValue = elevationModel.sample(dataModel.modelCoordToGlobalCoord({x:i, y:j})).elevation;
+                var elevationValue = elevationModel.sample(modelSet.crs.modelXYToLatLng({x:i, y:j}, dataModel)).elevation;
                 var density = tf(elevationValue) / 100;
 
                 if (Math.random() <= density) {

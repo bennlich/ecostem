@@ -5,6 +5,8 @@ function ModelSet(map, scope) {
     this.scope = scope;
 
     this.models = this._makeModels();
+
+    this.crs = new GlobalCRS(map.leafletMap);
 }
 
 ModelSet.prototype = {

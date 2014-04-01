@@ -3,19 +3,20 @@
 EcostemDirectives.directive('drawingSurface', ['map', function(map) {
     return function(scope, element, attrs) {
         function mouseHandler(e) {
-            var b = scope.editedLayer.model.dataModel.bbox,
-                bx = b.xOffsetFromTopLeft(),
-                by = b.yOffsetFromTopLeft(),
-                bw = b.pixelWidth(),
-                bh = b.pixelHeight(),
+            // var b = scope.editedLayer.model.dataModel.bbox,
+            //     bx = b.xOffsetFromTopLeft(),
+            //     by = b.yOffsetFromTopLeft(),
+            //     bw = b.pixelWidth(),
+            //     bh = b.pixelHeight(),
 
-                x = e.clientX - bx,
-                y = e.clientY - by;
+            //     x = e.clientX - bx,
+            //     y = e.clientY - by;
 
-            if (x < 0 || x >= bw || y < 0 || y >= bh)
-                return;
+            // if (x < 0 || x >= bw || y < 0 || y >= bh)
+            //     return;
 
-            scope.drawAt({x:x,y:y});
+            // scope.drawAt({x:x,y:y});
+            scope.drawAt({x: e.clientX, y: e.clientY});
         }
 
         element.drag('init', mouseHandler);

@@ -85,24 +85,24 @@ ModelTileRenderer.prototype = {
         return renderStep;
     },
 
-    putData: function(point, brushSize, value) {
-        var scenarioScreenWidth = this.model.bbox.pixelWidth(),
-            scenarioScreenHeight = this.model.bbox.pixelHeight(),
+    // putData: function(point, brushSize, value) {
+    //     var scenarioScreenWidth = this.model.bbox.pixelWidth(),
+    //         scenarioScreenHeight = this.model.bbox.pixelHeight(),
 
-            patchSize = scenarioScreenWidth / this.model.xSize,
+    //         patchSize = scenarioScreenWidth / this.model.xSize,
 
-            numPatches = Math.ceil(brushSize / patchSize),
+    //         numPatches = Math.ceil(brushSize / patchSize),
 
-            worldX = Math.round(point.x / patchSize - numPatches/2),
-            worldY = Math.round(point.y / patchSize - numPatches/2);
+    //         worldX = Math.round(point.x / patchSize - numPatches/2),
+    //         worldY = Math.round(point.y / patchSize - numPatches/2);
 
-        if (numPatches < 1)
-            numPatches = 1;
+    //     if (numPatches < 1)
+    //         numPatches = 1;
 
-        this.model.putData(worldX,worldY,numPatches,numPatches,value);
+    //     this.model.putData(worldX,worldY,numPatches,numPatches,value);
 
-        this.refreshLayer();
-    },
+    //     this.refreshLayer();
+    // },
 
     makeLayer: function(layerOpts) {
         layerOpts = layerOpts || {};

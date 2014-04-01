@@ -6,12 +6,15 @@ function DataModel(xs, ys, bbox, modelSet) {
     this.bbox = bbox;
     
     // TODO: remove bbox, and pass in origin and patchSize as parameters
-    this.origin = {
-        x: bbox.bbox.getWest(),
-        y: bbox.bbox.getNorth()
-    };
-    this.patchWidth = Math.abs((bbox.bbox.getWest() - bbox.bbox.getEast()) / xs); // e.g. degrees per patch
-    this.patchHeight = Math.abs((bbox.bbox.getNorth() - bbox.bbox.getSouth()) / ys);
+    // this.origin = {
+    //     x: bbox.bbox.getWest(),
+    //     y: bbox.bbox.getNorth()
+    // };
+    // this.patchWidth = Math.abs((bbox.bbox.getWest() - bbox.bbox.getEast()) / xs); // e.g. degrees per patch
+    // this.patchHeight = Math.abs((bbox.bbox.getNorth() - bbox.bbox.getSouth()) / ys);
+
+    // this.patchWidth = bbox.bbox.getPixelWidth() / xs; // pixels per patch
+    // this.patchHeight = bbox.bbox.getPixelHeight() / ys;
 
     this.modelSet = modelSet;
     this.world = null;
@@ -67,22 +70,26 @@ DataModel.prototype = {
         }.bind(this));
     },
 
-    globalCoordToModelCoord: function(globalCoord) {
-        return {
-            x: Math.floor((globalCoord.x - this.origin.x) / this.patchWidth),
-            y: Math.floor(-(globalCoord.y - this.origin.y) / this.patchHeight)
-        };
-    },
+    // Currently, GlobalCRS does this math, but we could
+    // certainly keep it in DataModel.
 
-    modelCoordToGlobalCoord: function(modelCoord) {
-        return {
-            x: (modelCoord.x * this.patchWidth) + this.origin.x,
-            y: -(modelCoord.y * this.patchHeight) + this.origin.y
-        };
-    },
+    // localCoordToModelCoord: function(globalCoord) {
+    //     return {
+    //         x: Math.floor((globalCoord.x - this.origin.x) / this.patchWidth),
+    //         y: Math.floor(-(globalCoord.y - this.origin.y) / this.patchHeight)
+    //     };
+    // },
 
-    sample: function(globalCoord) {
-        var xy = this.globalCoordToModelCoord(globalCoord);
+    // modelCoordToLocalCoord: function(modelCoord) {
+    //     return {
+    //         x: (modelCoord.x * this.patchWidth) + this.origin.x,
+    //         y: -(modelCoord.y * this.patchHeight) + this.origin.y
+    //     };
+    // },
+
+    sample: function(latlng) {
+        var xy = this.modelSet.crs.latLngToModelXY(latlng, this);
+        // var xy = this.localCoordToModelCoord(localCoord);
 
         if (xy.x < 0 || xy.x >= this.xSize || xy.y < 0 || xy.y >= this.ySize) {
             return undefined;

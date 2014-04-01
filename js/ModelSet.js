@@ -51,6 +51,10 @@ ModelSet.prototype = {
         };
     },
 
+    getModels: function() {
+        return _.values(this.models);
+    },
+
     getModel: function(name) {
         return this.models[name];
     },

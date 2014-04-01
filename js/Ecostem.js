@@ -293,9 +293,9 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
                 screenXY.y - $scope.selectedBrushSize
             ]),
                 bottomRight = map.leafletMap.containerPointToLatLng([
-                    screenXY.x + $scope.selectedBrushSize,
-                    screenXY.y + $scope.selectedBrushSize
-                ]);
+                screenXY.x + $scope.selectedBrushSize,
+                screenXY.y + $scope.selectedBrushSize
+            ]);
 
             var crs = map.modelSet.crs,
                 curModel = $scope.editedLayer.model.dataModel,

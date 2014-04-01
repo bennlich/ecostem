@@ -4,8 +4,10 @@
 
 function FireSeverityModel(xs, ys, bbox, modelSet) {
     DataModel.call(this, xs, ys, bbox, modelSet);
-    this.reset();
+    DataModel.prototype.init.call(this, { severity: FireSeverityModel.severityTypes.NONE });
 }
+
+FireSeverityModel.prototype = clonePrototype(DataModel.prototype);
 
 FireSeverityModel.severityTypes = {
     LOW: 1, MEDIUM: 2, HIGH: 3, NONE: 0
@@ -21,12 +23,6 @@ FireSeverityModel.typeToString = function(type) {
     default       : return 'No Data';
     }
 };
-
-FireSeverityModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
-    reset: function() {
-        this.init({ severity: FireSeverityModel.severityTypes.NONE });
-    }
-});
 
 /* Renderer for a single fire severity patch */
 

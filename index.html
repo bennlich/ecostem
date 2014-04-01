@@ -33,6 +33,7 @@
     <script src="js/LocalStorage.js"></script>
     <script src="js/Experiments.js"></script>
 
+    <script src="js/Animator.js"></script>
     <script src="js/DataModel.js"></script>
     <script src="js/GenericModel.js"></script>
     <script src="js/FireSeverityModel.js"></script>
@@ -163,13 +164,13 @@
               <button ng-show="layer.model.dataModel.editable"
                       ng-class="{'active-button':layer.editing}"
                       ng-click="editDataLayer(layer)">Edit</button>
-              <button class="active-button"
-                      ng-show="layer.model.dataModel.hasControls && layer.model.dataModel.isRunning"
-                      ng-click="pauseSimulation(layer)">Pause</button>
-              <button ng-show="layer.model.dataModel.hasControls && ! layer.model.dataModel.isRunning"
-                      ng-click="startSimulation(layer)">Start</button>
-              <button ng-show="layer.model.dataModel.hasControls"
-                      ng-click="resetSimulation(layer)">Reset</button>
+              <!-- <button class="active-button" -->
+              <!--         ng-show="layer.model.dataModel.hasControls && layer.model.dataModel.isRunning" -->
+              <!--         ng-click="pauseSimulation(layer)">Pause</button> -->
+              <!-- <button ng-show="layer.model.dataModel.hasControls && ! layer.model.dataModel.isRunning" -->
+              <!--         ng-click="startSimulation(layer)">Start</button> -->
+              <!-- <button ng-show="layer.model.dataModel.hasControls" -->
+              <!--         ng-click="resetSimulation(layer)">Reset</button> -->
               <button class="active-button"
                       ng-show="layer.model.server.isRunning" 
                       ng-click="stopServingTiles(layer)">Unpublish</button>
@@ -177,6 +178,17 @@
                       ng-click="serveTiles(layer)">Publish</button>
             </div>
             <br/>
+          </div>
+          <hr/>
+          <div class="simulation">
+            <button ng-show="!map.animator.isRunning" ng-click="map.animator.start()">Start</button>
+            <button ng-show="map.animator.isRunning" ng-click="map.animator.stop()">Stop</button>
+            <button ng-show="!map.animator.isRunning" ng-click="map.animator.step()">Step</button>
+            <button ng-click="map.animator.reset()">Reset</button>
+          </div>
+          <hr/>
+          <div class="simulation">
+            {{map.animator.hours}} : {{map.animator.minutes}}
           </div>
           <hr/>
           <div class="simulation">

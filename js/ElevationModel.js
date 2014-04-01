@@ -2,8 +2,7 @@
 
 function ElevationModel(xs, ys, bbox, modelSet) {
     DataModel.call(this, xs, ys, bbox, modelSet);
-
-    this.reset();
+    DataModel.prototype.init.call(this, {elevation:0});
 
     this.min = 1000000;
     this.max = 0;
@@ -13,10 +12,6 @@ function ElevationModel(xs, ys, bbox, modelSet) {
 }
 
 ElevationModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
-    reset: function() {
-        this.init({elevation:0});
-    },
-
     sampleElevationXY: function(sampler, x,y) {
         var sampleSpacing = sampler.samplingWidth / this.xSize;
 

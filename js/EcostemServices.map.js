@@ -149,6 +149,8 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
         _makeModelLayers: function() {
             // TODO make modelSet a service?
             this.modelSet = new ModelSet(map, $rootScope);
+            this.animator = new Animator(this.modelSet);
+
             return _.map(_.values(this.modelSet.models), function(model) {
                 return {
                     name: model.name,

@@ -2,7 +2,7 @@
 
 function VegetationModel(xs, ys, bbox, modelSet) {
     DataModel.call(this, xs, ys, bbox, modelSet);
-    this.reset();
+    DataModel.prototype.init.call(this, { vegetation: VegetationModel.vegTypes.NONE });
 
     var t = VegetationModel.vegTypes;
 
@@ -44,10 +44,6 @@ VegetationModel.typeToString = function(type) {
 };
 
 VegetationModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
-    reset: function() {
-        this.init({ vegetation: VegetationModel.vegTypes.NONE });
-    },
-
     scaleChanged: function(scale) {
         this.show(scale.value.vegetation);
     }

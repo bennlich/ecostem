@@ -2,12 +2,11 @@
 
 function ErosionModel(xs, ys, bbox, modelSet) {
     DataModel.call(this, xs, ys, bbox, modelSet);
+    DataModel.prototype.init.call(this, { erosion: 0 });
 
     this.isAnimated = true;
     this.editable = true;
     this.canPaint = false;
-
-    this.reset();
 
     var velocityToErosion = new TransferFunction([0, 100], 'cm/s', [0, 1], 'm', 'Erosion vs. Water Speed');
     velocityToErosion.controlPoints = [[0,0],[40,.4],[60,.6],[100,1]];
@@ -25,11 +24,7 @@ function ErosionModel(xs, ys, bbox, modelSet) {
     this.curControl = 'velocityToErosion';
 }
 
-ErosionModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
-    reset: function() {
-        this.init({ erosion: 0 });
-    }
-});
+ErosionModel.prototype = clonePrototype(DataModel.prototype);
 
 var ErosionPatchRenderer = function(model) {
     var gradientSteps = 200,

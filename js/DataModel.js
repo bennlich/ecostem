@@ -4,6 +4,7 @@ function DataModel(xs, ys, bbox, modelSet) {
     this.xSize = xs;
     this.ySize = ys;
     this.bbox = bbox;
+    this.frameRate = 1;
     
     // TODO: remove bbox, and pass in origin and patchSize as parameters
     // this.origin = {
@@ -47,6 +48,8 @@ DataModel.prototype = {
 
         this.world = world;
     },
+
+    reset: function() { },
 
     putData: function(x,y,width,height,obj) {
         if (x < 0) 
@@ -112,7 +115,7 @@ DataModel.prototype = {
         return n;
     },
 
-    step: function() { },
+    step: function() { this.runCallbacks(); },
 
     // TODO: move show and hide to a DataModel interface object?
     show: function(key) {
@@ -131,23 +134,23 @@ DataModel.prototype = {
         }
     },
 
-    run: function() {
-        var $this = this;
+    // run: function() {
+    //     var $this = this;
 
-        if (! this.isRunning)
-            return;
+    //     if (! this.isRunning)
+    //         return;
 
-        $this.modelSet.safeApply(function() {
-            $this.step();
-        });
+    //     $this.modelSet.safeApply(function() {
+    //         $this.step();
+    //     });
 
-        this.runCallbacks();
+    //     this.runCallbacks();
 
-        setTimeout(function() { 
-            //$this.run(); 
-            $this.animID = window.requestAnimationFrame($this.run.bind($this));
-        }, this.timeoutValue);
-    },
+    //     setTimeout(function() { 
+    //         //$this.run(); 
+    //         $this.animID = window.requestAnimationFrame($this.run.bind($this));
+    //     }, this.timeoutValue);
+    // },
 
     runCallbacks: function() {
         var $this = this;
@@ -161,16 +164,16 @@ DataModel.prototype = {
         });
     },
 
-    start: function() {
-        this.isRunning = true;
-        //this.run();
-        this.animID = window.requestAnimationFrame(this.run.bind(this));
-    },
+    // start: function() {
+    //     this.isRunning = true;
+    //     //this.run();
+    //     this.animID = window.requestAnimationFrame(this.run.bind(this));
+    // },
 
-    stop: function() {
-        this.isRunning = false;
-        window.cancelAnimationFrame(this.animID);
-    },
+    // stop: function() {
+    //     this.isRunning = false;
+    //     window.cancelAnimationFrame(this.animID);
+    // },
 
     onChange: function(cb) {
         if (typeof cb === 'function') {

@@ -105,6 +105,8 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
     },
 
     step: function() {
+        DataModel.prototype.step.call(this);
+
         var fireSeverityModel = this.modelSet.getDataModel('Fire Severity');
 
         for (var i = 0; i < this.xSize; ++i) {

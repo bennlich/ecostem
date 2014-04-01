@@ -128,16 +128,16 @@
       <div class="layers uibox" ng-show="elevationLoaded && !editedLayer">
         <h3 ng-click="showMapLayers=!showMapLayers">Map Layers</h3>
         <div ng-show="showMapLayers">
-        <hr/>
-        <div class="layer-container" ng-repeat="layer in map.baseLayers">
-          <input id="bl{{$index}}" name="baseLayer" type="radio" checked-base-layer="layer"></input>
-          <label for="bl{{$index}}">{{ layer.name }}</label><br/>
-        </div>
-        <hr/>
-        <div class="layer-container"  ng-repeat="layer in map.layers">
-          <input id="l{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
-          <label for="l{{$index}}">{{ layer.name }}</label><br/>
-        </div>
+          <hr/>
+          <div class="layer-container" ng-repeat="layer in map.baseLayers">
+            <input id="bl{{$index}}" name="baseLayer" type="radio" checked-base-layer="layer"></input>
+            <label for="bl{{$index}}">{{ layer.name }}</label><br/>
+          </div>
+          <hr/>
+          <div class="layer-container"  ng-repeat="layer in map.layers">
+            <input id="l{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
+            <label for="l{{$index}}">{{ layer.name }}</label><br/>
+          </div>
         </div>
       </div>
 

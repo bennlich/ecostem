@@ -289,9 +289,9 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
     $scope.drawAt = function(screenXY) {
         if ($scope.editedLayer) {
             var topLeft = map.leafletMap.containerPointToLatLng([
-                    screenXY.x - $scope.selectedBrushSize,
-                    screenXY.y - $scope.selectedBrushSize
-                ]),
+                screenXY.x - $scope.selectedBrushSize,
+                screenXY.y - $scope.selectedBrushSize
+            ]),
                 bottomRight = map.leafletMap.containerPointToLatLng([
                     screenXY.x + $scope.selectedBrushSize,
                     screenXY.y + $scope.selectedBrushSize

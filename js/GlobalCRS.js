@@ -21,7 +21,7 @@ GlobalCRS.prototype = {
 		var zoom = 15,
 			bbox = model.bbox,
 	        point = this.leafletMap.project(latlng, zoom),
-	        origin = this.leafletMap.project(bbox.bbox.getNorthEast(), zoom),
+	        origin = this.leafletMap.project(bbox.bbox.getNorthWest(), zoom),
 	        bboxWidth = bbox.pixelWidth(zoom),
 	        bboxHeight = bbox.pixelHeight(zoom);
 
@@ -40,7 +40,7 @@ GlobalCRS.prototype = {
 	modelXYToLatLng: function(xy, model) {
 	    var zoom = 15,
 	    	bbox = model.bbox,
-	        origin = this.leafletMap.project(bbox.bbox.getNorthEast(), zoom),
+	        origin = this.leafletMap.project(bbox.bbox.getNorthWest(), zoom),
 	        bboxWidth = bbox.pixelWidth(zoom),
 	        bboxHeight = bbox.pixelHeight(zoom);
 

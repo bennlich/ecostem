@@ -286,9 +286,29 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
 
     // when clicking in the scenario box and we're editing,
     // put data on the map at that location
-    $scope.drawAt = function(point) {
+    $scope.drawAt = function(screenXY) {
         if ($scope.editedLayer) {
-            $scope.editedLayer.model.renderer.putData(point, $scope.selectedBrushSize, $scope.scaleValue.value);
+            var topLeft = map.leafletMap.containerPointToLatLng([
+                    screenXY.x - $scope.selectedBrushSize,
+                    screenXY.y - $scope.selectedBrushSize
+                ]),
+                bottomRight = map.leafletMap.containerPointToLatLng([
+                    screenXY.x + $scope.selectedBrushSize,
+                    screenXY.y + $scope.selectedBrushSize
+                ]);
+
+            var crs = map.modelSet.crs,
+                curModel = $scope.editedLayer.model.dataModel,
+                modelTopLeft = crs.latLngToModelXY(topLeft, curModel),
+                modelBottomRight = crs.latLngToModelXY(bottomRight, curModel);
+
+            var width = modelBottomRight.x - modelTopLeft.x,
+                height = modelBottomRight.y - modelTopLeft.y;
+
+            $scope.editedLayer.model.dataModel.putData(modelTopLeft.x, modelTopLeft.y, width, height, $scope.scaleValue.value);
+            $scope.editedLayer.model.renderer.refreshLayer();
+            
+            // $scope.editedLayer.model.renderer.putData(point, $scope.selectedBrushSize, $scope.scaleValue.value);
         }
     };
 

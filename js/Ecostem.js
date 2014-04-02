@@ -25,6 +25,8 @@ Ecostem.filter('format', [function() {
 
 Ecostem.run(['$rootScope', function($rootScope) {
     console.log('Ecostem is running.');
+
+    TransferFunctions.init();
     
     $rootScope.safeApply = function(fn) {
         var phase = this.$root.$$phase;
@@ -300,6 +302,12 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
         }
     };
 
+    $scope.scaleValueChanged = function() {
+        if ($scope.editedLayer.name === 'Vegetation') {
+            $scope.editedLayer.model.show($scope.scaleValue.value.vegetation);
+        }
+    },
+
     $scope.editDataLayer = function(layer) {
         var editedLayer = $scope.editedLayer;
 
@@ -322,13 +330,13 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
 
         $scope.editedLayer = layer;
         $scope.scaleValue = layer.model.renderer.patchRenderer.scale[0];
-        layer.model.dataModel.show();
+        layer.model.show();
     };
 
     $scope.doneEditingDataLayer = function() {
         $scope.editedLayer.disabled = false;
         $scope.editedLayer.editing = false;
-        $scope.editedLayer.model.dataModel.hide();
+        $scope.editedLayer.model.hide();
         $scope.editedLayer = null;
     };
 

@@ -77,23 +77,6 @@ DataModel.prototype = {
 
     step: function() { this.runCallbacks(); },
 
-    // TODO: move show and hide to a DataModel interface object?
-    show: function(key) {
-        this.hide();
-        if (typeof key != 'undefined') {
-            this.curControl = key;
-        }
-        if (this.curControl) {
-            this.controls[this.curControl].show();
-        }
-    },
-
-    hide: function() {
-        if (this.curControl) {
-            this.controls[this.curControl].hide();
-        }
-    },
-
     runCallbacks: function() {
         var $this = this;
 

@@ -7,24 +7,11 @@ function ErosionModel(xs, ys, bbox, modelSet) {
     this.isAnimated = true;
     this.editable = true;
     this.canPaint = false;
-
-    var velocityToErosion = new TransferFunction([0, 100], 'cm/s', [0, 1], 'm', 'Erosion vs. Water Speed');
-    velocityToErosion.controlPoints = [[0,0],[40,.4],[60,.6],[100,1]];
-    velocityToErosion.render();
-
-    var velocityToDeposit = new TransferFunction([0, 100], 'cm/s', [0, 100], '% (of floating silt)', 'Deposit vs. Water Speed');
-    velocityToDeposit.controlPoints = [[0,100],[40,60],[60,40],[100,0]];
-    velocityToDeposit.render();
-
-    this.controls = {
-        velocityToErosion: velocityToErosion,
-        velocityToDeposit: velocityToDeposit
-    };
-
-    this.curControl = 'velocityToErosion';
 }
 
-ErosionModel.prototype = clonePrototype(DataModel.prototype);
+ErosionModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
+    reset: function() { this.init({ erosion: 0}); }
+});
 
 var ErosionPatchRenderer = function(model) {
     var gradientSteps = 200,

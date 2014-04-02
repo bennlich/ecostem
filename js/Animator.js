@@ -62,7 +62,6 @@ Animator.prototype = {
     },
 
     _run: function() {
-        console.log('run');
         if (this.isRunning) {
             this.modelSet.safeApply(this.step.bind(this));
             this._raf = window.requestAnimationFrame(this._run.bind(this));

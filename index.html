@@ -33,6 +33,10 @@
     <script src="js/LocalStorage.js"></script>
     <script src="js/Experiments.js"></script>
 
+    <script src="js/StackedBars.js"></script>
+    <script src="js/TransferFunction.js"></script>
+    <script src="js/TransferFunctions.js"></script>
+
     <script src="js/Animator.js"></script>
     <script src="js/DataModel.js"></script>
     <script src="js/GenericModel.js"></script>
@@ -53,13 +57,10 @@
     <script src="js/EcostemDirectives.js"></script>
     <script src="js/EcostemServices.map.js"></script>
     <script src="js/EcostemServices.elevationSampler.js"></script>
-    <script src="js/StackedBars.js"></script>
-    <script src="js/TransferFunction.js"></script>
-
   </head>
   <body>
     <div class="container" ng-controller="EcostemCtrl">
-      <div class="cover" ng-show="editedLayer && editedLayer.model.canPaint" drawing-surface></div>
+      <div class="cover" ng-show="editedLayer && editedLayer.model.uiOpts.canPaint" drawing-surface></div>
       <div class="uibox loading" ng-show="elevationIsLoading">Loading elevation data...</div>
       <div class="uibox server-popup" ng-show="serverPopupIsOpen">
         Name: <input type="text" ng-model="serverLayerName"></input>
@@ -85,7 +86,7 @@
           <button style="float: right" ng-click="doneEditingDataLayer()">Done Editing</button>
         </div>
 
-        <div ng-show="editedLayer.model.canPaint">
+        <div ng-show="editedLayer.model.uiOpts.canPaint">
           <hr/>
           <div class="section">
             <h2>Choose a brush:</h2>
@@ -98,7 +99,7 @@
             <h2>Choose a value:</h2>
             <select ng-model="scaleValue" 
                     ng-options="v.name for v in editedLayer.model.renderer.patchRenderer.scale" 
-                    ng-change="editedLayer.model.dataModel.scaleChanged(scaleValue)">
+                    ng-change="scaleValueChanged()">
             </select>
           </div>
         </div>
@@ -112,13 +113,13 @@
 
         <div ng-show="editedLayer.name == 'Water Flow' || editedLayer.name == 'Erosion & Deposit'">
           <hr/>
-          <div ng-repeat="(key, control) in editedLayer.model.dataModel.controls">
-            <button ng-click="editedLayer.model.dataModel.show(key)" 
-                    ng-class="{ 'active-button': key == editedLayer.model.dataModel.curControl }">{{ control.title }}</button>
+          <div ng-repeat="(key, control) in editedLayer.model.controls">
+            <button ng-click="editedLayer.model.show(key)" 
+                    ng-class="{ 'active-button': key == editedLayer.model.curControl }">{{ control.title }}</button>
           </div>
         </div>
 
-        <div class="section" style="width: 100%;" ng-show="editedLayer.model.dataModel.curControl">
+        <div class="section" style="width: 100%;" ng-show="editedLayer.model.curControl">
           <hr/>
           <div class="section" style="height: 400px; width: 100%;">
             <svg id="transfer-function-svg"></svg>
@@ -161,7 +162,7 @@
             <label for="dl{{$index}}">{{ layer.name }}</label>
             <br/>
             <div class="action-buttons">
-              <button ng-show="layer.model.editable"
+              <button ng-show="layer.model.uiOpts.editable"
                       ng-class="{'active-button':layer.editing}"
                       ng-click="editDataLayer(layer)">Edit</button>
               <!-- <button class="active-button" -->

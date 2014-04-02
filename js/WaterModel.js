@@ -20,25 +20,6 @@ function WaterModel(xs, ys, bbox, modelSet) {
 
     this.patchHeights = new ABM.DataSet();
 
-    var slopeToVelocity = new TransferFunction([0, 50], 'degrees', [0, 100], 'cm / s', 'Flow velocity vs. slope');
-    slopeToVelocity.controlPoints[0] = [0,50];
-    slopeToVelocity.controlPoints[1] = [22,55];
-    slopeToVelocity.render();
-
-    var evapInfRunoff = new StackedBars({
-        domain: ['No Data', 'Low', 'Medium', 'High'],
-        domainTitle: 'Burn Severity',
-        range: ['Evaporation', 'Infiltration', 'Runoff'],
-        rangeTitle: 'Percentage of Water Volume'
-    });
-
-    this.controls = {
-        slopeToVelocity: slopeToVelocity,
-        evapInfRunoff: evapInfRunoff
-    };
-
-    this.curControl = 'evapInfRunoff';
-
     this.reset();
 }
 
@@ -119,7 +100,7 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
                 var burnSeverityModel = this._burnSeverityModel(),
                     patchSeverity = FireSeverityModel.typeToString(burnSeverityModel.world[i][j].severity);
                 
-                var evapInfRunoff = this.controls.evapInfRunoff(patchSeverity);
+                var evapInfRunoff = TransferFunctions.evapInfRunoff(patchSeverity);
                 
                 //patch.volume = patch.volume * evapInfRunoff.Runoff;
 
@@ -136,7 +117,7 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
                 var transferVolume = patch.volume - (transferVolumeBalancePoint - patch.elevation);
 
                 // TODO: Smarter velocity calculation
-                var velocity = this.controls.slopeToVelocity(Math.abs(patchHeight - neighborHeight)/2);
+                var velocity = TransferFunctions.slopeToVelocity(Math.abs(patchHeight - neighborHeight)/2);
                 transferVolume *= velocity/100;
 
                 if (transferVolume > patch.volume)
@@ -149,9 +130,9 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
 
                 var erosionModel = this._erosionModel(),
                     /* soil height to be eroded */
-                    erosionValue = erosionModel.controls.velocityToErosion(velocity),
+                    erosionValue = TransferFunctions.velocityToErosion(velocity),
                     /* percentage of floating silt to be deposited */
-                    depositValue = erosionModel.controls.velocityToDeposit(velocity)/100;
+                    depositValue = TransferFunctions.velocityToDeposit(velocity)/100;
 
                 if (erosionValue < 0) {
                     throw new Error('neg erosion');

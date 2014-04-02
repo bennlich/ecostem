@@ -5,26 +5,6 @@ function VegetationModel(xs, ys, bbox, modelSet) {
     DataModel.prototype.init.call(this, { vegetation: VegetationModel.vegTypes.NONE });
 
     var t = VegetationModel.vegTypes;
-
-    this.controls = {};
-
-    this.controls[t.FIR] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Fir Density at Elevation');
-    this.controls[t.FIR].controlPoints = [[2214,0], [2442,15], [2728,1], [4000,0]];
-
-    this.controls[t.SAGEBRUSH] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Sagebrush Density at Elevation');
-    this.controls[t.SAGEBRUSH].controlPoints = [[1842,0], [1985,47.5], [2100,0], [4000,0]];
-
-    this.controls[t.STEPPE] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Steppe Density at Elevation');
-    this.controls[t.STEPPE].controlPoints = [[0,0], [2657,0], [2871,26], [3042,0]];
-
-    this.controls[t.GRASS] = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Grass Density at Elevation');
-    this.controls[t.GRASS].controlPoints = [[0,0], [2114,0], [2199,18], [2330,0]];
-
-    for (var x in this.controls) { 
-        this.controls[x].render();
-    }
-
-    this.curControl = t.FIR;
 }
 
 VegetationModel.vegTypes = {
@@ -43,11 +23,7 @@ VegetationModel.typeToString = function(type) {
     }
 };
 
-VegetationModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
-    scaleChanged: function(scale) {
-        this.show(scale.value.vegetation);
-    }
-});
+VegetationModel.prototype = clonePrototype(DataModel.prototype);
 
 var VegetationPatchRenderer = function(model) {
     var t = VegetationModel.vegTypes;

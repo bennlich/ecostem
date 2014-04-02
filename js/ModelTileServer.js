@@ -18,7 +18,7 @@ ModelTileServer.prototype = {
     },
 
     _init: function(name) {
-        var bbox = this.renderer.model.bbox.bbox;
+        var bbox = this.renderer.model.geometry.bbox;
         this._layerRef = this.fb.push({ 
             name: name,
             bbox: {

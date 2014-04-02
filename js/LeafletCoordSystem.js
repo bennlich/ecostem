@@ -29,7 +29,7 @@ LeafletCoordSystem.prototype = {
 
     commonCoordToModelCoord: function(latlng, model) {
 	var zoom = 15,
-	    bbox = model.bbox,
+	    bbox = model.geometry,
 	    point = this.leafletMap.project(latlng, zoom),
 	    origin = this.leafletMap.project(bbox.bbox.getNorthWest(), zoom),
 	    bboxWidth = bbox.pixelWidth(zoom),
@@ -49,7 +49,7 @@ LeafletCoordSystem.prototype = {
 
     modelCoordToCommonCoord: function(xy, model) {
 	var zoom = 15,
-	    bbox = model.bbox,
+	    bbox = model.geometry,
 	    origin = this.leafletMap.project(bbox.bbox.getNorthWest(), zoom),
 	    bboxWidth = bbox.pixelWidth(zoom),
 	    bboxHeight = bbox.pixelHeight(zoom);

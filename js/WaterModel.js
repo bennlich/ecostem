@@ -13,7 +13,6 @@ function WaterModel(xs, ys, bbox, modelSet) {
     });
 
     this.isAnimated = true;
-    this.hasControls = true;
     this.elevationSampled = false;
 
     this.erosionModel = null;

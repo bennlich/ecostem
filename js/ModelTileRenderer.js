@@ -16,7 +16,7 @@ ModelTileRenderer.prototype = {
         var tileY = y * canvas.height;
 
         var canvasRect = new Rect(tileX, tileY, canvas.width, canvas.height);
-        var scenarioRect = this.model.bbox.toRect(zoom);
+        var scenarioRect = this.model.geometry.toRect(zoom);
 
         // the rectangular area of canvas tile that intersects the scenario
         var intersection = canvasRect.intersect(scenarioRect);

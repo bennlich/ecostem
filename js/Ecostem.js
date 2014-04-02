@@ -385,7 +385,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
         var elevationModel = map.modelSet.getDataModel('Elevation');
         var waterModel = map.modelSet.getDataModel('Water Flow');
 
-        elevationSampler.loadElevationData(elevationModel.bbox, function() {
+        elevationSampler.loadElevationData(elevationModel.geometry, function() {
             /* TODO: Maybe the sampler can be merged into ElevationModel */
 
             elevationModel.loadElevation(elevationSampler);

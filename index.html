@@ -42,7 +42,7 @@
     <script src="js/VegetationModel.js"></script>
     <script src="js/ElevationModel.js"></script>
 
-    <script src="js/GlobalCRS.js"></script>
+    <script src="js/LeafletCoordSystem.js"></script>
     <script src="js/ModelBBox.js"></script>
     <script src="js/ModelSet.js"></script>
 
@@ -59,7 +59,7 @@
   </head>
   <body>
     <div class="container" ng-controller="EcostemCtrl">
-      <div class="cover" ng-show="editedLayer && editedLayer.model.dataModel.canPaint" drawing-surface></div>
+      <div class="cover" ng-show="editedLayer && editedLayer.model.canPaint" drawing-surface></div>
       <div class="uibox loading" ng-show="elevationIsLoading">Loading elevation data...</div>
       <div class="uibox server-popup" ng-show="serverPopupIsOpen">
         Name: <input type="text" ng-model="serverLayerName"></input>
@@ -85,7 +85,7 @@
           <button style="float: right" ng-click="doneEditingDataLayer()">Done Editing</button>
         </div>
 
-        <div ng-show="editedLayer.model.dataModel.canPaint">
+        <div ng-show="editedLayer.model.canPaint">
           <hr/>
           <div class="section">
             <h2>Choose a brush:</h2>
@@ -161,7 +161,7 @@
             <label for="dl{{$index}}">{{ layer.name }}</label>
             <br/>
             <div class="action-buttons">
-              <button ng-show="layer.model.dataModel.editable"
+              <button ng-show="layer.model.editable"
                       ng-class="{'active-button':layer.editing}"
                       ng-click="editDataLayer(layer)">Edit</button>
               <!-- <button class="active-button" -->

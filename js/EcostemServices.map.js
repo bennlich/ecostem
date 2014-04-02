@@ -197,7 +197,7 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
                     if (! this.leafletMap.hasLayer(l.leafletLayer))
                         return;
 
-                    var modelRect = l.model.dataModel.bbox.toRect(zoom);
+                    var modelRect = l.model.dataModel.geometry.toRect(zoom);
                     var i = canvasRect.intersect(modelRect);
                     
                     if (! i)

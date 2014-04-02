@@ -1,36 +1,14 @@
 'use strict';
 
-function DataModel(xs, ys, bbox, modelSet) {
+function DataModel(xs, ys, geometry, modelSet) {
     this.xSize = xs;
     this.ySize = ys;
-    this.bbox = bbox;
+    this.geometry = geometry;
     this.frameRate = 1;
-    
-    // TODO: remove bbox, and pass in origin and patchSize as parameters
-    // this.origin = {
-    //     x: bbox.bbox.getWest(),
-    //     y: bbox.bbox.getNorth()
-    // };
-    // this.patchWidth = Math.abs((bbox.bbox.getWest() - bbox.bbox.getEast()) / xs); // e.g. degrees per patch
-    // this.patchHeight = Math.abs((bbox.bbox.getNorth() - bbox.bbox.getSouth()) / ys);
-
-    // this.patchWidth = bbox.bbox.getPixelWidth() / xs; // pixels per patch
-    // this.patchHeight = bbox.bbox.getPixelHeight() / ys;
-
     this.modelSet = modelSet;
     this.world = null;
     this.callbacks = [];
     this.isAnimated = false;
-    this.isRunning = false;
-    this.hasControls = false;
-    this.timeoutValue = 60;
-    this.animID = null;
-
-    /* TODO -- this is iffy ... the distinction between whether 
-     * there is an "Edit" button and whether you can manually paint */
-
-    this.editable = true;
-    this.canPaint = true;
 }
 
 DataModel.prototype = {

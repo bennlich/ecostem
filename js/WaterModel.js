@@ -92,7 +92,7 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
         for (var i = 0; i < this.xSize; ++i) {
             for (var j = 0; j < this.ySize; ++j) {
                 var curPatch = this.world[i][j];
-                curPatch.elevation = elevationModel.sample(this.modelSet.crs.modelXYToLatLng({x:i, y:j}, this)).elevation;
+                curPatch.elevation = elevationModel.sample(this.modelSet.crs.modelCoordToCommonCoord({x:i, y:j}, this)).elevation;
                 this.patchHeights.setXY(i,j, curPatch.elevation + curPatch.volume);
             }
         }

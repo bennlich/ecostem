@@ -1,10 +1,20 @@
 'use strict';
 
-function GlobalCRS(leafletMap) {
+/*
+ The coord system is an object that exposes two functions:
+
+ commonCoordToModelCoord(commonCoord, model) --> xy
+ modelCoordToCommonCoord(xy) --> commonCoord
+
+ "commonCoord" is an object representing a coordinate in the common coordinate system
+ xy is an index into the model. The structure is {x:xValue, y:yValue}
+*/
+
+function LeafletCoordSystem(leafletMap) {
     this.leafletMap = leafletMap;
 }
 
-GlobalCRS.prototype = {
+LeafletCoordSystem.prototype = {
 
     // currently these conversions go from latlng -> pixel coords -> model coords
     // instead of latlng -> projection coords -> model coords,
@@ -17,7 +27,7 @@ GlobalCRS.prototype = {
     // stable 0.7.2: https://github.com/Leaflet/Leaflet/blob/v0.7.2/src/geo/crs/CRS.js
     // bleeding edge 0.8-dev: https://github.com/Leaflet/Leaflet/blob/master/src/geo/crs/CRS.js
 
-    latLngToModelXY: function(latlng, model) {
+    commonCoordToModelCoord: function(latlng, model) {
 	var zoom = 15,
 	    bbox = model.bbox,
 	    point = this.leafletMap.project(latlng, zoom),
@@ -37,7 +47,7 @@ GlobalCRS.prototype = {
 	return {x:x, y:y};
     },
 
-    modelXYToLatLng: function(xy, model) {
+    modelCoordToCommonCoord: function(xy, model) {
 	var zoom = 15,
 	    bbox = model.bbox,
 	    origin = this.leafletMap.project(bbox.bbox.getNorthWest(), zoom),
@@ -60,7 +70,7 @@ GlobalCRS.prototype = {
 
     // (note that the projection is easy to swap out)
 
-    // latLngToModelXY: function(latlng, crsName, origin, sampleWidth, sampleHeight) {
+    // commonCoordToModelCoord: function(latlng, crsName, origin, sampleWidth, sampleHeight) {
     // 	// e.g. crsName = "EPSG3857";
     // 	var crs = L.CRS[crsName], // proj4js could go here instead of Leaflet
     // 		point = crs.project(latlng);
@@ -78,7 +88,7 @@ GlobalCRS.prototype = {
     //     return { x: modelX, y: modelY };
     // },
 
-    // modelXYToLatLng: function(xy, crsName, origin, sampleWidth, sampleHeight) {
+    // modelCoordToCommonCoord: function(xy, crsName, origin, sampleWidth, sampleHeight) {
     // 	var crs = L.CRS[crsName];
 
     // 	// crs coordinates, relative to model origin

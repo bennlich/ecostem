@@ -73,26 +73,8 @@ DataModel.prototype = {
         }.bind(this));
     },
 
-    // Currently, GlobalCRS does this math, but we could
-    // certainly keep it in DataModel.
-
-    // localCoordToModelCoord: function(globalCoord) {
-    //     return {
-    //         x: Math.floor((globalCoord.x - this.origin.x) / this.patchWidth),
-    //         y: Math.floor(-(globalCoord.y - this.origin.y) / this.patchHeight)
-    //     };
-    // },
-
-    // modelCoordToLocalCoord: function(modelCoord) {
-    //     return {
-    //         x: (modelCoord.x * this.patchWidth) + this.origin.x,
-    //         y: -(modelCoord.y * this.patchHeight) + this.origin.y
-    //     };
-    // },
-
     sample: function(latlng) {
-        var xy = this.modelSet.crs.latLngToModelXY(latlng, this);
-        // var xy = this.localCoordToModelCoord(localCoord);
+        var xy = this.modelSet.crs.commonCoordToModelCoord(latlng, this);
 
         if (xy.x < 0 || xy.x >= this.xSize || xy.y < 0 || xy.y >= this.ySize) {
             return undefined;

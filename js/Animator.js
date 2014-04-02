@@ -29,10 +29,9 @@ Animator.prototype = {
 
         var models = this.modelSet.getModels();
 
-
         for (var i = 0; i < models.length; ++i) {       
-            console.log('reset', models[i].name);
             models[i].dataModel.reset();
+            models[i].renderer.refreshLayer();
         }
 
         this.hours = 0;

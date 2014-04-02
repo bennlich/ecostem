@@ -134,24 +134,6 @@ DataModel.prototype = {
         }
     },
 
-    // run: function() {
-    //     var $this = this;
-
-    //     if (! this.isRunning)
-    //         return;
-
-    //     $this.modelSet.safeApply(function() {
-    //         $this.step();
-    //     });
-
-    //     this.runCallbacks();
-
-    //     setTimeout(function() { 
-    //         //$this.run(); 
-    //         $this.animID = window.requestAnimationFrame($this.run.bind($this));
-    //     }, this.timeoutValue);
-    // },
-
     runCallbacks: function() {
         var $this = this;
 
@@ -163,17 +145,6 @@ DataModel.prototype = {
             });
         });
     },
-
-    // start: function() {
-    //     this.isRunning = true;
-    //     //this.run();
-    //     this.animID = window.requestAnimationFrame(this.run.bind(this));
-    // },
-
-    // stop: function() {
-    //     this.isRunning = false;
-    //     window.cancelAnimationFrame(this.animID);
-    // },
 
     onChange: function(cb) {
         if (typeof cb === 'function') {

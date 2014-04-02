@@ -101,35 +101,23 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
 
     function addSensor(e) {
         var marker = L.marker(e.latlng);
-        console.log(e.latlng);
 
         marker.addTo(map.leafletMap);
         map.leafletMap.off('click', addSensor);
 
-        // var bbox_x = map.modelBBox.xOffsetFromTopLeft();
-        // var bbox_y = map.modelBBox.yOffsetFromTopLeft();
-
         $scope.$apply(function() {
             $scope.addingSensor = false;
-
-            // var x = e.containerPoint.x - bbox_x,
-            //     y = e.containerPoint.y - bbox_y;
 
             var elev = map.modelSet.models['Elevation'].dataModel;
             var water = map.modelSet.models['Water Flow'].dataModel;
             var veg = map.modelSet.models['Vegetation'].dataModel;
             var sev = map.modelSet.models['Fire Severity'].dataModel;
-            var point = { x: e.latlng.lng, y: e.latlng.lat };
+            var point = e.latlng;
 
             var elevData = elev.sample(point),
                 waterData = water.sample(point),
                 vegData = veg.sample(point),
                 sevData = sev.sample(point);
-
-            // var elevData = map.modelSet.samplePixel(x, y, elev);
-            // var waterData = map.modelSet.samplePixel(x, y, water);
-            // var vegData = map.modelSet.samplePixel(x, y, veg);
-            // var sevData = map.modelSet.samplePixel(x, y, sev);
 
             var sensor = {
                 elevData : elevData,

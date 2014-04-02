@@ -4,7 +4,7 @@ function DataModel(xs, ys, geometry, modelSet) {
     this.xSize = xs;
     this.ySize = ys;
     this.geometry = geometry;
-    this.frameRate = 1;
+    this.timeStep = 1;
     this.modelSet = modelSet;
     this.world = null;
     this.callbacks = [];

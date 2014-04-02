@@ -4,7 +4,7 @@
  The coord system is an object that exposes two functions:
 
  commonCoordToModelCoord(commonCoord, model) --> xy
- modelCoordToCommonCoord(xy) --> commonCoord
+ modelCoordToCommonCoord(xy, model) --> commonCoord
 
  "commonCoord" is an object representing a coordinate in the common coordinate system
  xy is an index into the model. The structure is {x:xValue, y:yValue}

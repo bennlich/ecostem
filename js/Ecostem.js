@@ -23,6 +23,12 @@ Ecostem.filter('format', [function() {
     };
 }]);
 
+Ecostem.filter('timeformat', [function() {
+    return function(input) {
+        return input < 10 ? '0' + input : input;
+    };
+}]);
+
 Ecostem.run(['$rootScope', function($rootScope) {
     console.log('Ecostem is running.');
 
@@ -178,7 +184,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
             vegModel = modelSet.getModel('Vegetation'),
             dataModel = vegModel.dataModel,
             elevationModel = modelSet.getDataModel('Elevation'),
-            tf = dataModel.controls[vegType];
+            tf = vegModel.controls[vegType];
 
         for (var i = 0; i < dataModel.xSize; ++i) {
             for (var j = 0; j < dataModel.ySize; ++j) {
@@ -389,6 +395,12 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
 
             $scope.elevationIsLoading = false;
             $scope.elevationLoaded = true;
+
+            var erosionLayer = _.find(map.modelLayers, function(l) { return l.name === 'Erosion & Deposit'; });
+            var waterLayer = _.find(map.modelLayers, function(l) { return l.name === 'Water Flow'; });
+
+            map.toggleLayer(erosionLayer);
+            map.toggleLayer(waterLayer);
         });
     });
 

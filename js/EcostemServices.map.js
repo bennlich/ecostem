@@ -14,8 +14,11 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
             L.control.scale().addTo(this.leafletMap);
 
-            // TODO smarter map centering
-            this.leafletMap.setView(new L.LatLng(33.441351999999995, -105.73740000000001), 12);
+            var bbox = this._createTaosBBox();
+
+            if (!this._handleBBoxUrl()) {
+                this.leafletMap.setView(bbox.bbox.getCenter(), 12);
+            }
 
             // base layers
             this.baseLayers = this._makeBaseLayers();
@@ -28,14 +31,13 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
             this.layers = this._makeLayers();
 
             // model layers
-            this.modelLayers = this._makeModelLayers();
-
-            this._handleBBoxUrl();
+            this.modelLayers = this._makeModelLayers(bbox);
 
             this.deferred.resolve(this);
         },
 
         _handleBBoxUrl: function() {
+            var handled = false;
             // set map bounds to bbox argument in url
             var urlParams = $location.search(),
                 bounds = urlParams.bbox && urlParams.bbox.split(',');
@@ -44,6 +46,7 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
                     [bounds[0], bounds[1]],
                     [bounds[2], bounds[3]]
                 ]);
+                handled = true;
             }
             
             // update map bounds in bbox argument of url
@@ -59,6 +62,37 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
                     }));
                 });
             });
+
+            return handled;
+        },
+
+
+        _createRuidosoBBox: function() {
+            var south = 33.357555,
+                west = -105.890007,
+                north = 33.525149,
+                east = -105.584793;
+
+            var bounds = L.latLngBounds(
+                new L.LatLng(south, west),
+                new L.LatLng(north, east)
+            );
+
+            return new ModelBBox(bounds, this.leafletMap);
+        },
+
+        _createTaosBBox: function() {
+            var south = 36.305124,
+                west = -105.851524,
+                north = 36.553087,
+                east = -105.415564;
+
+            var bounds = L.latLngBounds(
+                new L.LatLng(south, west),
+                new L.LatLng(north, east)
+            );
+
+            return new ModelBBox(bounds, this.leafletMap);
         },
 
         /* tile urls */
@@ -146,9 +180,9 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
         },
 
         /* editable data layers */
-        _makeModelLayers: function() {
+        _makeModelLayers: function(bbox) {
             // TODO make modelSet a service?
-            this.modelSet = new ModelSet(map, $rootScope);
+            this.modelSet = new ModelSet(map, bbox, $rootScope);
 
             var layers = _.map(_.values(this.modelSet.models), function(model) {
                 return {

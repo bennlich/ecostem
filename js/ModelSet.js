@@ -1,8 +1,11 @@
 'use strict';
 
-function ModelSet(map, scope) {
+function ModelSet(map, defaultBBox, scope) {
     this.map = map;
     this.scope = scope;
+
+    // hack for now
+    this.defaultBBox = defaultBBox;
 
     this.models = this._makeModels();
 
@@ -10,20 +13,6 @@ function ModelSet(map, scope) {
 }
 
 ModelSet.prototype = {
-    _createDefaultBBox: function() {
-        var south = 33.357555,
-            west = -105.890007,
-            north = 33.525149,
-            east = -105.584793;
-
-        var bounds = L.latLngBounds(
-            new L.LatLng(south, west),
-            new L.LatLng(north, east)
-        );
-
-        return new ModelBBox(bounds, this.map.leafletMap);
-    },
-
     _makeModel: function(name, constructor, width, patchRenderer, bbox, uiOpts, controls) {
         var ratio = bbox.pixelHeight() / bbox.pixelWidth(),
             height = Math.floor(width * ratio);
@@ -62,7 +51,7 @@ ModelSet.prototype = {
     },
 
     _makeModels: function() {
-        var bbox = this._createDefaultBBox();
+        var bbox = this.defaultBBox;
         return {
             'Elevation'         : this._makeModel('Elevation', ElevationModel, 1024, ElevationPatchRenderer, bbox, 
                                                   { canPaint: false, editable:false }),

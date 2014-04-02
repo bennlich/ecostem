@@ -19,7 +19,7 @@ var TransferFunctions = {
 
         this.fir = function() {
             var fir = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Fir Density at Elevation');
-            fir.controlPoints = [[2214,0], [2442,15], [2728,1], [4000,0]];
+            fir.controlPoints = [[0,0], [1000,0], [2000,5], [2500,20], [3000,5], [4000,0]];
             fir.render();
             return fir;
         }();

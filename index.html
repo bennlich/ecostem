@@ -127,87 +127,81 @@
         </div>
       </div>
 
-      <div class="layers uibox" ng-show="elevationLoaded && !editedLayer">
-        <h3 ng-click="showMapLayers=!showMapLayers">Map Layers</h3>
-        <div ng-show="showMapLayers">
-          <hr/>
-          <div class="layer-container" ng-repeat="layer in map.baseLayers">
-            <input id="bl{{$index}}" name="baseLayer" type="radio" checked-base-layer="layer"></input>
-            <label for="bl{{$index}}">{{ layer.name }}</label><br/>
-          </div>
-          <hr/>
-          <div class="layer-container"  ng-repeat="layer in map.layers">
-            <input id="l{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
-            <label for="l{{$index}}">{{ layer.name }}</label><br/>
-          </div>
-        </div>
-      </div>
-
-      <div class="layers uibox" style="right: 550px" ng-show="elevationLoaded && !editedLayer">
-        <h3 ng-click="addSensor()">Add Sensor</h3>
-        <div ng-show="addingSensor">
-          <hr/>
-          Click in the scenario box to add a sensor at that point.
-          <hr/>
-          <button ng-click="cancelAddingSensor()">Cancel</button>
-        </div>
-      </div>
-
-      <div class="layers uibox" style="right: 280px" ng-show="elevationLoaded && !editedLayer">
-        <h3 ng-click="showModels=!showModels">Models</h3>
-        <div ng-show="showModels">
-          <hr/>
-          <div class="layer-container" ng-repeat="layer in map.modelLayers">
-            <input id="dl{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
-            <label for="dl{{$index}}">{{ layer.name }}</label>
-            <br/>
-            <div class="action-buttons">
-              <button ng-show="layer.model.uiOpts.editable"
-                      ng-class="{'active-button':layer.editing}"
-                      ng-click="editDataLayer(layer)">Edit</button>
-              <!-- <button class="active-button" -->
-              <!--         ng-show="layer.model.dataModel.hasControls && layer.model.dataModel.isRunning" -->
-              <!--         ng-click="pauseSimulation(layer)">Pause</button> -->
-              <!-- <button ng-show="layer.model.dataModel.hasControls && ! layer.model.dataModel.isRunning" -->
-              <!--         ng-click="startSimulation(layer)">Start</button> -->
-              <!-- <button ng-show="layer.model.dataModel.hasControls" -->
-              <!--         ng-click="resetSimulation(layer)">Reset</button> -->
-              <button class="active-button"
-                      ng-show="layer.model.server.isRunning" 
-                      ng-click="stopServingTiles(layer)">Unpublish</button>
-              <button ng-show="! layer.model.server.isRunning" 
-                      ng-click="serveTiles(layer)">Publish</button>
+      <div class="top-container">
+        <div class="layers uibox" ng-show="elevationLoaded && !editedLayer">
+          <h3 ng-click="showMapLayers=!showMapLayers">Map Layers</h3>
+          <div ng-show="showMapLayers">
+            <hr/>
+            <div class="layer-container" ng-repeat="layer in map.baseLayers">
+              <input id="bl{{$index}}" name="baseLayer" type="radio" checked-base-layer="layer"></input>
+              <label for="bl{{$index}}">{{ layer.name }}</label><br/>
             </div>
-            <br/>
+            <hr/>
+            <div class="layer-container"  ng-repeat="layer in map.layers">
+              <input id="l{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
+              <label for="l{{$index}}">{{ layer.name }}</label><br/>
+            </div>
           </div>
-          <hr/>
-          <div class="simulation">
-            <button ng-show="!map.animator.isRunning" ng-click="map.animator.start()">Start</button>
-            <button ng-show="map.animator.isRunning" ng-click="map.animator.stop()">Stop</button>
-            <button ng-show="!map.animator.isRunning" ng-click="map.animator.step()">Step</button>
-            <button ng-click="map.animator.reset()">Reset</button>
+        </div>
+
+        <div class="layers uibox" ng-show="elevationLoaded && !editedLayer">
+          <h3 ng-click="addSensor()">Add Sensor</h3>
+          <div ng-show="addingSensor" style="padding-bottom: 5px">
+            <hr/>
+            Click in the scenario box to add a sensor at that point.
+            <hr/>
+            <button ng-click="cancelAddingSensor()">Cancel</button>
           </div>
-          <hr/>
-          <div class="simulation">
-            {{map.animator.hours}} : {{map.animator.minutes}}
+        </div>
+
+        <div class="layers uibox" ng-show="elevationLoaded && !editedLayer">
+          <h3 ng-click="showModels=!showModels">Models</h3>
+          <div ng-show="showModels">
+            <hr/>
+            <div class="layer-container" ng-repeat="layer in map.modelLayers">
+              <input id="dl{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
+              <label for="dl{{$index}}">{{ layer.name }}</label>
+              <br/>
+              <div class="action-buttons">
+                <button ng-show="layer.model.uiOpts.editable"
+                        ng-class="{'active-button':layer.editing}"
+                        ng-click="editDataLayer(layer)"><img src="img/icons/pencil.png"/> Edit</button>
+                <button class="active-button"
+                        ng-show="layer.model.server.isRunning" 
+                        ng-click="stopServingTiles(layer)"><img src="img/icons/share.png"/> Unpublish</button>
+                <button ng-show="! layer.model.server.isRunning" 
+                        ng-click="serveTiles(layer)"><img src="img/icons/share.png"/> Publish</button>
+              </div>
+              <br/>
+            </div>
+            <hr/>
+            <div class="simulation">
+              <a ng-click="showElevation=!showElevation" ng-show="elevationLoaded">
+                <span ng-show="!showElevation">Show Raw Elevation</span>
+                <span ng-show="showElevation">Hide Raw Elevation</span>
+              </a>
+              <br/>
+              <a ng-click="showQuad=!showQuad" ng-show="elevationLoaded">
+                <span ng-show="!showQuad">Show Quad</span>
+                <span ng-show="showQuad">Hide Quad</span>
+              </a>
+              <br/>
+              <a ng-click="toggleSlope()" ng-show="elevationLoaded && map.modelLayers[2].model.dataModel.patchHeights.data.length > 0">
+                <span ng-show="!showSlope">Show Slopes</span>
+                <span ng-show="showSlope">Hide Slopes</span>
+              </a>
+            </div>
           </div>
-          <hr/>
-          <div class="simulation">
-            <a ng-click="showElevation=!showElevation" ng-show="elevationLoaded">
-              <span ng-show="!showElevation">Show Raw Elevation</span>
-              <span ng-show="showElevation">Hide Raw Elevation</span>
-            </a>
-            <br/>
-            <a ng-click="showQuad=!showQuad" ng-show="elevationLoaded">
-              <span ng-show="!showQuad">Show Quad</span>
-              <span ng-show="showQuad">Hide Quad</span>
-            </a>
-            <br/>
-            <a ng-click="toggleSlope()" ng-show="elevationLoaded && map.modelLayers[2].model.dataModel.patchHeights.data.length > 0">
-              <span ng-show="!showSlope">Show Slopes</span>
-              <span ng-show="showSlope">Hide Slopes</span>
-            </a>
-          </div>
+        </div>
+      </div>
+
+      <div class="play-controls" ng-show="elevationLoaded">
+        <div class="uibox time">{{map.animator.hours | timeformat}} : {{map.animator.minutes | timeformat}}</div>
+        <div class="controls">
+          <img ng-show="!map.animator.isRunning" ng-click="map.animator.start()" src="img/play.png"/>
+          <img ng-show="map.animator.isRunning" ng-click="map.animator.stop()" src="img/pause.png"/>
+          <img ng-show="!map.animator.isRunning" ng-click="map.animator.step()" src="img/play1.png"/>
+          <img ng-click="map.animator.reset()" src="img/stop.png"/>
         </div>
       </div>
     </div>

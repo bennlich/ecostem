@@ -49,7 +49,7 @@ Animator.prototype = {
             if (! model.isAnimated)
                 continue;
 
-            if (this.minutes % model.frameRate === 0)
+            if (this.minutes % model.timeStep === 0)
                 model.step();
         }
 

@@ -21,6 +21,7 @@ ModelTileServer.prototype = {
         var bbox = this.renderer.model.geometry.bbox;
         this._layerRef = this.fb.push({ 
             name: name,
+            zIndex: this.renderer.canvasLayer.options.zIndex,
             bbox: {
                 north: bbox.getNorth(),
                 west: bbox.getWest(),

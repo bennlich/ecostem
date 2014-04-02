@@ -20,12 +20,13 @@ LiveTexture.prototype = {
             var id = snap.name(),
                 name = snap.val().name,
                 bboxObj = snap.val().bbox,
-                ref = snap.ref();
+                ref = snap.ref(),
+                zIndex = snap.val().zIndex || this.zIndex++;
 
             if (!name || !bboxObj)
                 return;
 
-            var layer = this._leafletLayer(ref);
+            var layer = this._leafletLayer(ref, zIndex);
             var bbox = this._bbox(bboxObj);
 
             this._layers.push({ id: id, name: name, bbox: bbox, leafletLayer: layer });
@@ -46,6 +47,9 @@ LiveTexture.prototype = {
                 return id === layer.id;
             });
 
+            if (!layer)
+                return;
+
             this._layers = _.without(this._layers, layer);
 
             _.each(this._disappearedCallbacks, function(cb) {
@@ -60,8 +64,8 @@ LiveTexture.prototype = {
         return new L.LatLngBounds(sw, ne);
     },
 
-    _leafletLayer: function(ref) {
-        var liveLayer = new L.tileLayer.canvas({zIndex: this._zIndex++}),
+    _leafletLayer: function(ref, zIndex) {
+        var liveLayer = new L.tileLayer.canvas({zIndex: zIndex, opacity: 0.8}),
             map = this._map;
 
         liveLayer.drawTile = function(canvas, tilePoint, zoom) {

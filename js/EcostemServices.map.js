@@ -22,7 +22,7 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
             // base layers
             this.baseLayers = this._makeBaseLayers();
-            this.setBaseLayer(this.baseLayers[3]);
+            this.setBaseLayer(this.baseLayers[2]);
 
             // masking layer
             this.leafletMap.addLayer(this._makeGrayLayer());
@@ -112,12 +112,13 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
         _mapBoxUrl: function(style) {
             switch(style) {
-                case 'TERRAIN':
-                    return 'http://{s}.tiles.mapbox.com/v3/bennlich.hmi0c6k3/{z}/{x}/{y}.png';
                 case 'ROADMAP':
                     return 'http://{s}.tiles.mapbox.com/v3/bennlich.hmi293in/{z}/{x}/{y}.png';
                 case 'SATELLITE':
                     return 'http://{s}.tiles.mapbox.com/v3/bennlich.hmi1nejo/{z}/{x}/{y}.png';
+                case 'TERRAIN':
+                default:
+                    return 'http://{s}.tiles.mapbox.com/v3/bennlich.hmi0c6k3/{z}/{x}/{y}.png';
             }
         },
 

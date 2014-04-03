@@ -8,10 +8,6 @@ function Animator(modelSet) {
 
 Animator.prototype = {
     start: function() { 
-        this._runningModels = _.filter(this.modelSet.getModels(), function(m) {
-            return m.isAnimated;
-        });
-
         this.isRunning = true;
         this._run();
     },

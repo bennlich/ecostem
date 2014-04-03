@@ -5,14 +5,12 @@
 function WaterModel(xs, ys, bbox, modelSet) {
     DataModel.call(this, xs, ys, bbox, modelSet);
 
-    this._initObject = { 
+    this.init({ 
         elevation: 0,
         volume: 0,
         siltFloating: 0,
         siltDeposit: 0
-    };
-    
-    this.init(this._initObject);
+    });
 
     this.isAnimated = true;
     this.elevationSampled = false;

@@ -166,7 +166,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
 
     $scope.addSensor = function() {
         if ($scope.addingSensor) {
-            $scope.addingSensor = false;
+            $scope.cancelAddingSensor();
             return;
         }
 
@@ -176,6 +176,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
 
     $scope.cancelAddingSensor = function() {
         $scope.addingSensor = false;
+        map.leafletMap.off('click', addSensor);
     };
 
     $scope.deleteSensor = function(id) {

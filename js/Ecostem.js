@@ -18,8 +18,8 @@ var EcostemDirectives = angular.module('EcostemDirectives', ['EcostemServices'])
 var EcostemServices = angular.module('EcostemServices', []);
 
 Ecostem.filter('format', [function() {
-    return function(input) {
-        return Number(input).toFixed(2);
+    return function(input, p) {
+        return Number(input).toFixed(p || 2);
     };
 }]);
 
@@ -47,10 +47,12 @@ Ecostem.run(['$rootScope', function($rootScope) {
 }]);
 
 var curSlope, calculatedSlope, slopeDiff;
+var sc;
 
 Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', 'elevationSampler', 
                           function( $scope,   $q,   $compile,   $http,   map,   elevationSampler) 
 {
+    sc = $scope;
     $scope.simulationStarted = false;
     $scope.showElevation = false;
     $scope.elevationLoaded = false;
@@ -132,20 +134,24 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
                 waterData : waterData,
                 vegData : vegData,
                 sevData : sevData,
-                marker : marker
+                marker : marker,
+                latlng : e.latlng
             };
 
             var id = $scope.sensorId++;
             $scope.sensors[id] = sensor;
 
-            var html = ('<div>Elevation: {{sensors[{0}].elevData.elevation | format}}<br/>'
-                     + 'Fire Severity: {{fireTypeToString(sensors[{0}].sevData.severity)}}<br/>'
-                     + 'Vegetation: {{vegTypeToString(sensors[{0}].vegData.vegetation)}}<br/>'
-                     + '<hr/>'
-                     + 'Water Volume: {{sensors[{0}].waterData.volume | format}}<br/>'
-                     + 'Floating Silt: {{sensors[{0}].waterData.siltFloating | format}}<br/>'
-                     + 'Deposited Silt: {{sensors[{0}].waterData.siltDeposit | format}}<hr/>'
-                     + '<button ng-click="deleteSensor({0})">Delete Sensor</button></div>').format(id);
+            var html = ('<div>Lat: {{sensors[{0}].latlng.lat | format:6}}<br/>'
+                        + 'Lng: {{sensors[{0}].latlng.lng | format:6}}<br/>'
+                        + '<hr/>'
+                        + 'Elevation: {{sensors[{0}].elevData.elevation | format}}<br/>'
+                        + 'Fire Severity: {{fireTypeToString(sensors[{0}].sevData.severity)}}<br/>'
+                        + 'Vegetation: {{vegTypeToString(sensors[{0}].vegData.vegetation)}}<br/>'
+                        + '<hr/>'
+                        + 'Water Volume: {{sensors[{0}].waterData.volume | format}}<br/>'
+                        + 'Floating Silt: {{sensors[{0}].waterData.siltFloating | format}}<br/>'
+                        + 'Deposited Silt: {{sensors[{0}].waterData.siltDeposit | format}}<hr/>'
+                        + '<button ng-click="deleteSensor({0})">Delete Sensor</button></div>').format(id);
 
             var compiledHtml = $compile(html)($scope);
 

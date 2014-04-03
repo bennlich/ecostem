@@ -160,6 +160,7 @@ a {
     left: 50%;
     margin-left: -420px;
     text-align: center;
+    height: 0;
 }
 .container .top-container .layers {
     position: relative;

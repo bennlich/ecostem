@@ -10,7 +10,7 @@ function ErosionModel(xs, ys, bbox, modelSet) {
 }
 
 ErosionModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
-    reset: function() { this.init({ erosion: 0}); }
+    reset: function() { this.putData(0,0,this.xSize,this.ySize,{ erosion: 0 }); }
 });
 
 var ErosionPatchRenderer = function(model) {

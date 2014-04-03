@@ -53,7 +53,7 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
             var queryString = '?bbox={s},{w},{n},{e}';
             this.leafletMap.on('moveend', function() {
                 var bounds = this.getBounds();
-                $rootScope.$apply(function() {
+                $rootScope.safeApply(function() {
                     $location.url(queryString.namedFormat({
                         s : bounds.getSouth(),
                         w : bounds.getWest(),

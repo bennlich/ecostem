@@ -126,6 +126,9 @@
       </div>
 
       <div class="top-container">
+        <div class="home uibox" ng-show="elevationLoaded && !editedLayer" ng-click="map.setHomeView()">
+          <img src="img/home.png"/>
+        </div>
         <div class="layers uibox" ng-show="elevationLoaded && !editedLayer">
           <h3 ng-click="showMapLayers=!showMapLayers">Map Layers</h3>
           <div ng-show="showMapLayers">

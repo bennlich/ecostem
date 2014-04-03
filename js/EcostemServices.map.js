@@ -14,10 +14,10 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
             L.control.scale().addTo(this.leafletMap);
 
-            var bbox = this._createTaosBBox();
+            this._homeBBox = this._createTaosBBox();
 
             if (!this._handleBBoxUrl()) {
-                this.leafletMap.setView(bbox.bbox.getCenter(), 12);
+                this.setHomeView();
             }
 
             // base layers
@@ -31,9 +31,13 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
             this.layers = this._makeLayers();
 
             // model layers
-            this.modelLayers = this._makeModelLayers(bbox);
+            this.modelLayers = this._makeModelLayers(this._homeBBox);
 
             this.deferred.resolve(this);
+        },
+
+        setHomeView: function() {
+            this.leafletMap.setView(this._homeBBox.bbox.getCenter(), 12);
         },
 
         _handleBBoxUrl: function() {
@@ -65,7 +69,6 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
             return handled;
         },
-
 
         _createRuidosoBBox: function() {
             var south = 33.357555,

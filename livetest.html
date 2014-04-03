@@ -9,7 +9,6 @@
     <link rel="stylesheet" type="text/css" href="css/svg.css"/>
 
     <script src="https://cdn.firebase.com/js/client/1.0.2/firebase.js"></script>
-    <script src="http://maps.google.com/maps/api/js?v=3&sensor=false"></script>
 
     <script src="lib/agentscript.js"></script>
     <script src="lib/data.js"></script>
@@ -22,7 +21,6 @@
     <script src="lib/d3.js"></script>
     <script src="lib/Smooth-0.1.7.js"></script>
     <script src="lib/curveFit.js"></script>
-    <script src="lib/Google.js"></script>
 
     <script src="js/Util.js"></script>
     <script src="js/livetexture.js"></script>
@@ -36,7 +34,7 @@
         });
 
         map.setView(new L.LatLng(36.42835637785987, -105.633544921875), 12);
-        map.addLayer(new L.Google('TERRAIN'));
+        map.addLayer(new L.TileLayer('http://{s}.tiles.mapbox.com/v3/bennlich.hmi0c6k3/{z}/{x}/{y}.png'));
 
         var liveTexture = new LiveTexture(map);
 

@@ -74,10 +74,10 @@ a {
     margin-left: -100px;
 }
 .container .server-popup {
+    z-index: 400;
     padding: 10px;
     font-size: 16px;
     position: absolute;
-    z-index: 120;
     text-align: center;
     width: 400px;
     left: 50%;

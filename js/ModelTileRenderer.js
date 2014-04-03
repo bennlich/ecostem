@@ -136,7 +136,7 @@ ModelTileRenderer.prototype = {
         if (this.model.isAnimated) {
             if (!this.model.isRunning)
                 this.model.runCallbacks();
-        } else {
+        } else if (this.map.leafletMap.hasLayer(this.canvasLayer)) {
             this.canvasLayer.redraw();
         }
     }

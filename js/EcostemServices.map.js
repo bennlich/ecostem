@@ -110,6 +110,17 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
                 + '/256/{z}/{x}/{y}.png';
         },
 
+        _mapBoxUrl: function(style) {
+            switch(style) {
+                case 'TERRAIN':
+                    return 'http://{s}.tiles.mapbox.com/v3/bennlich.hmi0c6k3/{z}/{x}/{y}.png';
+                case 'ROADMAP':
+                    return 'http://{s}.tiles.mapbox.com/v3/bennlich.hmi293in/{z}/{x}/{y}.png';
+                case 'SATELLITE':
+                    return 'http://{s}.tiles.mapbox.com/v3/bennlich.hmi1nejo/{z}/{x}/{y}.png';
+            }
+        },
+
         /* base layer functions */
         isBaseLayer: function(layer) {
             return layer === this.currentBaseLayer;
@@ -123,16 +134,13 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
             return [{
                 name: 'Roadmap',
-                leafletLayer: new L.Google('ROADMAP')
+                leafletLayer: new L.TileLayer(this._mapBoxUrl('ROADMAP'), baseLayerSettings)
             }, {
                 name: 'Satellite',
-                leafletLayer: new L.Google('SATELLITE')
-            }, {
-                name: 'Hybrid',
-                leafletLayer: new L.Google('HYBRID')
+                leafletLayer: new L.TileLayer(this._mapBoxUrl('SATELLITE'), baseLayerSettings)
             }, {
                 name: 'Terrain',
-                leafletLayer: new L.Google('TERRAIN')
+                leafletLayer: new L.TileLayer(this._mapBoxUrl('TERRAIN'), baseLayerSettings)
             }, {
                 name: 'OSM',
                 leafletLayer: new L.TileLayer(this._osmUrl(), baseLayerSettings)

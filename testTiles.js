@@ -122,7 +122,7 @@ function setup(addFixed) {
     map.fitBounds(bounds);
     map.setZoom(10);
 
-    var terrain = new L.Google('TERRAIN'); 
+    var terrain = new L.TileLayer('http://{s}.tiles.mapbox.com/v3/bennlich.hmi0c6k3/{z}/{x}/{y}.png');
     map.addLayer(terrain);
 
     if (addFixed) {

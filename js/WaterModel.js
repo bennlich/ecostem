@@ -39,7 +39,7 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
     },
 
     reset: function() {
-        this.putData(0, 0, this.xSize, this.ySize, this._initObject);
+        this.putData(0, 0, this.xSize, this.ySize, {volume:0, siltFloating: 0, siltDeposit: 0});
         this.putData(60, 20, 10, 10, { volume: 50 });
         this.putData(100, 60, 10, 10, { volume: 50 });
 

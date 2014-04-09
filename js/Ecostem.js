@@ -204,8 +204,6 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
             }
         }
 
-        console.log(tf.controlPoints);
-
         vegModel.renderer.refreshLayer();
     };
 

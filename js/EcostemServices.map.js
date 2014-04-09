@@ -37,6 +37,13 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
         },
 
         setHomeView: function() {
+            // AnySurface.Scan.flatScan(function() {
+            //     alert('ok make mountains in the sand');
+            //     AnySurface.Scan.mountainScan(function(data) {
+            //         console.log(data);
+            //     });
+            // });
+            // AnySurface.Laser.lasermove = function() { };
             this.leafletMap.setView(this._homeBBox.bbox.getCenter(), 12);
         },
 

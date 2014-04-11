@@ -37,13 +37,6 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
         },
 
         setHomeView: function() {
-            // AnySurface.Scan.flatScan(function() {
-            //     alert('ok make mountains in the sand');
-            //     AnySurface.Scan.mountainScan(function(data) {
-            //         console.log(data);
-            //     });
-            // });
-            // AnySurface.Laser.lasermove = function() { };
             this.leafletMap.setView(this._homeBBox.bbox.getCenter(), 12);
         },
 
@@ -59,7 +52,7 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
                 ]);
                 handled = true;
             }
-            
+
             // update map bounds in bbox argument of url
             var queryString = '?bbox={s},{w},{n},{e}';
             this.leafletMap.on('moveend', function() {
@@ -115,8 +108,8 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
         },
 
         _cloudMadeUrl: function(style) {
-            return 'http://{s}.tile.cloudmade.com/f6475b6206f54f9483a35e80bc29a974/' 
-                + style 
+            return 'http://{s}.tile.cloudmade.com/f6475b6206f54f9483a35e80bc29a974/'
+                + style
                 + '/256/{z}/{x}/{y}.png';
         },
 
@@ -138,9 +131,9 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
         },
 
         _makeBaseLayers: function() {
-            var baseLayerSettings = { 
-                minZoom: 2, maxZoom: 18, 
-                zIndex: 1, zoomAnimation: false 
+            var baseLayerSettings = {
+                minZoom: 2, maxZoom: 18,
+                zIndex: 1, zoomAnimation: false
             };
 
             return [{
@@ -252,7 +245,7 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
                     var modelRect = l.model.dataModel.geometry.toRect(zoom);
                     var i = canvasRect.intersect(modelRect);
-                    
+
                     if (! i)
                         return;
 
@@ -277,4 +270,3 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
         }
     };
 }]);
-

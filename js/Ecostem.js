@@ -33,7 +33,7 @@ Ecostem.run(['$rootScope', function($rootScope) {
     console.log('Ecostem is running.');
 
     TransferFunctions.init();
-    
+
     $rootScope.safeApply = function(fn) {
         var phase = this.$root.$$phase;
         if(phase == '$apply' || phase == '$digest') {
@@ -43,14 +43,14 @@ Ecostem.run(['$rootScope', function($rootScope) {
         } else {
             this.$apply(fn);
         }
-    };    
+    };
 }]);
 
 var curSlope, calculatedSlope, slopeDiff;
 var sc;
 
-Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', 'elevationSampler', 
-                          function( $scope,   $q,   $compile,   $http,   map,   elevationSampler) 
+Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', 'elevationSampler',
+                          function( $scope,   $q,   $compile,   $http,   map,   elevationSampler)
 {
     sc = $scope;
     $scope.simulationStarted = false;
@@ -64,50 +64,16 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
 
     $scope.map = map;
 
-    /* This code is a start at putting ASC grid files on the map
-       -- in particular acequia data for NNMC. It seems to work
-       except the acequia data we have seems to be in a different
-       projection. */
-
-    /*
-    $http.get('data/acequiaData/hydrology.txt')
-        .success(function(data) {
-            var p = 5;
-            var parser = new AscParser();
-
-            parser.parse(data, function() {
-                console.log('progress: ', p + '%');
-                p += 5;
+    $scope.scan = function() {
+        console.log('scanning');
+        AnySurface.Scan.flatScan(function() {
+            alert('ok make mountains in the sand');
+            AnySurface.Scan.mountainScan(function(data) {
+                console.log(data);
             });
-
-            var h = parser.headers;
-            var width = h.cellsize * h.ncols;
-            var height = h.cellsize * h.nrows;
-
-            var southWest = new L.LatLng(h.yllcorner, h.xllcorner);
-            var northEast = new L.LatLng(h.yllcorner+height, h.xllcorner+width);
-            var box = new L.LatLngBounds(southWest, northEast);
-            console.log(box);
-            var modelBBox = new ModelBBox(box, map.leafletMap);
-
-            var model = new GenericModel(h.ncols, h.nrows, modelBBox, map.modelSet.virtualWidth, map.modelSet);
-            model.setWorld(parser.data);
-            var tileRenderer = new ModelTileRenderer(map, model, GenericPatchRenderer(model));
-            var tileServer = new ModelTileServer(tileRenderer);
-
-            var obj = {
-                name: 'Acequias',
-                dataModel: model,
-                renderer: tileRenderer,
-                server: tileServer
-            };
-
-            map.addDataLayer(obj);
-        })
-        .error(function() {
-            console.log('asc download fail');
         });
-     */
+        AnySurface.Laser.lasermove = function() { };
+    };
 
     function addSensor(e) {
         var marker = L.marker(e.latlng);
@@ -263,7 +229,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
         if ($scope.serverLayerName && $scope.serverLayer) {
             $scope.serverLayer.model.server.start($scope.serverLayerName);
             $scope.initStartServer();
-        } 
+        }
     };
 
     $scope.initStartServer = function() {
@@ -278,7 +244,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
 
     $scope.initStartServer();
 
-    /* 
+    /*
      * Drawing on/editing layers.
      */
 
@@ -308,7 +274,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
 
             $scope.editedLayer.model.dataModel.putData(modelTopLeft.x, modelTopLeft.y, width, height, $scope.scaleValue.value);
             $scope.editedLayer.model.renderer.refreshLayer();
-            
+
             // $scope.editedLayer.model.renderer.putData(point, $scope.selectedBrushSize, $scope.scaleValue.value);
         }
     };
@@ -359,7 +325,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
             var waterModel = $scope.map.modelLayers[2].model.dataModel;
             curSlope = waterModel.getSlope();
             calculatedSlope = waterModel.calculateSlope();
-            
+
             var curSlopeImage = curSlope.toImage(),
                 calculatedSlopeImage = calculatedSlope.toImage();
 
@@ -377,7 +343,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
 
             slopeCanvas1.width = slopeCanvas2.width = slopeCanvas3.width = 2*curSlopeImage.width;
             slopeCanvas1.height = slopeCanvas2.height = slopeCanvas3.height = 2*curSlopeImage.height;
-            
+
             slopeCanvas1.getContext('2d').drawImage(curSlopeImage, 0, 0, slopeCanvas1.width, slopeCanvas1.height);
             slopeCanvas2.getContext('2d').drawImage(calculatedSlopeImage, 0, 0, slopeCanvas1.width, slopeCanvas1.height);
             slopeCanvas3.getContext('2d').drawImage(slopeDiffImage, 0, 0, slopeCanvas1.width, slopeCanvas1.height);

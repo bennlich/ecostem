@@ -32,7 +32,7 @@ DataModel.prototype = {
     reset: function() { },
 
     putData: function(x,y,width,height,obj) {
-        if (x < 0) 
+        if (x < 0)
             x = 0;
         if (x + width > this.xSize)
             width = this.xSize - x;

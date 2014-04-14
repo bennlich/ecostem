@@ -64,15 +64,69 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
 
     $scope.map = map;
 
-    $scope.scan = function() {
-        console.log('scanning');
+    $scope.scanFlatDone = false;
+
+    $scope.scanFlat = function() {
         AnySurface.Scan.flatScan(function() {
-            alert('ok make mountains in the sand');
-            AnySurface.Scan.mountainScan(function(data) {
-                console.log(data);
+            $scope.safeApply(function() {
+                $scope.scanFlatDone = true;
             });
         });
-        AnySurface.Laser.lasermove = function() { };
+    }
+
+    $scope.scanMountain = function() {
+        AnySurface.Scan.mountainScan(function(data) {
+            var modelName = 'Scan Elevation';
+            var model = map.modelSet.getDataModel(modelName);
+
+            if (! model) {
+                var w = data.width,
+                h = data.height,
+                bbox = new ModelBBox(map.leafletMap.getBounds(), map.leafletMap);
+
+                model = new ScanElevationModel(w, h, bbox, map.modelSet);
+                model.load(data);
+
+                var tileRenderer = new ModelTileRenderer(map, model, ElevationPatchRenderer(model));
+                var tileServer = new ModelTileServer(tileRenderer);
+
+                var obj = {
+                    name: modelName,
+                    dataModel: model,
+                    renderer: tileRenderer,
+                    server: tileServer
+                }
+                map.addDataLayer(obj);
+            } else {
+                model.load(data);
+            }
+        });
+    };
+
+    $scope.mountainScanDone = function() {
+        var h = parser.headers;
+        var width = h.cellsize * h.ncols;
+        var height = h.cellsize * h.nrows;
+
+        var southWest = new L.LatLng(h.yllcorner, h.xllcorner);
+        var northEast = new L.LatLng(h.yllcorner+height, h.xllcorner+width);
+        var box = new L.LatLngBounds(southWest, northEast);
+        console.log(box);
+        var modelBBox = new ModelBBox(box, map.leafletMap);
+
+        var model = new GenericModel(h.ncols, h.nrows, modelBBox, map.modelSet.virtualWidth, map.modelSet);
+        model.setWorld(parser.data);
+        var tileRenderer = new ModelTileRenderer(map, model, GenericPatchRenderer(model));
+        var tileServer = new ModelTileServer(tileRenderer);
+
+        var obj = {
+            name: 'Acequias',
+            dataModel: model,
+            renderer: tileRenderer,
+            server: tileServer
+        };
+
+        map.addDataLayer(obj);
     };
 
     function addSensor(e) {

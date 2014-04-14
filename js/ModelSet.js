@@ -23,7 +23,7 @@ ModelSet.prototype = {
 
         controls = controls || {};
 
-        return {        
+        return {
             name: name,
             dataModel: model,
             renderer: tileRenderer,
@@ -53,11 +53,11 @@ ModelSet.prototype = {
     _makeModels: function() {
         var bbox = this.defaultBBox;
         return {
-            'Elevation'         : this._makeModel('Elevation', ElevationModel, 1024, ElevationPatchRenderer, bbox, 
+            'Elevation'         : this._makeModel('Elevation', ElevationModel, 1024, ElevationPatchRenderer, bbox,
                                                   { canPaint: false, editable:false }),
-            'Fire Severity'     : this._makeModel('Fire Severity', FireSeverityModel, 512, FirePatchRenderer, bbox, 
+            'Fire Severity'     : this._makeModel('Fire Severity', FireSeverityModel, 512, FirePatchRenderer, bbox,
                                                   { canPaint: true, editable: true }),
-            'Vegetation'        : this._makeModel('Vegetation', VegetationModel, 512, VegetationPatchRenderer, bbox, 
+            'Vegetation'        : this._makeModel('Vegetation', VegetationModel, 512, VegetationPatchRenderer, bbox,
                                                   { canPaint: true, editable: true },
                                                   {
                                                       1 : TransferFunctions.fir,
@@ -65,17 +65,17 @@ ModelSet.prototype = {
                                                       3 : TransferFunctions.steppe,
                                                       4 : TransferFunctions.grass
                                                   }),
-            'Erosion & Deposit' : this._makeModel('Erosion & Deposit', ErosionModel, 400, ErosionPatchRenderer, bbox, 
+            'Erosion & Deposit' : this._makeModel('Erosion & Deposit', ErosionModel, 400, ErosionPatchRenderer, bbox,
                                                   { canPaint: false, editable: true },
                                                   {
                                                       velocityToErosion: TransferFunctions.velocityToErosion,
                                                       velocityToDeposit: TransferFunctions.velocityToDeposit
                                                   }),
-            'Water Flow'        : this._makeModel('Water Flow', WaterModel, 400, WaterPatchRenderer, bbox, 
+            'Water Flow'        : this._makeModel('Water Flow', WaterModel, 400, WaterPatchRenderer, bbox,
                                                   { canPaint: true, editable: true },
-                                                  { 
-                                                      slopeToVelocity: TransferFunctions.slopeToVelocity, 
-                                                      evapInfRunoff: TransferFunctions.evapInfRunoff 
+                                                  {
+                                                      slopeToVelocity: TransferFunctions.slopeToVelocity,
+                                                      evapInfRunoff: TransferFunctions.evapInfRunoff
                                                   })
         };
     },
@@ -98,4 +98,3 @@ ModelSet.prototype = {
         this.scope.safeApply(fn);
     }
 };
-

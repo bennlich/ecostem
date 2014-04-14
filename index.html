@@ -130,8 +130,10 @@
 
       <div class="top-container">
         <div class="home uibox" ng-show="elevationLoaded && !editedLayer" ng-click="scan()">
-          <img src="img/home.png"/>
+            <button ng-click="scanFlat()">Flat Scan</button><br/>
+            <button ng-show="scanFlatDone" ng-click="scanMountain()">Mound Scan</button>
         </div>
+
         <div class="layers uibox" ng-show="elevationLoaded && !editedLayer">
           <h3 ng-click="showMapLayers=!showMapLayers">Map Layers</h3>
           <div ng-show="showMapLayers">

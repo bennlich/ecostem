@@ -1,14 +1,14 @@
 'use strict';
 
 function GenericModel(xs, ys, bbox, modelSet) {
-    DataModel.call(this, xs, ys, bbox, modelSet);
+    BaseModel.call(this, xs, ys, bbox, modelSet);
 
     this.isAnimated = false;
     this.editable = false;
     this.canPaint = false;
 }
 
-GenericModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
+GenericModel.prototype = _.extend(clonePrototype(BaseModel.prototype), {
     setWorld: function(data) {
         this.world = data;
     }

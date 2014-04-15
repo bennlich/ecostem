@@ -1,8 +1,8 @@
 'use strict';
 
 function VegetationModel(xs, ys, bbox, modelSet) {
-    DataModel.call(this, xs, ys, bbox, modelSet);
-    DataModel.prototype.init.call(this, { vegetation: VegetationModel.vegTypes.NONE });
+    BaseModel.call(this, xs, ys, bbox, modelSet);
+    BaseModel.prototype.init.call(this, { vegetation: VegetationModel.vegTypes.NONE });
 
     var t = VegetationModel.vegTypes;
 }
@@ -23,7 +23,7 @@ VegetationModel.typeToString = function(type) {
     }
 };
 
-VegetationModel.prototype = clonePrototype(DataModel.prototype);
+VegetationModel.prototype = clonePrototype(BaseModel.prototype);
 
 var VegetationPatchRenderer = function(model) {
     var t = VegetationModel.vegTypes;

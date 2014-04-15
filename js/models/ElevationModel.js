@@ -1,8 +1,8 @@
 'use strict';
 
 function ElevationModel(xs, ys, bbox, modelSet) {
-    DataModel.call(this, xs, ys, bbox, modelSet);
-    DataModel.prototype.init.call(this, {elevation:0});
+    BaseModel.call(this, xs, ys, bbox, modelSet);
+    BaseModel.prototype.init.call(this, {elevation:0});
 
     this.min = 1000000;
     this.max = 0;
@@ -11,7 +11,7 @@ function ElevationModel(xs, ys, bbox, modelSet) {
     this.canPaint = false;
 }
 
-ElevationModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
+ElevationModel.prototype = _.extend(clonePrototype(BaseModel.prototype), {
     sampleElevationXY: function(sampler, x,y) {
         var sampleSpacing = sampler.samplingWidth / this.xSize;
 

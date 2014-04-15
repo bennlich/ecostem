@@ -3,11 +3,11 @@
 /* Fire severity model inherits from DataModel */
 
 function FireSeverityModel(xs, ys, bbox, modelSet) {
-    DataModel.call(this, xs, ys, bbox, modelSet);
-    DataModel.prototype.init.call(this, { severity: FireSeverityModel.severityTypes.NONE });
+    BaseModel.call(this, xs, ys, bbox, modelSet);
+    BaseModel.prototype.init.call(this, { severity: FireSeverityModel.severityTypes.NONE });
 }
 
-FireSeverityModel.prototype = clonePrototype(DataModel.prototype);
+FireSeverityModel.prototype = clonePrototype(BaseModel.prototype);
 
 FireSeverityModel.severityTypes = {
     LOW: 1, MEDIUM: 2, HIGH: 3, NONE: 0

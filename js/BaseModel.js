@@ -1,6 +1,6 @@
 'use strict';
 
-function DataModel(xs, ys, geometry, modelSet) {
+function BaseModel(xs, ys, geometry, modelSet) {
     this.xSize = xs;
     this.ySize = ys;
     this.geometry = geometry;
@@ -11,7 +11,7 @@ function DataModel(xs, ys, geometry, modelSet) {
     this.isAnimated = false;
 }
 
-DataModel.prototype = {
+BaseModel.prototype = {
     init: function(defaultValue) {
         var world = new Array(this.xSize);
 

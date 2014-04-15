@@ -1,9 +1,9 @@
 'use strict';
 
-/* Water model inherits from DataModel */
+/* Water model inherits from BaseModel */
 
 function WaterModel(xs, ys, bbox, modelSet) {
-    DataModel.call(this, xs, ys, bbox, modelSet);
+    BaseModel.call(this, xs, ys, bbox, modelSet);
 
     this.init({ 
         elevation: 0,
@@ -23,7 +23,7 @@ function WaterModel(xs, ys, bbox, modelSet) {
     this.reset();
 }
 
-WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
+WaterModel.prototype = _.extend(clonePrototype(BaseModel.prototype), {
     _erosionModel: function() {
         if (!this.erosionModel && this.modelSet.models)
             this.erosionModel = this.modelSet.getDataModel('Erosion & Deposit');
@@ -51,13 +51,13 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
 
     start: function() {
         /* call superclass */
-        DataModel.prototype.start.call(this);
+        BaseModel.prototype.start.call(this);
         this._erosionModel().start();
     },
 
     stop: function() {
         /* call superclass */
-        DataModel.prototype.stop.call(this);
+        BaseModel.prototype.stop.call(this);
         this._erosionModel().stop();
     },
 
@@ -85,7 +85,7 @@ WaterModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
     },
 
     step: function() {
-        DataModel.prototype.step.call(this);
+        BaseModel.prototype.step.call(this);
 
         var fireSeverityModel = this.modelSet.getDataModel('Fire Severity');
 

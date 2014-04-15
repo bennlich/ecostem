@@ -1,8 +1,8 @@
 'use strict';
 
 function ScanElevationModel(xs, ys, bbox, modelSet) {
-    DataModel.call(this, xs, ys, bbox, modelSet);
-    DataModel.prototype.init.call(this, {elevation:0});
+    BaseModel.call(this, xs, ys, bbox, modelSet);
+    BaseModel.prototype.init.call(this, {elevation:0});
 
     this.isAnimated = false;
     this.editable = false;
@@ -12,7 +12,7 @@ function ScanElevationModel(xs, ys, bbox, modelSet) {
     this.max = 0;
 }
 
-ScanElevationModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
+ScanElevationModel.prototype = _.extend(clonePrototype(BaseModel.prototype), {
     load: function(anySurfaceDiff) {
         var yValues = anySurfaceDiff[1];
 

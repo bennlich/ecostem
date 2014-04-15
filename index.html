@@ -38,14 +38,14 @@
     <script src="js/TransferFunctions.js"></script>
 
     <script src="js/Animator.js"></script>
-    <script src="js/DataModel.js"></script>
-    <script src="js/GenericModel.js"></script>
-    <script src="js/ScanElevationModel.js"></script>
-    <script src="js/FireSeverityModel.js"></script>
-    <script src="js/ErosionModel.js"></script>
-    <script src="js/WaterModel.js"></script>
-    <script src="js/VegetationModel.js"></script>
-    <script src="js/ElevationModel.js"></script>
+    <script src="js/BaseModel.js"></script>
+    <script src="js/models/GenericModel.js"></script>
+    <script src="js/models/ScanElevationModel.js"></script>
+    <script src="js/models/FireSeverityModel.js"></script>
+    <script src="js/models/ErosionModel.js"></script>
+    <script src="js/models/WaterModel.js"></script>
+    <script src="js/models/VegetationModel.js"></script>
+    <script src="js/models/ElevationModel.js"></script>
 
     <script src="js/LeafletCoordSystem.js"></script>
     <script src="js/ModelBBox.js"></script>
@@ -129,9 +129,10 @@
       </div>
 
       <div class="top-container">
-        <div class="home uibox" ng-show="elevationLoaded && !editedLayer" ng-click="scan()">
-            <button ng-click="scanFlat()">Flat Scan</button><br/>
-            <button ng-show="scanFlatDone" ng-click="scanMountain()">Mound Scan</button>
+        <div class="home uibox" ng-show="elevationLoaded && !editedLayer" ng-click="map.setHomeView()">
+            <img src="img/home.png"/>
+            <!--button ng-click="scanFlat()">Flat Scan</button><br/>
+            <button ng-show="scanFlatDone" ng-click="scanMountain()">Mound Scan</button-->
         </div>
 
         <div class="layers uibox" ng-show="elevationLoaded && !editedLayer">

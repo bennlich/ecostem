@@ -1,15 +1,15 @@
 'use strict';
 
 function ErosionModel(xs, ys, bbox, modelSet) {
-    DataModel.call(this, xs, ys, bbox, modelSet);
-    DataModel.prototype.init.call(this, { erosion: 0 });
+    BaseModel.call(this, xs, ys, bbox, modelSet);
+    BaseModel.prototype.init.call(this, { erosion: 0 });
 
     this.isAnimated = true;
     this.editable = true;
     this.canPaint = false;
 }
 
-ErosionModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
+ErosionModel.prototype = _.extend(clonePrototype(BaseModel.prototype), {
     reset: function() { this.putData(0,0,this.xSize,this.ySize,{ erosion: 0 }); }
 });
 

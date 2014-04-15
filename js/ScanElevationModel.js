@@ -18,8 +18,10 @@ ScanElevationModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
 
         var min = 10000000, max = -10000000;
 
-        for (var x = 0; x < this.xSize; ++x) {
-            for (var y = 0; y < this.ySize; ++y) {
+        var x,y;
+
+        for (x = 0; x < this.xSize; ++x) {
+            for (y = 0; y < this.ySize; ++y) {
                 var yVal = yValues[y * this.xSize + x];
                 if (yVal < min)
                     min = yVal;
@@ -36,8 +38,8 @@ ScanElevationModel.prototype = _.extend(clonePrototype(DataModel.prototype), {
 
         var chopThreshold = (this.max - this.min) * 0.4;
 
-        for (var x = 0; x < this.xSize; ++x) {
-            for (var y = 0; y < this.ySize; ++y) {
+        for (x = 0; x < this.xSize; ++x) {
+            for (y = 0; y < this.ySize; ++y) {
                 var val = yValues[y * this.xSize + x] + padding;
 
                 if (val < this.min + chopThreshold)

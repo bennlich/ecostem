@@ -12,7 +12,7 @@ function ScanElevationModel(xs, ys, bbox, modelSet) {
     this.max = 0;
 }
 
-ScanElevationModel.prototype = _.extend(clonePrototype(BaseModel.prototype), {
+ScanElevationModel.prototype = extend(BaseModel.prototype, {
     load: function(anySurfaceDiff) {
         var yValues = anySurfaceDiff[1];
 

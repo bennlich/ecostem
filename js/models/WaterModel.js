@@ -5,7 +5,7 @@
 function WaterModel(xs, ys, bbox, modelSet) {
     BaseModel.call(this, xs, ys, bbox, modelSet);
 
-    this.init({ 
+    this.init({
         elevation: 0,
         volume: 0,
         siltFloating: 0,
@@ -23,7 +23,7 @@ function WaterModel(xs, ys, bbox, modelSet) {
     this.reset();
 }
 
-WaterModel.prototype = _.extend(clonePrototype(BaseModel.prototype), {
+WaterModel.prototype = extend(BaseModel.prototype, {
     _erosionModel: function() {
         if (!this.erosionModel && this.modelSet.models)
             this.erosionModel = this.modelSet.getDataModel('Erosion & Deposit');
@@ -99,9 +99,9 @@ WaterModel.prototype = _.extend(clonePrototype(BaseModel.prototype), {
                 // calculate evaporation and infiltration (what's left is runoff)
                 var burnSeverityModel = this._burnSeverityModel(),
                     patchSeverity = FireSeverityModel.typeToString(burnSeverityModel.world[i][j].severity);
-                
+
                 var evapInfRunoff = TransferFunctions.evapInfRunoff(patchSeverity);
-                
+
                 //patch.volume = patch.volume * evapInfRunoff.Runoff;
 
                 // the amount of water that flows is proportional to the difference in heights
@@ -155,7 +155,7 @@ WaterModel.prototype = _.extend(clonePrototype(BaseModel.prototype), {
                 this._erosionModel().world[i][j].erosion = patch.siltDeposit;
 
                 if (patch.volume === 0) {
-                    /* if we passed all the water to the neighbor, 
+                    /* if we passed all the water to the neighbor,
                      * pass all the floating silt along with it.
                      */
                     minNeighbor.siltFloating += patch.siltFloating;
@@ -185,7 +185,7 @@ WaterModel.prototype = _.extend(clonePrototype(BaseModel.prototype), {
         var kernelSize = 3,
             kernelRadius = Math.floor(kernelSize/2),
             subsetSize = kernelSize + 2*kernelRadius;
-        
+
         var clamp = ABM.util.clamp;
 
         var subsetX = clamp(x-2*kernelRadius, 0, this.xSize-subsetSize),
@@ -220,8 +220,8 @@ WaterModel.prototype = _.extend(clonePrototype(BaseModel.prototype), {
 
 var WaterPatchRenderer = function(model) {
     var colorMap = Gradient.multiGradient(
-        '#9cf', 
-        [{color: '#137', steps: 15}, 
+        '#9cf',
+        [{color: '#137', steps: 15},
          {color: '#123', steps: 5}]
     );
 
@@ -256,14 +256,14 @@ var WaterPatchRenderer = function(model) {
         if (num === 0)
             name = 'No Data';
 
-        return { 
-            value: { volume: num }, 
-            color: getColor(num), 
-            name: name 
+        return {
+            value: { volume: num },
+            color: getColor(num),
+            name: name
         };
     });
 
-    return { 
+    return {
         render: render,
         scale: scale
     };

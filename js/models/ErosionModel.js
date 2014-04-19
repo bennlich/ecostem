@@ -9,7 +9,7 @@ function ErosionModel(xs, ys, bbox, modelSet) {
     this.canPaint = false;
 }
 
-ErosionModel.prototype = _.extend(clonePrototype(BaseModel.prototype), {
+ErosionModel.prototype = extend(BaseModel.prototype, {
     reset: function() { this.putData(0,0,this.xSize,this.ySize,{ erosion: 0 }); }
 });
 
@@ -56,14 +56,14 @@ var ErosionPatchRenderer = function(model) {
         if (n === 0)
             name = 'No Data';
 
-        return { 
+        return {
             value: { erosion: n },
             color: getColor(n),
             name: name
         };
     });
 
-    return { 
+    return {
         render: render,
         scale: scale
     };

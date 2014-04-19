@@ -11,11 +11,11 @@ function ElevationModel(xs, ys, bbox, modelSet) {
     this.canPaint = false;
 }
 
-ElevationModel.prototype = _.extend(clonePrototype(BaseModel.prototype), {
+ElevationModel.prototype = extend(BaseModel.prototype, {
     sampleElevationXY: function(sampler, x,y) {
         var sampleSpacing = sampler.samplingWidth / this.xSize;
 
-        var offset = function(p) { 
+        var offset = function(p) {
             return p * sampleSpacing + Math.floor(sampleSpacing/2);
         }.bind(this);
 
@@ -41,7 +41,7 @@ ElevationModel.prototype = _.extend(clonePrototype(BaseModel.prototype), {
 
 var ElevationPatchRenderer = function(model) {
     var colorMap = Gradient.multiGradient(
-        '#123', 
+        '#123',
         [{color: '#505Fa5', steps: 40},
          {color: '#D66783', steps: 100},
          {color: '#fff', steps: 100}]
@@ -74,7 +74,7 @@ var ElevationPatchRenderer = function(model) {
         return { value: { volume: num }, color: getColor(num), name: name };
     });
 
-    return { 
+    return {
         render: render,
         scale: scale
     };

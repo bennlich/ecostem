@@ -8,7 +8,7 @@ function GenericModel(xs, ys, bbox, modelSet) {
     this.canPaint = false;
 }
 
-GenericModel.prototype = _.extend(clonePrototype(BaseModel.prototype), {
+GenericModel.prototype = extend(BaseModel.prototype, {
     setWorld: function(data) {
         this.world = data;
     }
@@ -26,7 +26,7 @@ var GenericPatchRenderer = function(model) {
         ctx.fillRect(Math.floor(drawX), Math.floor(drawY), Math.ceil(drawWidth), Math.ceil(drawHeight));
     }
 
-    return { 
+    return {
         render: render,
         scale: []
     };

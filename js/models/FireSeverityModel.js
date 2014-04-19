@@ -7,7 +7,7 @@ function FireSeverityModel(xs, ys, bbox, modelSet) {
     BaseModel.prototype.init.call(this, { severity: FireSeverityModel.severityTypes.NONE });
 }
 
-FireSeverityModel.prototype = clonePrototype(BaseModel.prototype);
+FireSeverityModel.prototype = extend(BaseModel.prototype);
 
 FireSeverityModel.severityTypes = {
     LOW: 1, MEDIUM: 2, HIGH: 3, NONE: 0
@@ -19,7 +19,7 @@ FireSeverityModel.typeToString = function(type) {
     case t.LOW    : return 'Low';
     case t.MEDIUM : return 'Medium';
     case t.HIGH   : return 'High';
-    case t.NONE   : 
+    case t.NONE   :
     default       : return 'No Data';
     }
 };
@@ -62,14 +62,14 @@ var FirePatchRenderer = function(model) {
     }
 
     var scale = _.map(_.values(t), function(severity) {
-        return { 
-            value: { severity: severity }, 
+        return {
+            value: { severity: severity },
             color: getColor(severity),
             name: FireSeverityModel.typeToString(severity)
         };
     });
 
-    return { 
+    return {
         render: render,
         scale: scale
     };

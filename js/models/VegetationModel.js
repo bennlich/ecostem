@@ -23,7 +23,7 @@ VegetationModel.typeToString = function(type) {
     }
 };
 
-VegetationModel.prototype = clonePrototype(BaseModel.prototype);
+VegetationModel.prototype = extend(BaseModel.prototype);
 
 var VegetationPatchRenderer = function(model) {
     var t = VegetationModel.vegTypes;
@@ -57,7 +57,7 @@ var VegetationPatchRenderer = function(model) {
         };
     });
 
-    return { 
+    return {
         render: render,
         scale: scale
     };

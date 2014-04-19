@@ -7,8 +7,8 @@ function AscParser() {
     this.parsed = false;
 
     this.parseToken = function(stream) {
-        while (stream[this.cursor] === ' ' 
-               || stream[this.cursor] === '\n' 
+        while (stream[this.cursor] === ' '
+               || stream[this.cursor] === '\n'
                || stream[this.cursor] === '\r')
         {
             this.cursor++;
@@ -18,7 +18,7 @@ function AscParser() {
 
         while (stream[this.cursor] !== ' '
                && stream[this.cursor] !== '\n'
-               && stream[this.cursor] !== '\r') 
+               && stream[this.cursor] !== '\r')
         {
             t += stream[this.cursor];
             this.cursor++;
@@ -38,7 +38,7 @@ function AscParser() {
     this.parseBody = function(stream) {
         var i = 0, j = 0;
 
-        var nrows = this.headers.nrows, 
+        var nrows = this.headers.nrows,
             ncols = this.headers.ncols,
             nodata = this.headers.NODATA_value;
 
@@ -124,16 +124,9 @@ Rect.prototype = {
  * This is used for implementing prototype-based inheritance
  */
 
-function clonePrototype(obj) {
-    if (typeof obj !== 'undefined') {
-	clonePrototype.prototype = Object(obj);
-	return new clonePrototype;
-    } else {
-        /* this branch is hit when clonePrototype invokes
-         * "new clonePrototype" in the branch above
-         */
-        return undefined;
-    }
+function extend(prototype, props) {
+    var obj = Object.create(prototype);
+    return _.extend(obj, props);
 }
 
 /*

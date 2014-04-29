@@ -1,4 +1,3 @@
-'use strict';
 
 import {Rect} from 'js/Util';
 

@@ -1,4 +1,3 @@
-'use strict';
 
 export function BaseModel(xs, ys, geometry, modelSet) {
     this.xSize = xs;

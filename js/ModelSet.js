@@ -1,4 +1,3 @@
-'use strict';
 
 import {ElevationModel, ElevationPatchRenderer} from 'js/models/ElevationModel';
 import {ErosionModel, ErosionPatchRenderer} from 'js/models/ErosionModel';

@@ -1,4 +1,3 @@
-'use strict';
 
 export function AscParser() {
     this.cursor = 0;

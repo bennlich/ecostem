@@ -1,4 +1,3 @@
-'use strict';
 
 export function TransferFunction(domain, domainUnit, range, rangeUnit, title, svgcanvas_id) {
 

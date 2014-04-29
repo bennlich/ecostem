@@ -1,4 +1,3 @@
-'use strict';
 
 /*
     The coord system is an object that exposes two functions:

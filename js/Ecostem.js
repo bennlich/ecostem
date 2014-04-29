@@ -1,4 +1,3 @@
-'use strict';
 
 import {ElevationSampler} from 'js/EcostemServices.elevationSampler';
 import {Map} from 'js/EcostemServices.map';

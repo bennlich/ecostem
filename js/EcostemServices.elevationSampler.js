@@ -1,4 +1,3 @@
-'use strict';
 
 import {LocalStorage} from 'js/LocalStorage';
 import {computeQuad} from 'js/Experiments';

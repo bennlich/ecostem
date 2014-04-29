@@ -1,4 +1,3 @@
-'use strict';
 
 export function setupDirectives(module) {
     module.directive('drawingSurface', ['map', function(map) {

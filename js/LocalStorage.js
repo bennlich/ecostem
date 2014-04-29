@@ -1,4 +1,3 @@
-'use strict';
 
 export var LocalStorage = {
     filer: new Filer(),

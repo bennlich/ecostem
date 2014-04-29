@@ -1,4 +1,3 @@
-'use strict';
 
 import {TransferFunction} from 'js/TransferFunction';
 import {StackedBars} from 'js/StackedBars';

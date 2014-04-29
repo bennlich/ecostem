@@ -1,4 +1,3 @@
-'use strict';
 
 import {extend} from 'js/Util';
 import {BaseModel} from 'js/BaseModel';

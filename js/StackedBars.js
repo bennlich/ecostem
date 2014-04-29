@@ -1,4 +1,3 @@
-'use strict';
 
 export function StackedBars(opts) {
     var domain = opts.domain,

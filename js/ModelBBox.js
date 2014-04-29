@@ -1,8 +1,10 @@
 'use strict';
 
-/* Wrapper for the scenario bounding box. Mainly encapsulates degree-to-pixel 
+import {Rect} from 'js/Util';
+
+/* Wrapper for the scenario bounding box. Mainly encapsulates degree-to-pixel
  * translations */
-function ModelBBox(bbox, leafletMap) {
+export function ModelBBox(bbox, leafletMap) {
     this.bbox = bbox;
     this.leafletMap = leafletMap;
 }

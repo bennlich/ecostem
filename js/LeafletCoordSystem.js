@@ -10,7 +10,7 @@
     modelCoord is an index to a sample in the model, with structure {x:xValue, y:yValue}
 */
 
-function LeafletCoordSystem(leafletMap) {
+export function LeafletCoordSystem(leafletMap) {
     this.leafletMap = leafletMap;
 }
 

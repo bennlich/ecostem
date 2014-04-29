@@ -1,6 +1,9 @@
 'use strict';
 
-var TransferFunctions = {
+import {TransferFunction} from 'js/TransferFunction';
+import {StackedBars} from 'js/StackedBars';
+
+export var TransferFunctions = {
     init : function() {
         this.slopeToVelocity = function() {
             var slopeToVelocity = new TransferFunction([0, 50], 'degrees', [0, 100], 'cm / s', 'Flow velocity vs. slope');

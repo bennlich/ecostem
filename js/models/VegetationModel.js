@@ -1,6 +1,9 @@
 'use strict';
 
-function VegetationModel(xs, ys, bbox, modelSet) {
+import {extend} from 'js/Util';
+import {BaseModel} from 'js/BaseModel';
+
+export function VegetationModel(xs, ys, bbox, modelSet) {
     BaseModel.call(this, xs, ys, bbox, modelSet);
     BaseModel.prototype.init.call(this, { vegetation: VegetationModel.vegTypes.NONE });
 
@@ -25,7 +28,7 @@ VegetationModel.typeToString = function(type) {
 
 VegetationModel.prototype = extend(BaseModel.prototype);
 
-var VegetationPatchRenderer = function(model) {
+export var VegetationPatchRenderer = function(model) {
     var t = VegetationModel.vegTypes;
 
     var colors = {};

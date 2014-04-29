@@ -1,6 +1,6 @@
 'use strict';
 
-function ModelTileServer(modelTileRenderer) {
+export function ModelTileServer(modelTileRenderer) {
     this.renderer = modelTileRenderer;
     this.fb = new Firebase("https://simtable.firebaseio.com/nnmc/livetiles2");
     this.callbacks = [];
@@ -19,7 +19,7 @@ ModelTileServer.prototype = {
 
     _init: function(name) {
         var bbox = this.renderer.model.geometry.bbox;
-        this._layerRef = this.fb.push({ 
+        this._layerRef = this.fb.push({
             name: name,
             zIndex: this.renderer.canvasLayer.options.zIndex,
             bbox: {
@@ -57,8 +57,8 @@ ModelTileServer.prototype = {
     },
 
     uninstallTileUpdateLoop: function(fbHandle) {
-        this.callbacks = _.reject(this.callbacks, function(cb) { 
-            return cb.name === fbHandle; 
+        this.callbacks = _.reject(this.callbacks, function(cb) {
+            return cb.name === fbHandle;
         });
     },
 
@@ -114,6 +114,6 @@ ModelTileServer.prototype = {
                 tileClosure(this.renderer.model.world);
                 this._layerRef.child(fbHandle).set(canvas.toDataURL());
             }
-        } 
+        }
     }
 };

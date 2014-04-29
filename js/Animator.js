@@ -1,31 +1,31 @@
 'use strict';
 
-function Animator(modelSet) {
+export function Animator(modelSet) {
     this.modelSet = modelSet;
 
     this.reset();
 }
 
 Animator.prototype = {
-    start: function() { 
+    start: function() {
         this.isRunning = true;
         this._run();
     },
 
-    stop: function() { 
+    stop: function() {
         this.isRunning = false;
         if (this._raf) {
             window.cancelAnimationFrame(this._raf);
         }
     },
 
-    reset: function() { 
+    reset: function() {
         if (this.isRunning)
             this.stop();
 
         var models = this.modelSet.getModels();
 
-        for (var i = 0; i < models.length; ++i) {       
+        for (var i = 0; i < models.length; ++i) {
             models[i].dataModel.reset();
             models[i].renderer.refreshLayer();
         }
@@ -41,7 +41,7 @@ Animator.prototype = {
 
         for (var i = 0; i < models.length; ++i) {
             var model = models[i].dataModel;
-            
+
             if (! model.isAnimated)
                 continue;
 

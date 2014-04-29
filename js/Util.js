@@ -1,6 +1,6 @@
 'use strict';
 
-function AscParser() {
+export function AscParser() {
     this.cursor = 0;
     this.headers = {};
     this.data = null;
@@ -98,7 +98,7 @@ function AscParser() {
  * Generic rect utility
  */
 
-function Rect(left,top,width,height) {
+export function Rect(left,top,width,height) {
     this.left = left, this.top = top,
     this.width = width, this.height = height;
 }
@@ -124,7 +124,7 @@ Rect.prototype = {
  * This is used for implementing prototype-based inheritance
  */
 
-function extend(prototype, props) {
+export function extend(prototype, props) {
     var obj = Object.create(prototype);
     return _.extend(obj, props);
 }
@@ -159,3 +159,5 @@ if (typeof String.prototype.startsWith !== 'function') {
         return this.lastIndexOf(str, 0) === 0;
     };
 }
+
+export default {};

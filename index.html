@@ -1,4 +1,4 @@
-<html ng-app="Ecostem">
+<html>
   <head>
     <title>Ecostem</title>
 
@@ -7,6 +7,15 @@
     <link rel="stylesheet" type="text/css" href="lib/leaflet/leaflet.css"/>
     <link rel="stylesheet" type="text/css" href="css/ecostem.css"/>
     <link rel="stylesheet" type="text/css" href="css/svg.css"/>
+
+    <script src="lib/traceur/traceur.js"></script>
+    <script src="lib/traceur/bootstrap.js"></script>
+    <script type="module">
+        console.log('foo bar');
+    </script>
+    <script>
+        console.log('hello js');
+    </script>
 
     <script src="https://cdn.firebase.com/js/client/1.0.2/firebase.js"></script>
 
@@ -26,10 +35,7 @@
 
     <script src="lib/AnySurface.js"></script>
 
-    <script src="lib/Leaflet.CanvasLayer/leaflet_tileloader_mixin.js"></script>
-    <script src="lib/Leaflet.CanvasLayer/leaflet_canvas_layer.js"></script>
-
-    <script src="js/Util.js"></script>
+    <!--script src="js/Util.js"></script>
     <script src="js/LocalStorage.js"></script>
     <script src="js/Experiments.js"></script>
 
@@ -52,12 +58,12 @@
     <script src="js/ModelSet.js"></script>
 
     <script src="js/ModelTileRenderer.js"></script>
-    <script src="js/ModelTileServer.js"></script>
+    <script src="js/ModelTileServer.js"></script-->
 
-    <script src="js/Ecostem.js"></script>
-    <script src="js/EcostemDirectives.js"></script>
+    <script type="module" src="js/Ecostem.js"></script>
+    <!--script src="js/EcostemDirectives.js"></script>
     <script src="js/EcostemServices.map.js"></script>
-    <script src="js/EcostemServices.elevationSampler.js"></script>
+    <script src="js/EcostemServices.elevationSampler.js"></script-->
   </head>
   <body>
     <div class="container" ng-controller="EcostemCtrl">

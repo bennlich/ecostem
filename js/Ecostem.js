@@ -1,5 +1,12 @@
 'use strict';
 
+import {ElevationSampler} from 'js/EcostemServices.elevationSampler';
+import {Map} from 'js/EcostemServices.map';
+import {TransferFunctions} from 'js/TransferFunctions';
+import {FireSeverityModel} from 'js/Models/FireSeverityModel';
+import {VegetationModel} from 'js/Models/VegetationModel';
+import {setupDirectives} from 'js/EcostemDirectives';
+
 /* leaflet "hack" that forces openPopup() to leave current popups open */
 L.Map = L.Map.extend({
     openPopup: function(popup) {
@@ -15,7 +22,10 @@ L.Map = L.Map.extend({
 
 var Ecostem = angular.module('Ecostem', ['EcostemDirectives', 'EcostemServices']);
 var EcostemDirectives = angular.module('EcostemDirectives', ['EcostemServices']);
+setupDirectives(EcostemDirectives);
 var EcostemServices = angular.module('EcostemServices', []);
+EcostemServices.service('elevationSampler', ElevationSampler);
+EcostemServices.service('map', Map);
 
 Ecostem.filter('format', [function() {
     return function(input, p) {
@@ -430,3 +440,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
     });
 
 }]);
+
+angular.element(document).ready(function() {
+    angular.bootstrap(document, ['Ecostem']);
+});

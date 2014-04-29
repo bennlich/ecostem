@@ -1,6 +1,9 @@
 'use strict';
 
-function GenericModel(xs, ys, bbox, modelSet) {
+import {extend} from 'js/Util';
+import {BaseModel} from 'js/BaseModel';
+
+export function GenericModel(xs, ys, bbox, modelSet) {
     BaseModel.call(this, xs, ys, bbox, modelSet);
 
     this.isAnimated = false;
@@ -14,7 +17,7 @@ GenericModel.prototype = extend(BaseModel.prototype, {
     }
 });
 
-var GenericPatchRenderer = function(model) {
+export var GenericPatchRenderer = function(model) {
     function render(ctx, world, i, j, drawX, drawY, drawWidth, drawHeight) {
         var patch;
 

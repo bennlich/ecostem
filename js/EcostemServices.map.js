@@ -2,8 +2,13 @@
 
 var map;
 
+import {ModelBBox} form 'js/ModelBBox';
+import {Rect} from 'js/Util';
+import {ModelSet} from 'js/ModelSet';
+import {Animator} from 'js/Animator';
+
 /* Leaflet wrapper */
-EcostemServices.service('map', ['$location', '$rootScope', '$q', function($location, $rootScope, $q) {
+export var Map = ['$location', '$rootScope', '$q', function($location, $rootScope, $q) {
     return {
         deferred: $q.defer(),
         init: function(id) {
@@ -280,4 +285,4 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
             return layer;
         }
     };
-}]);
+}];

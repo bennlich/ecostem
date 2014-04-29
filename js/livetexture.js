@@ -1,6 +1,8 @@
 'use strict';
 
-function LiveTexture(leafletMap) {
+import 'js/Util';
+
+export function LiveTexture(leafletMap) {
     this._appearedCallbacks = [];
     this._disappearedCallbacks = [];
     this._map = leafletMap;

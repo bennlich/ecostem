@@ -1,6 +1,6 @@
 'use strict';
 
-function StackedBars(opts) {
+export function StackedBars(opts) {
     var domain = opts.domain,
         domainTitle = opts.domainTitle,
         range = opts.range,
@@ -18,7 +18,7 @@ function StackedBars(opts) {
 
     function transfer(x) {
 		var column = transfer.rectangles[x];
-        
+
         if (!column) {
             return null;
         }
@@ -84,7 +84,7 @@ function StackedBars(opts) {
 
     // init data
     var partitionScale = d3.scale.linear().domain([0,range.length]).range([0,1]);
-    
+
     function newControlGroup(rectangleGroup) {
         var controlGroup = [];
         for (var i = 1; i < range.length; i++) {
@@ -165,7 +165,7 @@ function StackedBars(opts) {
                 d.topBar.yBottom = d.bottomBar.yTop = d.val;
 				transfer.render();
 			}));
-    
+
     controlGroup.append('rect')
     	.attr('class', 'control')
     	.attr('width', transfer.xScale.rangeBand())

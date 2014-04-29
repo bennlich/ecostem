@@ -1,6 +1,9 @@
 'use strict';
 
-function ScanElevationModel(xs, ys, bbox, modelSet) {
+import {extend} from 'js/Util';
+import {BaseModel} from 'js/BaseModel';
+
+export function ScanElevationModel(xs, ys, bbox, modelSet) {
     BaseModel.call(this, xs, ys, bbox, modelSet);
     BaseModel.prototype.init.call(this, {elevation:0});
 

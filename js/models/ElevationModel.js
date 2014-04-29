@@ -1,6 +1,9 @@
 'use strict';
 
-function ElevationModel(xs, ys, bbox, modelSet) {
+import {extend} from 'js/Util';
+import {BaseModel} from 'js/BaseModel';
+
+export function ElevationModel(xs, ys, bbox, modelSet) {
     BaseModel.call(this, xs, ys, bbox, modelSet);
     BaseModel.prototype.init.call(this, {elevation:0});
 
@@ -39,7 +42,7 @@ ElevationModel.prototype = extend(BaseModel.prototype, {
     }
 });
 
-var ElevationPatchRenderer = function(model) {
+export var ElevationPatchRenderer = function(model) {
     var colorMap = Gradient.multiGradient(
         '#123',
         [{color: '#505Fa5', steps: 40},

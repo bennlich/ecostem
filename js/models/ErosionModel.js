@@ -1,6 +1,9 @@
 'use strict';
 
-function ErosionModel(xs, ys, bbox, modelSet) {
+import {extend} from 'js/Util';
+import {BaseModel} from 'js/BaseModel';
+
+export function ErosionModel(xs, ys, bbox, modelSet) {
     BaseModel.call(this, xs, ys, bbox, modelSet);
     BaseModel.prototype.init.call(this, { erosion: 0 });
 
@@ -13,7 +16,7 @@ ErosionModel.prototype = extend(BaseModel.prototype, {
     reset: function() { this.putData(0,0,this.xSize,this.ySize,{ erosion: 0 }); }
 });
 
-var ErosionPatchRenderer = function(model) {
+export var ErosionPatchRenderer = function(model) {
     var gradientSteps = 200,
         negativeGradient = Gradient.gradient('#ffebeb', '#e03838', gradientSteps),
         positiveGradient = Gradient.gradient('#dbecff', '#2e7ad1', gradientSteps);

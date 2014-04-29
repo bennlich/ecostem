@@ -1,6 +1,16 @@
 'use strict';
 
-function ModelSet(map, defaultBBox, scope) {
+import {ElevationModel, ElevationPatchRenderer} from 'js/models/ElevationModel';
+import {ErosionModel, ErosionPatchRenderer} from 'js/models/ErosionModel';
+import {FireSeverityModel, FirePatchRenderer} from 'js/models/FireSeverityModel';
+import {VegetationModel, VegetationPatchRenderer} from 'js/models/VegetationModel';
+import {WaterModel, WaterPatchRenderer} from 'js/models/WaterModel';
+import {LeafletCoordSystem} from 'js/LeafletCoordSystem';
+import {ModelTileRenderer} from 'js/ModelTileRenderer';
+import {ModelTileServer} from 'js/ModelTileServer';
+import {TransferFunctions} from 'js/TransferFunctions';
+
+export function ModelSet(map, defaultBBox, scope) {
     this.map = map;
     this.scope = scope;
 

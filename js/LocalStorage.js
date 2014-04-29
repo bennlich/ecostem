@@ -1,6 +1,6 @@
 'use strict';
 
-var LocalStorage = {
+export var LocalStorage = {
     filer: new Filer(),
 
     filerOnError: function(e) {
@@ -38,7 +38,7 @@ var LocalStorage = {
                 var cachedFile = _.find(contents, function(c) {
                     return c.isFile && c.name === fileName;
                 });
-                
+
                 if (cachedFile) {
                     console.log('found file', dir, cachedFile.name);
                     successCallback(cachedFile);

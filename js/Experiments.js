@@ -1,6 +1,6 @@
 'use strict';
 
-function computeQuad(sampler) {
+export function computeQuad(sampler) {
     var height = sampler.canvas.height;
     var width = sampler.canvas.width;
 

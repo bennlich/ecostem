@@ -1,8 +1,11 @@
 'use strict';
 
+import {extend} from 'js/Util';
+import {BaseModel} from 'js/BaseModel';
+
 /* Fire severity model inherits from DataModel */
 
-function FireSeverityModel(xs, ys, bbox, modelSet) {
+export function FireSeverityModel(xs, ys, bbox, modelSet) {
     BaseModel.call(this, xs, ys, bbox, modelSet);
     BaseModel.prototype.init.call(this, { severity: FireSeverityModel.severityTypes.NONE });
 }
@@ -26,7 +29,7 @@ FireSeverityModel.typeToString = function(type) {
 
 /* Renderer for a single fire severity patch */
 
-var FirePatchRenderer = function(model) {
+export var FirePatchRenderer = function(model) {
     var colorHigh = 'rgb(105,82,58)';
     var colorMedium = 'rgb(173,147,118)';
     var colorLow = 'rgb(240,217,192)';

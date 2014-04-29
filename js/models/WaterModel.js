@@ -1,8 +1,13 @@
 'use strict';
 
+import {extend} from 'js/Util';
+import {BaseModel} from 'js/BaseModel';
+import {FireSeverityModel} from 'js/models/FireSeverityModel';
+import {TransferFunctions} from 'js/TransferFunctions';
+
 /* Water model inherits from BaseModel */
 
-function WaterModel(xs, ys, bbox, modelSet) {
+export function WaterModel(xs, ys, bbox, modelSet) {
     BaseModel.call(this, xs, ys, bbox, modelSet);
 
     this.init({
@@ -218,7 +223,7 @@ WaterModel.prototype = extend(BaseModel.prototype, {
     }
 });
 
-var WaterPatchRenderer = function(model) {
+export var WaterPatchRenderer = function(model) {
     var colorMap = Gradient.multiGradient(
         '#9cf',
         [{color: '#137', steps: 15},

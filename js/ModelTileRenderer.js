@@ -1,6 +1,8 @@
 'use strict';
 
-function ModelTileRenderer(map, model, patchRenderer) {
+import {Rect} from 'js/Util';
+
+export function ModelTileRenderer(map, model, patchRenderer) {
     this.map = map;
     this.model = model;
     this.patchRenderer = patchRenderer;
@@ -44,7 +46,7 @@ ModelTileRenderer.prototype = {
         var patchesPerBrushX = paintWidth / patchWidth;
         var patchesPerBrushY = paintHeight / patchHeight;
 
-        // top-left corner of the intersection, relative to 
+        // top-left corner of the intersection, relative to
         // the top-left corner of the scenario, in pixels
         var intersectionX = Math.abs(scenarioRect.left - intersection.left); // in range [0, scenarioRect.width]
         var intersectionY = Math.abs(scenarioRect.top - intersection.top); // in range [0, scenarioRect.height]

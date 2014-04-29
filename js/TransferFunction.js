@@ -1,6 +1,6 @@
 'use strict';
 
-function TransferFunction(domain, domainUnit, range, rangeUnit, title, svgcanvas_id) {
+export function TransferFunction(domain, domainUnit, range, rangeUnit, title, svgcanvas_id) {
 
     var svgcanID = "transfer-function-svg";
 
@@ -21,10 +21,10 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title, svgcanvas
 
     function transfer(x) {
 		var idx = transfer.search(transfer.lookupTable, x);
-		
+
 		if (idx >= transfer.lookupTable.length)
 		    idx = transfer.lookupTable.length-1;
-		
+
 		var point = transfer.lookupTable[idx];
 
 		// debug: show interpolated points on plot
@@ -50,10 +50,10 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title, svgcanvas
     };
 
     transfer.render = function() {
-	
+
 		this.interpolate = Smooth(this.controlPoints, this.interpolatorOpts);
 		//
-		//  Curve fitting instead of smoother. It outputs a function. 
+		//  Curve fitting instead of smoother. It outputs a function.
 		//    This has it's own problems, especially when there are more than like 5 control points
 		//
 		// var polynomialDegree = this.controlPoints.length - 1; //matches every point exactly when degree is length-1
@@ -139,7 +139,7 @@ function TransferFunction(domain, domainUnit, range, rangeUnit, title, svgcanvas
 		];
     }
 
-    // spline data and utils	
+    // spline data and utils
     transfer.pathData = new Array(numSegments);
     transfer.indexToXCoord = d3.scale.linear().domain([0, numSegments - 1]).range(domain);
     transfer.pathGenerator = d3.svg.line()

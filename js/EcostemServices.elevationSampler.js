@@ -1,6 +1,9 @@
 'use strict';
 
-EcostemServices.service('elevationSampler', ['$rootScope', '$q', function($rootScope, $q) {
+import {LocalStorage} from 'js/LocalStorage';
+import {computeQuad} from 'js/Experiments';
+
+export var ElevationSampler = ['$rootScope', '$q', function($rootScope, $q) {
     return {
         deferred: $q.defer(),
         elevationServer: "http://node.redfish.com/cgi-bin/elevation.py?bbox={s},{w},{n},{e}&res={width},{height}",
@@ -15,7 +18,7 @@ EcostemServices.service('elevationSampler', ['$rootScope', '$q', function($rootS
             this.canvas = canvas;
             this.ctx = canvas.getContext('2d');
             this.width = this.samplingWidth;
-            
+
             this.deferred.resolve(this);
         },
 
@@ -127,5 +130,4 @@ EcostemServices.service('elevationSampler', ['$rootScope', '$q', function($rootS
             return elevation;
         }
     };
-}]);
-
+}];

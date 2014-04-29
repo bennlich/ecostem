@@ -1,6 +1,6 @@
 'use strict';
 
-function BaseModel(xs, ys, geometry, modelSet) {
+export function BaseModel(xs, ys, geometry, modelSet) {
     this.xSize = xs;
     this.ySize = ys;
     this.geometry = geometry;

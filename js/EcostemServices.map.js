@@ -211,7 +211,7 @@ export var Map = ['$location', '$rootScope', '$q', function($location, $rootScop
             // TODO make modelSet a service?
             this.modelSet = new ModelSet(map, bbox, $rootScope);
 
-            var layers = _.map(_.values(this.modelSet.models), function(model) {
+            var layers = _.map(_.values(this.modelSet.models), (model) => {
                 return {
                     name: model.name,
                     model: model,
@@ -220,7 +220,7 @@ export var Map = ['$location', '$rootScope', '$q', function($location, $rootScop
                     editing: false,
                     leafletLayer: model.renderer.makeLayer({zIndex: this.zIndex++, opacity: 0.85})
                 };
-            }.bind(this));
+            });
 
             this.animator = new Animator(this.modelSet);
 
@@ -243,7 +243,7 @@ export var Map = ['$location', '$rootScope', '$q', function($location, $rootScop
             var opts = {zIndex: this.zIndex++, opacity: .3};
             var layer = L.tileLayer.canvas(opts);
 
-            layer.drawTile = function(canvas, tilePoint, zoom) {
+            layer.drawTile = (canvas, tilePoint, zoom) => {
                 var ctx = canvas.getContext('2d');
 
                 ctx.fillStyle = 'rgb(20,20,20)';
@@ -254,7 +254,7 @@ export var Map = ['$location', '$rootScope', '$q', function($location, $rootScop
 
                 var canvasRect = new Rect(tileX, tileY, canvas.width, canvas.height);
 
-                _.each(this.modelLayers, function(l) {
+                _.each(this.modelLayers, (l) => {
                     if (! this.leafletMap.hasLayer(l.leafletLayer))
                         return;
 
@@ -270,8 +270,8 @@ export var Map = ['$location', '$rootScope', '$q', function($location, $rootScop
                         height = Math.round(i.height);
 
                     ctx.clearRect(x, y, width, height);
-                }.bind(this));
-            }.bind(this);
+                });
+            };
 
             this.leafletMap.on('layeradd', function() {
                 layer.redraw();

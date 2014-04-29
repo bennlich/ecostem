@@ -17,9 +17,7 @@ export class ElevationModel extends BaseModel {
     sampleElevationXY(sampler, x,y) {
         var sampleSpacing = sampler.samplingWidth / this.xSize;
 
-        var offset = function(p) {
-            return p * sampleSpacing + Math.floor(sampleSpacing/2);
-        }.bind(this);
+        var offset = (p) => p * sampleSpacing + Math.floor(sampleSpacing/2);
 
         return sampler.sample(offset(x), offset(y));
     }
@@ -69,7 +67,7 @@ export var ElevationPatchRenderer = function(model) {
         ctx.fillRect(Math.floor(drawX), Math.floor(drawY), Math.ceil(drawWidth), Math.ceil(drawHeight));
     }
 
-    var scale = _.map([5, 10, 20, 30, 0], function(num) {
+    var scale = _.map([5, 10, 20, 30, 0], (num) => {
         var name = num;
         if (num === 0)
             name = 'None (Erase)';

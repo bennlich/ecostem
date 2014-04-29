@@ -9,10 +9,7 @@ export class ModelTileServer {
     }
 
     hasCallback(fbHandle) {
-        var cb = _.find(this.callbacks, function(cb) {
-            return cb.name === fbHandle;
-        });
-
+        var cb = _.find(this.callbacks, (cb) => cb.name === fbHandle);
         return !!cb;
     }
 
@@ -31,13 +28,13 @@ export class ModelTileServer {
 
         this._layerRef.onDisconnect().remove();
 
-        this._layerRef.child('listen').on('value', function(data) {
+        this._layerRef.child('listen').on('value', (data) => {
             var val = data.val();
             if (val)
                 this.handleTileRequest(val);
-        }.bind(this));
+        });
 
-        this._layerRef.child('stopListening').on('value', function(data) {
+        this._layerRef.child('stopListening').on('value', (data) => {
             var zxy = data.val();
 
             if (!zxy)
@@ -45,7 +42,7 @@ export class ModelTileServer {
 
             this.uninstallTileUpdateLoop(zxy);
             this._layerRef.child(zxy).remove();
-        }.bind(this));
+        });
     }
 
     installTileUpdateLoop(fbHandle, cb) {
@@ -56,9 +53,7 @@ export class ModelTileServer {
     }
 
     uninstallTileUpdateLoop(fbHandle) {
-        this.callbacks = _.reject(this.callbacks, function(cb) {
-            return cb.name === fbHandle;
-        });
+        this.callbacks = _.reject(this.callbacks, (cb) => cb.name === fbHandle);
     }
 
     start(name) {
@@ -77,15 +72,11 @@ export class ModelTileServer {
         if (this.isRunning) {
             var world = this.renderer.model.world;
 
-            _.each(this.callbacks, function(cb) {
-                setTimeout(function() {
-                    cb.cb(world);
-                },0);
+            _.each(this.callbacks, (cb) => {
+                setTimeout(() => cb.cb(world), 0);
             });
 
-            setTimeout(function() {
-                this._run();
-            }.bind(this), 600);
+            setTimeout(() => this._run(), 600);
         }
     }
 
@@ -105,10 +96,10 @@ export class ModelTileServer {
 
         if (tileClosure) {
             if (this.renderer.model.isAnimated) {
-                this.installTileUpdateLoop(fbHandle, function(world) {
+                this.installTileUpdateLoop(fbHandle, (world) => {
                     tileClosure(world);
                     this._layerRef.child(fbHandle).set(canvas.toDataURL());
-                }.bind(this));
+                });
             } else {
                 tileClosure(this.renderer.model.world);
                 this._layerRef.child(fbHandle).set(canvas.toDataURL());

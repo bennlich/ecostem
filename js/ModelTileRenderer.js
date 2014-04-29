@@ -63,7 +63,7 @@ export class ModelTileRenderer {
         var drawStartX = intersection.left - tileX - (intersectionX % paintWidth);
         var drawStartY = intersection.top - tileY - (intersectionY % paintHeight);
 
-        var renderStep = function(world) {
+        var renderStep = (world) => {
             ctx.clearRect(0,0,canvas.width,canvas.height);
 
             for (var worldX = startWorldX, p = drawStartX; worldX < endWorldX; worldX += patchesPerBrushX, p += paintWidth) {
@@ -81,7 +81,7 @@ export class ModelTileRenderer {
             // this shows the tile boundaries
             // ctx.strokeStyle = '#888';
             // ctx.strokeRect(0,0,canvas.width,canvas.height);
-        }.bind(this);
+        };
 
         return renderStep;
     }
@@ -110,7 +110,7 @@ export class ModelTileRenderer {
 
         this.canvasLayer = L.tileLayer.canvas(layerOpts);
 
-        this.canvasLayer.drawTile = function(canvas, tilePoint, zoom) {
+        this.canvasLayer.drawTile = (canvas, tilePoint, zoom) => {
             var renderStep = this.getDrawTileClosure(canvas, tilePoint.x, tilePoint.y, zoom);
             if (this.model.isAnimated)
                 this.model.onChange(renderStep);
@@ -118,17 +118,17 @@ export class ModelTileRenderer {
                 if (renderStep)
                     renderStep(this.model.world);
             }
-        }.bind(this);
+        };
 
-        this.map.leafletMap.on('zoomstart', function() {
+        this.map.leafletMap.on('zoomstart', () => {
             this.model.clearCallbacks();
-        }.bind(this));
+        });
 
-        this.map.leafletMap.on('layerremove', function(e) {
+        this.map.leafletMap.on('layerremove', (e) => {
             if (e.layer === this.canvasLayer) {
                 this.model.clearCallbacks();
             }
-        }.bind(this));
+        });
 
         return this.canvasLayer;
     }

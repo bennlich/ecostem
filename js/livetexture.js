@@ -14,7 +14,7 @@ export class LiveTexture {
     _init() {
         var fb = new Firebase("https://simtable.firebaseio.com/nnmc/livetiles2");
 
-        fb.on('child_added', function(snap) {
+        fb.on('child_added', (snap) => {
             if (!snap.val())
                 return;
 
@@ -35,9 +35,9 @@ export class LiveTexture {
             _.each(this._appearedCallbacks, function(cb) {
                 cb(id, name, layer);
             });
-        }.bind(this));
+        });
 
-        fb.on('child_removed', function(snap) {
+        fb.on('child_removed', (snap) => {
             if (!snap.val())
                 return;
 
@@ -56,7 +56,7 @@ export class LiveTexture {
             _.each(this._disappearedCallbacks, function(cb) {
                 cb(id, name, layer.leafletLayer);
             });
-        }.bind(this));
+        });
     }
 
     _bbox(bboxObj) {
@@ -69,7 +69,7 @@ export class LiveTexture {
         var liveLayer = new L.tileLayer.canvas({zIndex: zIndex, opacity: 0.8}),
             map = this._map;
 
-        liveLayer.drawTile = function(canvas, tilePoint, zoom) {
+        liveLayer.drawTile = (canvas, tilePoint, zoom) => {
             var ctx = canvas.getContext('2d');
             var handle = '{0}_{1}_{2}'.format(zoom, tilePoint.x, tilePoint.y);
 
@@ -100,10 +100,7 @@ export class LiveTexture {
     }
 
     findLayerObj(id) {
-        var layer = _.find(this._layers, function(layer) {
-            return layer.id === id;
-        });
-        return layer;
+        return _.find(this._layers, (layer) => layer.id === id);
     }
 
     findLayer(id) {

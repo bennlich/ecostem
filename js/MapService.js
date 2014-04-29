@@ -7,7 +7,7 @@ import {ModelSet} from 'js/ModelSet';
 import {Animator} from 'js/Animator';
 
 /* Leaflet wrapper */
-export var Map = ['$location', '$rootScope', '$q', function($location, $rootScope, $q) {
+export var MapService = ['$location', '$rootScope', '$q', function($location, $rootScope, $q) {
     return {
         deferred: $q.defer(),
         init: function(id) {

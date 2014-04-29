@@ -1,3 +1,6 @@
+<!-- note: no ng-app here. App is booted manually in Ecostem.js. It seems
+     that when using ng-app with Traceur, Angular tries to boot before Traceur
+     has had a chance to compile Ecostem.js -->
 <html>
   <head>
     <title>Ecostem</title>
@@ -8,14 +11,10 @@
     <link rel="stylesheet" type="text/css" href="css/ecostem.css"/>
     <link rel="stylesheet" type="text/css" href="css/svg.css"/>
 
+    <!-- traceur compiler -->
     <script src="lib/traceur/traceur.js"></script>
+    <!-- in-browser bootstrap for traceur -->
     <script src="lib/traceur/bootstrap.js"></script>
-    <script type="module">
-        console.log('foo bar');
-    </script>
-    <script>
-        console.log('hello js');
-    </script>
 
     <script src="https://cdn.firebase.com/js/client/1.0.2/firebase.js"></script>
 
@@ -31,39 +30,12 @@
     <script src="lib/Smooth-0.1.7.js"></script>
     <script src="lib/curveFit.js"></script>
     <script src="lib/filer.js"></script>
-    <script src="lib/Gradient.js"></script>
 
+    <script src="lib/Gradient.js"></script>
     <script src="lib/AnySurface.js"></script>
 
-    <!--script src="js/Util.js"></script>
-    <script src="js/LocalStorage.js"></script>
-    <script src="js/Experiments.js"></script>
-
-    <script src="js/StackedBars.js"></script>
-    <script src="js/TransferFunction.js"></script>
-    <script src="js/TransferFunctions.js"></script>
-
-    <script src="js/Animator.js"></script>
-    <script src="js/BaseModel.js"></script>
-    <script src="js/models/GenericModel.js"></script>
-    <script src="js/models/ScanElevationModel.js"></script>
-    <script src="js/models/FireSeverityModel.js"></script>
-    <script src="js/models/ErosionModel.js"></script>
-    <script src="js/models/WaterModel.js"></script>
-    <script src="js/models/VegetationModel.js"></script>
-    <script src="js/models/ElevationModel.js"></script>
-
-    <script src="js/LeafletCoordSystem.js"></script>
-    <script src="js/ModelBBox.js"></script>
-    <script src="js/ModelSet.js"></script>
-
-    <script src="js/ModelTileRenderer.js"></script>
-    <script src="js/ModelTileServer.js"></script-->
-
+    <!-- ES6 app entrypoint -->
     <script type="module" src="js/Ecostem.js"></script>
-    <!--script src="js/EcostemDirectives.js"></script>
-    <script src="js/EcostemServices.map.js"></script>
-    <script src="js/EcostemServices.elevationSampler.js"></script-->
   </head>
   <body>
     <div class="container" ng-controller="EcostemCtrl">

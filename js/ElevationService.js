@@ -2,7 +2,7 @@
 import {LocalStorage} from 'js/LocalStorage';
 import {computeQuad} from 'js/Experiments';
 
-export var ElevationSampler = ['$rootScope', '$q', function($rootScope, $q) {
+export var ElevationService = ['$rootScope', '$q', function($rootScope, $q) {
     return {
         deferred: $q.defer(),
         elevationServer: "http://node.redfish.com/cgi-bin/elevation.py?bbox={s},{w},{n},{e}&res={width},{height}",

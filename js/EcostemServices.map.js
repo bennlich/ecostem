@@ -14,7 +14,7 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
 
             L.control.scale().addTo(this.leafletMap);
 
-            this._homeBBox = this._createTaosBBox();
+            this._homeBBox = this._makeHomeBBox();
 
             if (!this._handleBBoxUrl()) {
                 this.setHomeView();
@@ -40,6 +40,18 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
             this.leafletMap.setView(this._homeBBox.bbox.getCenter(), 12);
         },
 
+        _makeHomeBBox: function() {
+            /* temp hack to handle "multiple scenarios" */
+            var urlParams = $location.search(),
+                room = urlParams.room;
+
+            var bbox = room === 'ruidoso'
+                ? this._createRuidosoBBox()
+                : this._createTaosBBox();
+
+            return bbox;
+        },
+
         _handleBBoxUrl: function() {
             var handled = false;
             // set map bounds to bbox argument in url
@@ -54,11 +66,10 @@ EcostemServices.service('map', ['$location', '$rootScope', '$q', function($locat
             }
 
             // update map bounds in bbox argument of url
-            var queryString = '?bbox={s},{w},{n},{e}';
             this.leafletMap.on('moveend', function() {
                 var bounds = this.getBounds();
                 $rootScope.safeApply(function() {
-                    $location.url(queryString.namedFormat({
+                    $location.search('bbox', '{s},{w},{n},{e}'.namedFormat({
                         s : bounds.getSouth(),
                         w : bounds.getWest(),
                         n : bounds.getNorth(),

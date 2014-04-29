@@ -4,12 +4,12 @@ import {BaseModel} from 'js/BaseModel';
 
 /* Fire severity model inherits from DataModel */
 
-export function FireSeverityModel(xs, ys, bbox, modelSet) {
-    BaseModel.call(this, xs, ys, bbox, modelSet);
-    BaseModel.prototype.init.call(this, { severity: FireSeverityModel.severityTypes.NONE });
+export class FireSeverityModel extends BaseModel {
+    constructor(xs, ys, bbox, modelSet) {
+        super(xs, ys, bbox, modelSet);
+        this.init({ severity: FireSeverityModel.severityTypes.NONE });
+    }
 }
-
-FireSeverityModel.prototype = extend(BaseModel.prototype);
 
 FireSeverityModel.severityTypes = {
     LOW: 1, MEDIUM: 2, HIGH: 3, NONE: 0

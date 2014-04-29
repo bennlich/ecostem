@@ -2,19 +2,19 @@
 import {extend} from 'js/Util';
 import {BaseModel} from 'js/BaseModel';
 
-export function GenericModel(xs, ys, bbox, modelSet) {
-    BaseModel.call(this, xs, ys, bbox, modelSet);
+export class GenericModel extends BaseModel {
+    constructor (xs, ys, bbox, modelSet) {
+        super(xs, ys, bbox, modelSet);
 
-    this.isAnimated = false;
-    this.editable = false;
-    this.canPaint = false;
-}
+        this.isAnimated = false;
+        this.editable = false;
+        this.canPaint = false;
+    }
 
-GenericModel.prototype = extend(BaseModel.prototype, {
-    setWorld: function(data) {
+    setWorld(data) {
         this.world = data;
     }
-});
+}
 
 export var GenericPatchRenderer = function(model) {
     function render(ctx, world, i, j, drawX, drawY, drawWidth, drawHeight) {

@@ -12,6 +12,7 @@ export var ElevationSampler = ['$rootScope', '$q', function($rootScope, $q) {
         width: 0,
         samplingWidth: 1024,
         elevationCacheDir: '/elevation_cache',
+        storage: new LocalStorage(),
 
         init: function(canvas) {
             this.canvas = canvas;
@@ -36,17 +37,17 @@ export var ElevationSampler = ['$rootScope', '$q', function($rootScope, $q) {
 
         _getCachedElevation: function(bbox, successCb, notFoundCb) {
             var bboxString = this._bboxToString(bbox);
-            LocalStorage.withDir(this.elevationCacheDir, function(dir) {
-                LocalStorage.dirGetFile(dir, bboxString, function(fileObj) {
-                    LocalStorage.readFileAsByteArray(fileObj, successCb);
+            this.storage.withDir(this.elevationCacheDir, (dir) => {
+                this.storage.dirGetFile(dir, bboxString, (fileObj) => {
+                    this.storage.readFileAsByteArray(fileObj, successCb);
                 }, notFoundCb);
             });
         },
 
         _putCachedElevation :function(bbox, data) {
             var bboxString = this._bboxToString(bbox);
-            LocalStorage.withDir(this.elevationCacheDir, function(dir) {
-                LocalStorage.writeFile('{0}/{1}'.format(dir, bboxString), data);
+            this.storage.withDir(this.elevationCacheDir, (dir) => {
+                this.storage.writeFile('{0}/{1}'.format(dir, bboxString), data);
             });
         },
 
@@ -62,7 +63,7 @@ export var ElevationSampler = ['$rootScope', '$q', function($rootScope, $q) {
             this.canvas.width = this.width;
             this.canvas.height = height;
 
-            this._getCachedElevation(scenario.bbox, function(data) {
+            this._getCachedElevation(scenario.bbox, (data) => {
                 /* cached data was found */
 
                 var imageData = this.ctx.createImageData(this.canvas.width, this.canvas.height);
@@ -79,12 +80,12 @@ export var ElevationSampler = ['$rootScope', '$q', function($rootScope, $q) {
                 if (typeof callback === 'function') {
                     $rootScope.$apply(callback);
                 }
-            }.bind(this), function() {
+            }, () => {
                 /* cached data was not found. We have to hit the server. */
 
                 img.crossOrigin = '';
 
-                img.onload = function() {
+                img.onload = () => {
                     this.ctx.drawImage(img, 0, 0);
 
                     this.imageData = this.ctx.getImageData(0, 0, this.width, height).data;
@@ -97,7 +98,7 @@ export var ElevationSampler = ['$rootScope', '$q', function($rootScope, $q) {
                     if (typeof callback === 'function') {
                         $rootScope.$apply(callback);
                     }
-                }.bind(this);
+                };
 
                 img.src = this.elevationServer.namedFormat({
                     s : scenario.bbox.getSouth(),
@@ -107,7 +108,7 @@ export var ElevationSampler = ['$rootScope', '$q', function($rootScope, $q) {
                     width: this.width,
                     height: height
                 });
-            }.bind(this));
+            });
         },
 
         /* Gives the elevation value at a given pixel. The value is

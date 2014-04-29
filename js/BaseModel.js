@@ -1,20 +1,20 @@
 
-export function BaseModel(xs, ys, geometry, modelSet) {
-    this.xSize = xs;
-    this.ySize = ys;
-    this.geometry = geometry;
-    this.timeStep = 1;
-    this.modelSet = modelSet;
-    this.world = null;
-    this.callbacks = [];
-    this.isAnimated = false;
-}
+export class BaseModel {
+    constructor(xs, ys, geometry, modelSet) {
+        this.xSize = xs;
+        this.ySize = ys;
+        this.geometry = geometry;
+        this.timeStep = 1;
+        this.modelSet = modelSet;
+        this.world = null;
+        this.callbacks = [];
+        this.isAnimated = false;
+    }
 
-BaseModel.prototype = {
-    init: function(defaultValue) {
+    init(defaultValue) {
         var world = new Array(this.xSize);
 
-        this.modelSet.safeApply(function() {
+        this.modelSet.safeApply(() => {
             for (var i = 0; i < this.xSize; ++i) {
                 world[i] = new Array(this.ySize);
                 for (var j = 0; j < this.ySize; ++j) {
@@ -23,14 +23,14 @@ BaseModel.prototype = {
                     _.extend(world[i][j], defaultValue);
                 }
             }
-        }.bind(this));
+        });
 
         this.world = world;
-    },
+    }
 
-    reset: function() { },
+    reset() { }
 
-    putData: function(x,y,width,height,obj) {
+    putData(x,y,width,height,obj) {
         if (x < 0)
             x = 0;
         if (x + width > this.xSize)
@@ -41,7 +41,7 @@ BaseModel.prototype = {
         if (y + height > this.ySize)
             height = this.ySize - y;
 
-        this.modelSet.safeApply(function() {
+        this.modelSet.safeApply(() => {
             for (var i = x; i < x + width; ++i) {
                 for (var j = y; j < y + height; ++j) {
                     for (var key in obj) {
@@ -49,10 +49,10 @@ BaseModel.prototype = {
                     }
                 }
             }
-        }.bind(this));
-    },
+        });
+    }
 
-    sample: function(latlng) {
+    sample(latlng) {
         var xy = this.modelSet.crs.commonCoordToModelCoord(latlng, this);
 
         if (xy.x < 0 || xy.x >= this.xSize || xy.y < 0 || xy.y >= this.ySize) {
@@ -60,9 +60,9 @@ BaseModel.prototype = {
         }
 
         return this.world[xy.x][xy.y];
-    },
+    }
 
-    neighbors: function(x,y) {
+    neighbors(x,y) {
         var n = [];
 
         for (var i = x-1; i <= x+1; ++i) {
@@ -74,29 +74,27 @@ BaseModel.prototype = {
         }
 
         return n;
-    },
+    }
 
-    step: function() { this.runCallbacks(); },
+    step() { this.runCallbacks(); }
 
-    runCallbacks: function() {
-        var $this = this;
-
-        $this.modelSet.safeApply(function() {
-            _.each($this.callbacks, function(cb) {
-                setTimeout(function() {
-                    cb($this.world);
+    runCallbacks() {
+        this.modelSet.safeApply(() => {
+            _.each(this.callbacks, (cb) => {
+                setTimeout(() => {
+                    cb(this.world);
                 }, 0);
             });
         });
-    },
+    }
 
-    onChange: function(cb) {
+    onChange(cb) {
         if (typeof cb === 'function') {
             this.callbacks.push(cb);
         }
-    },
+    }
 
-    clearCallbacks: function() {
+    clearCallbacks() {
         this.callbacks = [];
     }
 };

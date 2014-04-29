@@ -1,15 +1,15 @@
 
 import {Rect} from 'js/Util';
 
-export function ModelTileRenderer(map, model, patchRenderer) {
-    this.map = map;
-    this.model = model;
-    this.patchRenderer = patchRenderer;
-    this.canvasLayer = null;
-}
+export class ModelTileRenderer {
+    constructor(map, model, patchRenderer) {
+        this.map = map;
+        this.model = model;
+        this.patchRenderer = patchRenderer;
+        this.canvasLayer = null;
+    }
 
-ModelTileRenderer.prototype = {
-    getDrawTileClosure: function(canvas, x, y, zoom) {
+    getDrawTileClosure(canvas, x, y, zoom) {
         var ctx = canvas.getContext('2d');
 
         // absolute pixel coordinates of top-left corner of tile
@@ -84,7 +84,7 @@ ModelTileRenderer.prototype = {
         }.bind(this);
 
         return renderStep;
-    },
+    }
 
     // putData: function(point, brushSize, value) {
     //     var scenarioScreenWidth = this.model.bbox.pixelWidth(),
@@ -105,7 +105,7 @@ ModelTileRenderer.prototype = {
     //     this.refreshLayer();
     // },
 
-    makeLayer: function(layerOpts) {
+    makeLayer(layerOpts) {
         layerOpts = layerOpts || {};
 
         this.canvasLayer = L.tileLayer.canvas(layerOpts);
@@ -131,9 +131,9 @@ ModelTileRenderer.prototype = {
         }.bind(this));
 
         return this.canvasLayer;
-    },
+    }
 
-    refreshLayer: function() {
+    refreshLayer() {
         if (this.model.isAnimated) {
             if (!this.model.isRunning)
                 this.model.runCallbacks();
@@ -141,4 +141,4 @@ ModelTileRenderer.prototype = {
             this.canvasLayer.redraw();
         }
     }
-};
+}

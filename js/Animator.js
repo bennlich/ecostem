@@ -1,24 +1,23 @@
 
-export function Animator(modelSet) {
-    this.modelSet = modelSet;
+export class Animator {
+    constructor(modelSet) {
+        this.modelSet = modelSet;
+        this.reset();
+    }
 
-    this.reset();
-}
-
-Animator.prototype = {
-    start: function() {
+    start() {
         this.isRunning = true;
         this._run();
-    },
+    }
 
-    stop: function() {
+    stop() {
         this.isRunning = false;
         if (this._raf) {
             window.cancelAnimationFrame(this._raf);
         }
-    },
+    }
 
-    reset: function() {
+    reset() {
         if (this.isRunning)
             this.stop();
 
@@ -33,9 +32,9 @@ Animator.prototype = {
         this.minutes = 0;
         this._raf = null;
         this.isRunning = false;
-    },
+    }
 
-    step: function() {
+    step() {
         var models = this.modelSet.getModels();
 
         for (var i = 0; i < models.length; ++i) {
@@ -54,12 +53,12 @@ Animator.prototype = {
             this.minutes = 0;
             this.hours++;
         }
-    },
+    }
 
-    _run: function() {
+    _run() {
         if (this.isRunning) {
             this.modelSet.safeApply(this.step.bind(this));
             this._raf = window.requestAnimationFrame(this._run.bind(this));
         }
     }
-};
+}

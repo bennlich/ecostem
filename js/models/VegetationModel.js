@@ -2,11 +2,11 @@
 import {extend} from 'js/Util';
 import {BaseModel} from 'js/BaseModel';
 
-export function VegetationModel(xs, ys, bbox, modelSet) {
-    BaseModel.call(this, xs, ys, bbox, modelSet);
-    BaseModel.prototype.init.call(this, { vegetation: VegetationModel.vegTypes.NONE });
-
-    var t = VegetationModel.vegTypes;
+export class VegetationModel extends BaseModel {
+    constructor(xs, ys, bbox, modelSet) {
+        super(xs, ys, bbox, modelSet);
+        this.init({ vegetation: VegetationModel.vegTypes.NONE });
+    }
 }
 
 VegetationModel.vegTypes = {
@@ -24,8 +24,6 @@ VegetationModel.typeToString = function(type) {
     default: return 'No Data';
     }
 };
-
-VegetationModel.prototype = extend(BaseModel.prototype);
 
 export var VegetationPatchRenderer = function(model) {
     var t = VegetationModel.vegTypes;

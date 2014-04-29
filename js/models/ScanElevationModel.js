@@ -2,20 +2,20 @@
 import {extend} from 'js/Util';
 import {BaseModel} from 'js/BaseModel';
 
-export function ScanElevationModel(xs, ys, bbox, modelSet) {
-    BaseModel.call(this, xs, ys, bbox, modelSet);
-    BaseModel.prototype.init.call(this, {elevation:0});
+export class ScanElevationModel extends BaseModel {
+    constructor(xs, ys, bbox, modelSet) {
+        super(xs, ys, bbox, modelSet);
+        this.call({elevation:0});
 
-    this.isAnimated = false;
-    this.editable = false;
-    this.canPaint = false;
+        this.isAnimated = false;
+        this.editable = false;
+        this.canPaint = false;
 
-    this.min = 0;
-    this.max = 0;
-}
+        this.min = 0;
+        this.max = 0;
+    }
 
-ScanElevationModel.prototype = extend(BaseModel.prototype, {
-    load: function(anySurfaceDiff) {
+    load(anySurfaceDiff) {
         var yValues = anySurfaceDiff[1];
 
         var min = 10000000, max = -10000000;
@@ -58,4 +58,4 @@ ScanElevationModel.prototype = extend(BaseModel.prototype, {
         this.max = this.max - chopThreshold;
 
     }
-});
+}

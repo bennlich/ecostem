@@ -6,41 +6,41 @@ import {TransferFunctions} from 'js/TransferFunctions';
 
 /* Water model inherits from BaseModel */
 
-export function WaterModel(xs, ys, bbox, modelSet) {
-    BaseModel.call(this, xs, ys, bbox, modelSet);
+export class WaterModel extends BaseModel {
+    constructor(xs, ys, bbox, modelSet) {
+        super(xs, ys, bbox, modelSet);
 
-    this.init({
-        elevation: 0,
-        volume: 0,
-        siltFloating: 0,
-        siltDeposit: 0
-    });
+        this.init({
+            elevation: 0,
+            volume: 0,
+            siltFloating: 0,
+            siltDeposit: 0
+        });
 
-    this.isAnimated = true;
-    this.elevationSampled = false;
+        this.isAnimated = true;
+        this.elevationSampled = false;
 
-    this.erosionModel = null;
-    this.burnSeverityModel = null;
+        this.erosionModel = null;
+        this.burnSeverityModel = null;
 
-    this.patchHeights = new ABM.DataSet();
+        this.patchHeights = new ABM.DataSet();
 
-    this.reset();
-}
+        this.reset();
+    }
 
-WaterModel.prototype = extend(BaseModel.prototype, {
-    _erosionModel: function() {
+    _erosionModel() {
         if (!this.erosionModel && this.modelSet.models)
             this.erosionModel = this.modelSet.getDataModel('Erosion & Deposit');
         return this.erosionModel;
-    },
+    }
 
-    _burnSeverityModel: function() {
+    _burnSeverityModel() {
         if (!this.burnSeverityModel && this.modelSet.models)
             this.burnSeverityModel = this.modelSet.getDataModel('Fire Severity');
         return this.burnSeverityModel;
-    },
+    }
 
-    reset: function() {
+    reset() {
         this.putData(0, 0, this.xSize, this.ySize, {volume:0, siltFloating: 0, siltDeposit: 0});
         this.putData(60, 20, 10, 10, { volume: 50 });
         this.putData(100, 60, 10, 10, { volume: 50 });
@@ -51,21 +51,21 @@ WaterModel.prototype = extend(BaseModel.prototype, {
             erosionModel.reset();
             erosionModel.runCallbacks();
         }
-    },
+    }
 
-    start: function() {
+    start() {
         /* call superclass */
-        BaseModel.prototype.start.call(this);
+        super.start();
         this._erosionModel().start();
-    },
+    }
 
-    stop: function() {
+    stop() {
         /* call superclass */
-        BaseModel.prototype.stop.call(this);
+        super.stop();
         this._erosionModel().stop();
-    },
+    }
 
-    sampleElevation: function() {
+    sampleElevation() {
         if (this.elevationSampled)
             return;
 
@@ -86,10 +86,10 @@ WaterModel.prototype = extend(BaseModel.prototype, {
         this.patchHeightsAspect = slopeAndAspect.aspect;
 
         this.elevationSampled = true;
-    },
+    }
 
-    step: function() {
-        BaseModel.prototype.step.call(this);
+    step() {
+        super.step();
 
         var fireSeverityModel = this.modelSet.getDataModel('Fire Severity');
 
@@ -182,9 +182,9 @@ WaterModel.prototype = extend(BaseModel.prototype, {
                 */
             }
         }
-    },
+    }
 
-    updateSlopeAndAspect: function(x, y) {
+    updateSlopeAndAspect(x, y) {
         // recalculate local slope and aspect around the current patch
         var kernelSize = 3,
             kernelRadius = Math.floor(kernelSize/2),
@@ -211,16 +211,16 @@ WaterModel.prototype = extend(BaseModel.prototype, {
                 this.patchHeightsAspect.setXY(ii, jj, subsetAspect.getXY(iiSubset, jjSubset));
             }
         }
-    },
+    }
 
-    getSlope: function() {
+    getSlope() {
         return this.patchHeightsSlope;
-    },
+    }
 
-    calculateSlope: function() {
+    calculateSlope() {
         return this.patchHeights.slopeAndAspect().slope;
     }
-});
+}
 
 export var WaterPatchRenderer = function(model) {
     var colorMap = Gradient.multiGradient(
@@ -271,4 +271,4 @@ export var WaterPatchRenderer = function(model) {
         render: render,
         scale: scale
     };
-};
+}

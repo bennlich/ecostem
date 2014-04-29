@@ -1,11 +1,13 @@
 
-export function AscParser() {
-    this.cursor = 0;
-    this.headers = {};
-    this.data = null;
-    this.parsed = false;
+export class AscParser {
+    constructor() {
+        this.cursor = 0;
+        this.headers = {};
+        this.data = null;
+        this.parsed = false;
+    }
 
-    this.parseToken = function(stream) {
+    parseToken(stream) {
         while (stream[this.cursor] === ' '
                || stream[this.cursor] === '\n'
                || stream[this.cursor] === '\r')
@@ -24,17 +26,17 @@ export function AscParser() {
         }
 
         return t;
-    };
+    }
 
-    this.parseHeaders = function(stream) {
+    parseHeaders(stream) {
         for (var i = 0; i < 6; ++i) {
             var key = this.parseToken(stream),
                 value = parseFloat(this.parseToken(stream));
             this.headers[key] = value;
         }
-    };
+    }
 
-    this.parseBody = function(stream) {
+    parseBody(stream) {
         var i = 0, j = 0;
 
         var nrows = this.headers.nrows,
@@ -67,16 +69,16 @@ export function AscParser() {
             }
         }
         console.log('done');
-    };
+    }
 
-    this.reset = function() {
+    reset() {
         this.cursor = 0;
         this.headers = {};
         this.data = null;
         this.parsed = false;
-    };
+    }
 
-    this.parse = function(stream, progressFunction) {
+    parse(stream, progressFunction) {
         this.reset();
 
         this.progressFunction = progressFunction;
@@ -90,20 +92,20 @@ export function AscParser() {
 
         this.parseBody(stream);
         this.parsed = true;
-    };
+    }
 }
 
 /*
  * Generic rect utility
  */
 
-export function Rect(left,top,width,height) {
-    this.left = left, this.top = top,
-    this.width = width, this.height = height;
-}
+export class Rect {
+    constructor(left,top,width,height) {
+        this.left = left, this.top = top,
+        this.width = width, this.height = height;
+    }
 
-Rect.prototype = {
-    intersect: function(rect) {
+    intersect(rect) {
         var x0 = Math.max(this.left, rect.left);
         var x1 = Math.min(this.left + this.width, rect.left + rect.width);
 
@@ -117,7 +119,7 @@ Rect.prototype = {
         }
         return null;
     }
-};
+}
 
 /*
  * This is used for implementing prototype-based inheritance

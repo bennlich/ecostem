@@ -1,22 +1,24 @@
 
-export var LocalStorage = {
-    filer: new Filer(),
+export class LocalStorage {
+    constructor() {
+        this.filer = new Filer();
+    }
 
-    filerOnError: function(e) {
+    filerOnError(e) {
         console.log('Error');
         console.log('Filer Error: ', e.name);
-    },
+    }
 
-    initialized: function(callback) {
+    initialized(callback) {
         var filer = this.filer,
             filerOnError = this.filerOnError;
 
         filer.init({persistent: false, size: 1024*1024*20}, function(fs) {
             callback(filer);
         }, filerOnError);
-    },
+    }
 
-    withDir: function(dir, callback) {
+    withDir(dir, callback) {
         var filerOnError = this.filerOnError;
 
         this.initialized(function(filer) {
@@ -29,9 +31,9 @@ export var LocalStorage = {
                 callback(dir);
             });
         });
-    },
+    }
 
-    dirGetFile: function(dir, fileName, successCallback, notFoundCallback) {
+    dirGetFile(dir, fileName, successCallback, notFoundCallback) {
         this.initialized(function(filer) {
             filer.ls(dir, function(contents) {
                 var cachedFile = _.find(contents, function(c) {
@@ -47,9 +49,9 @@ export var LocalStorage = {
                 }
             });
         });
-    },
+    }
 
-    readFileAsByteArray: function(fileObj, callback) {
+    readFileAsByteArray(fileObj, callback) {
         var filerOnError = this.filerOnError;
 
         this.initialized(function(filer) {
@@ -61,13 +63,13 @@ export var LocalStorage = {
                 reader.readAsArrayBuffer(file);
             }, filerOnError);
         });
-    },
+    }
 
-    writeFile: function(filePath, data, callback) {
+    writeFile(filePath, data, callback) {
         var filerOnError = filerOnError;
 
         this.initialized(function(filer) {
             filer.write(filePath, {data: data}, callback);
         }, filerOnError);
     }
-};
+}

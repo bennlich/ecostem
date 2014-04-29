@@ -9,20 +9,20 @@ import {ModelTileRenderer} from 'js/ModelTileRenderer';
 import {ModelTileServer} from 'js/ModelTileServer';
 import {TransferFunctions} from 'js/TransferFunctions';
 
-export function ModelSet(map, defaultBBox, scope) {
-    this.map = map;
-    this.scope = scope;
+export class ModelSet {
+    constructor(map, defaultBBox, scope) {
+        this.map = map;
+        this.scope = scope;
 
-    // hack for now
-    this.defaultBBox = defaultBBox;
+        // hack for now
+        this.defaultBBox = defaultBBox;
 
-    this.models = this._makeModels();
+        this.models = this._makeModels();
 
-    this.crs = new LeafletCoordSystem(map.leafletMap);
-}
+        this.crs = new LeafletCoordSystem(map.leafletMap);
+    }
 
-ModelSet.prototype = {
-    _makeModel: function(name, constructor, width, patchRenderer, bbox, uiOpts, controls) {
+    _makeModel(name, constructor, width, patchRenderer, bbox, uiOpts, controls) {
         var ratio = bbox.pixelHeight() / bbox.pixelWidth(),
             height = Math.floor(width * ratio);
 
@@ -57,9 +57,9 @@ ModelSet.prototype = {
                 }
             }
         };
-    },
+    }
 
-    _makeModels: function() {
+    _makeModels() {
         var bbox = this.defaultBBox;
         return {
             'Elevation'         : this._makeModel('Elevation', ElevationModel, 1024, ElevationPatchRenderer, bbox,
@@ -87,23 +87,23 @@ ModelSet.prototype = {
                                                       evapInfRunoff: TransferFunctions.evapInfRunoff
                                                   })
         };
-    },
+    }
 
-    getModels: function() {
+    getModels() {
         return _.values(this.models);
-    },
+    }
 
-    getModel: function(name) {
+    getModel(name) {
         return this.models[name];
-    },
+    }
 
-    getDataModel: function(name) {
+    getDataModel(name) {
         var model = this.getModel(name);
 
         return model ? model.dataModel : null;
-    },
+    }
 
-    safeApply: function(fn) {
+    safeApply(fn) {
         this.scope.safeApply(fn);
     }
-};
+}

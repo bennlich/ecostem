@@ -9,11 +9,10 @@
     modelCoord is an index to a sample in the model, with structure {x:xValue, y:yValue}
 */
 
-export function LeafletCoordSystem(leafletMap) {
-    this.leafletMap = leafletMap;
-}
-
-LeafletCoordSystem.prototype = {
+export class LeafletCoordSystem {
+    constructor (leafletMap) {
+        this.leafletMap = leafletMap;
+    }
 
     // currently these conversions go from latlng -> pixel coords -> model coords
     // instead of latlng -> projection coords -> model coords,
@@ -26,7 +25,7 @@ LeafletCoordSystem.prototype = {
     // stable 0.7.2: https://github.com/Leaflet/Leaflet/blob/v0.7.2/src/geo/crs/CRS.js
     // bleeding edge 0.8-dev: https://github.com/Leaflet/Leaflet/blob/master/src/geo/crs/CRS.js
 
-    commonCoordToModelCoord: function(latlng, model) {
+    commonCoordToModelCoord(latlng, model) {
     	var zoom = 15,
     	    bbox = model.geometry,
     	    point = this.leafletMap.project(latlng, zoom),
@@ -44,9 +43,9 @@ LeafletCoordSystem.prototype = {
     	    y = Math.floor(pixelY / patchHeight);
 
     	return {x:x, y:y};
-    },
+    }
 
-    modelCoordToCommonCoord: function(xy, model) {
+    modelCoordToCommonCoord(xy, model) {
     	var zoom = 15,
     	    bbox = model.geometry,
     	    origin = this.leafletMap.project(bbox.bbox.getNorthWest(), zoom),
@@ -62,7 +61,7 @@ LeafletCoordSystem.prototype = {
     	var point = new L.Point(origin.x + pixelX, origin.y + pixelY);
 
     	return this.leafletMap.unproject(point, zoom);
-    },
+    }
 
     // Ideally, the above functions would look
     // more like the following:

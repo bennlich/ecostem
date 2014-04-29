@@ -2,18 +2,20 @@
 import {extend} from 'js/Util';
 import {BaseModel} from 'js/BaseModel';
 
-export function ErosionModel(xs, ys, bbox, modelSet) {
-    BaseModel.call(this, xs, ys, bbox, modelSet);
-    BaseModel.prototype.init.call(this, { erosion: 0 });
+export class ErosionModel extends BaseModel {
+    constructor(xs, ys, bbox, modelSet) {
+        super(xs, ys, bbox, modelSet);
 
-    this.isAnimated = true;
-    this.editable = true;
-    this.canPaint = false;
+        this.init({ erosion: 0 });
+        this.isAnimated = true;
+        this.editable = true;
+        this.canPaint = false;
+    }
+
+    reset() {
+        this.putData(0, 0, this.xSize, this.ySize, { erosion: 0 });
+    }
 }
-
-ErosionModel.prototype = extend(BaseModel.prototype, {
-    reset: function() { this.putData(0,0,this.xSize,this.ySize,{ erosion: 0 }); }
-});
 
 export var ErosionPatchRenderer = function(model) {
     var gradientSteps = 200,

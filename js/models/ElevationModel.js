@@ -2,19 +2,20 @@
 import {extend} from 'js/Util';
 import {BaseModel} from 'js/BaseModel';
 
-export function ElevationModel(xs, ys, bbox, modelSet) {
-    BaseModel.call(this, xs, ys, bbox, modelSet);
-    BaseModel.prototype.init.call(this, {elevation:0});
+export class ElevationModel extends BaseModel {
+    constructor (xs, ys, bbox, modelSet) {
+        super(xs, ys, bbox, modelSet);
 
-    this.min = 1000000;
-    this.max = 0;
+        this.init({elevation:0});
 
-    this.editable = false;
-    this.canPaint = false;
-}
+        this.min = 1000000;
+        this.max = 0;
 
-ElevationModel.prototype = extend(BaseModel.prototype, {
-    sampleElevationXY: function(sampler, x,y) {
+        this.editable = false;
+        this.canPaint = false;
+    }
+
+    sampleElevationXY(sampler, x,y) {
         var sampleSpacing = sampler.samplingWidth / this.xSize;
 
         var offset = function(p) {
@@ -22,9 +23,9 @@ ElevationModel.prototype = extend(BaseModel.prototype, {
         }.bind(this);
 
         return sampler.sample(offset(x), offset(y));
-    },
+    }
 
-    loadElevation: function(sampler) {
+    loadElevation(sampler) {
         for (var i = 0; i < this.xSize; ++i) {
             for (var j = 0; j < this.ySize; ++j) {
                 var curPatch = this.world[i][j];
@@ -39,7 +40,7 @@ ElevationModel.prototype = extend(BaseModel.prototype, {
             }
         }
     }
-});
+}
 
 export var ElevationPatchRenderer = function(model) {
     var colorMap = Gradient.multiGradient(

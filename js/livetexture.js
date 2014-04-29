@@ -1,17 +1,17 @@
 
 import 'js/Util';
 
-export function LiveTexture(leafletMap) {
-    this._appearedCallbacks = [];
-    this._disappearedCallbacks = [];
-    this._map = leafletMap;
-    this._layers = [];
-    this._zIndex = 10;
-    this._init();
-}
+export class LiveTexture {
+    constructor(leafletMap) {
+        this._appearedCallbacks = [];
+        this._disappearedCallbacks = [];
+        this._map = leafletMap;
+        this._layers = [];
+        this._zIndex = 10;
+        this._init();
+    }
 
-LiveTexture.prototype = {
-    _init: function() {
+    _init() {
         var fb = new Firebase("https://simtable.firebaseio.com/nnmc/livetiles2");
 
         fb.on('child_added', function(snap) {
@@ -57,15 +57,15 @@ LiveTexture.prototype = {
                 cb(id, name, layer.leafletLayer);
             });
         }.bind(this));
-    },
+    }
 
-    _bbox: function(bboxObj) {
+    _bbox(bboxObj) {
         var sw = new L.LatLng(bboxObj.south, bboxObj.west),
             ne = new L.LatLng(bboxObj.north, bboxObj.east);
         return new L.LatLngBounds(sw, ne);
-    },
+    }
 
-    _leafletLayer: function(ref, zIndex) {
+    _leafletLayer(ref, zIndex) {
         var liveLayer = new L.tileLayer.canvas({zIndex: zIndex, opacity: 0.8}),
             map = this._map;
 
@@ -97,30 +97,30 @@ LiveTexture.prototype = {
         };
 
         return liveLayer;
-    },
+    }
 
-    findLayerObj: function(id) {
+    findLayerObj(id) {
         var layer = _.find(this._layers, function(layer) {
             return layer.id === id;
         });
         return layer;
-    },
+    }
 
-    findLayer: function(id) {
+    findLayer(id) {
         return this.findLayerObj(id).leafletLayer;
-    },
+    }
 
-    findBBox: function(id) {
+    findBBox(id) {
         return this.findLayerObj(id).bbox;
-    },
+    }
 
-    onLayerAppeared: function(cb) {
+    onLayerAppeared(cb) {
         if (typeof cb === 'function') {
             this._appearedCallbacks.push(cb);
         }
-    },
+    }
 
-    onLayerDisappeared: function(cb) {
+    onLayerDisappeared(cb) {
         if (typeof cb === 'function') {
             this._disappearedCallbacks.push(cb);
         }

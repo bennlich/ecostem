@@ -1,22 +1,22 @@
 
-export function ModelTileServer(modelTileRenderer) {
-    this.renderer = modelTileRenderer;
-    this.fb = new Firebase("https://simtable.firebaseio.com/nnmc/livetiles2");
-    this.callbacks = [];
-    this.isRunning = false;
-    this._layerRef = null;
-}
+export class ModelTileServer {
+    constructor(modelTileRenderer) {
+        this.renderer = modelTileRenderer;
+        this.fb = new Firebase("https://simtable.firebaseio.com/nnmc/livetiles2");
+        this.callbacks = [];
+        this.isRunning = false;
+        this._layerRef = null;
+    }
 
-ModelTileServer.prototype = {
-    hasCallback: function(fbHandle) {
+    hasCallback(fbHandle) {
         var cb = _.find(this.callbacks, function(cb) {
             return cb.name === fbHandle;
         });
 
         return !!cb;
-    },
+    }
 
-    _init: function(name) {
+    _init(name) {
         var bbox = this.renderer.model.geometry.bbox;
         this._layerRef = this.fb.push({
             name: name,
@@ -46,34 +46,34 @@ ModelTileServer.prototype = {
             this.uninstallTileUpdateLoop(zxy);
             this._layerRef.child(zxy).remove();
         }.bind(this));
-    },
+    }
 
-    installTileUpdateLoop: function(fbHandle, cb) {
+    installTileUpdateLoop(fbHandle, cb) {
         this.callbacks.push({
             name: fbHandle,
             cb: cb
         });
-    },
+    }
 
-    uninstallTileUpdateLoop: function(fbHandle) {
+    uninstallTileUpdateLoop(fbHandle) {
         this.callbacks = _.reject(this.callbacks, function(cb) {
             return cb.name === fbHandle;
         });
-    },
+    }
 
-    start: function(name) {
+    start(name) {
         this._init(name);
         this.isRunning = true;
         this._run();
-    },
+    }
 
-    stop: function() {
+    stop() {
         this.isRunning = false;
         this._layerRef.remove();
         this.callbacks = [];
-    },
+    }
 
-    _run: function() {
+    _run() {
         if (this.isRunning) {
             var world = this.renderer.model.world;
 
@@ -87,9 +87,9 @@ ModelTileServer.prototype = {
                 this._run();
             }.bind(this), 600);
         }
-    },
+    }
 
-    handleTileRequest: function(fbHandle) {
+    handleTileRequest(fbHandle) {
         if (this.hasCallback(fbHandle)) {
             return;
         }
@@ -115,4 +115,4 @@ ModelTileServer.prototype = {
             }
         }
     }
-};
+}

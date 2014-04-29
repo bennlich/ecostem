@@ -1,5 +1,4 @@
 
-import {extend} from 'js/Util';
 import {BaseModel} from 'js/BaseModel';
 
 export class VegetationModel extends BaseModel {

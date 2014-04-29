@@ -1,5 +1,4 @@
 
-import {extend} from 'js/Util';
 import {BaseModel} from 'js/BaseModel';
 import {FireSeverityModel} from 'js/models/FireSeverityModel';
 import {TransferFunctions} from 'js/TransferFunctions';

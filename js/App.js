@@ -65,20 +65,26 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
 
     $scope.map = map;
 
+    $scope.activeTransferFunction = null;
+    $scope.setActiveTransferFunction = function(tf) {
+        $scope.activeTransferFunction = tf;
+        TransferFunctions.show(tf.name);
+    };
+    $scope.closeActiveTransferFunction = function() {
+        $scope.activeTransferFunction = null;
+        TransferFunctions.hide();
+    };
+
     $scope.showTransferFunctions = false;
     $scope.transferFunctions = [];
     $scope.toggleTransferFunctions = function() {
         if ($scope.transferFunctions.length === 0) {
-            _.each(_.keys(TransferFunctions), (k) => {
-                /* TransferFunctions has an 'init' key that initializes
-                   the object. The rest of the keys are transfer functions */
-                if (k !== 'init') {
-                    $scope.transferFunctions.push({
-                        name: k,
-                        title: TransferFunctions[k].title
-                    })
-                }
-            })
+            _.each(_.keys(TransferFunctions.funs), (k) => {
+                $scope.transferFunctions.push({
+                    name: k,
+                    title: TransferFunctions.funs[k].title
+                });
+            });
         }
         $scope.showTransferFunctions = !$scope.showTransferFunctions;
     };

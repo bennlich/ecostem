@@ -69,22 +69,22 @@ export class ModelPool {
             'Vegetation'        : this._makeModel('Vegetation', VegetationModel, 512, VegetationPatchRenderer, bbox,
                                                   { canPaint: true, editable: true },
                                                   {
-                                                      1 : TransferFunctions.fir,
-                                                      2 : TransferFunctions.sagebrush,
-                                                      3 : TransferFunctions.steppe,
-                                                      4 : TransferFunctions.grass
+                                                      1 : TransferFunctions.funs.fir,
+                                                      2 : TransferFunctions.funs.sagebrush,
+                                                      3 : TransferFunctions.funs.steppe,
+                                                      4 : TransferFunctions.funs.grass
                                                   }),
             'Erosion & Deposit' : this._makeModel('Erosion & Deposit', ErosionModel, 400, ErosionPatchRenderer, bbox,
                                                   { canPaint: false, editable: true },
                                                   {
-                                                      velocityToErosion: TransferFunctions.velocityToErosion,
-                                                      velocityToDeposit: TransferFunctions.velocityToDeposit
+                                                      velocityToErosion: TransferFunctions.funs.velocityToErosion,
+                                                      velocityToDeposit: TransferFunctions.funs.velocityToDeposit
                                                   }),
             'Water Flow'        : this._makeModel('Water Flow', WaterModel, 400, WaterPatchRenderer, bbox,
                                                   { canPaint: true, editable: true },
                                                   {
-                                                      slopeToVelocity: TransferFunctions.slopeToVelocity,
-                                                      evapInfRunoff: TransferFunctions.evapInfRunoff
+                                                      slopeToVelocity: TransferFunctions.funs.slopeToVelocity,
+                                                      evapInfRunoff: TransferFunctions.funs.evapInfRunoff
                                                   })
         };
     }

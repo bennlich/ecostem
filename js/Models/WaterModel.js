@@ -104,7 +104,7 @@ export class WaterModel extends BaseModel {
                 var burnSeverityModel = this._burnSeverityModel(),
                     patchSeverity = FireSeverityModel.typeToString(burnSeverityModel.world[i][j].severity);
 
-                var evapInfRunoff = TransferFunctions.evapInfRunoff(patchSeverity);
+                var evapInfRunoff = TransferFunctions.funs.evapInfRunoff(patchSeverity);
 
                 //patch.volume = patch.volume * evapInfRunoff.Runoff;
 
@@ -121,7 +121,7 @@ export class WaterModel extends BaseModel {
                 var transferVolume = patch.volume - (transferVolumeBalancePoint - patch.elevation);
 
                 // TODO: Smarter velocity calculation
-                var velocity = TransferFunctions.slopeToVelocity(Math.abs(patchHeight - neighborHeight)/2);
+                var velocity = TransferFunctions.funs.slopeToVelocity(Math.abs(patchHeight - neighborHeight)/2);
                 transferVolume *= velocity/100;
 
                 if (transferVolume > patch.volume)
@@ -134,9 +134,9 @@ export class WaterModel extends BaseModel {
 
                 var erosionModel = this._erosionModel(),
                     /* soil height to be eroded */
-                    erosionValue = TransferFunctions.velocityToErosion(velocity),
+                    erosionValue = TransferFunctions.funs.velocityToErosion(velocity),
                     /* percentage of floating silt to be deposited */
-                    depositValue = TransferFunctions.velocityToDeposit(velocity)/100;
+                    depositValue = TransferFunctions.funs.velocityToDeposit(velocity)/100;
 
                 if (erosionValue < 0) {
                     throw new Error('neg erosion');

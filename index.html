@@ -40,19 +40,26 @@
     </script>
   </head>
   <body>
+    <!-- init splash screen -->
     <div class="splash">Ecostem</div>
     <div class="container" ng-controller="EcostemCtrl" ng-cloak>
+      <!-- div that blocks off the map so you can drag the mouse on it for drawing -->
       <div class="cover" ng-show="editedLayer && editedLayer.model.uiOpts.canPaint" drawing-surface></div>
+      <!-- loading... popup -->
       <div class="uibox loading" ng-show="elevationIsLoading">Loading elevation data...</div>
+      <!-- layer publishing popup -->
       <div class="uibox server-popup" ng-show="serverPopupIsOpen">
         Name: <input type="text" ng-model="serverLayerName"></input>
         <button ng-click="startServer()">Publish</button>
         <button ng-click="initStartServer()">Cancel</button>
       </div>
+      <!-- map container -->
       <div id="map" map-body></div>
+      <!-- elevation debugging canvas -->
       <div id="elevation" ng-show="showElevation">
         <canvas id="elevationCanvas" elevation-canvas/>
       </div>
+      <!-- more debugging canvases -->
       <div id="quad" ng-show="showQuad">
         <canvas id="quadCanvas"/>
       </div>
@@ -62,6 +69,21 @@
         <canvas id="slopeCanvas3"></canvas>
       </div>
 
+      <!-- transfer function editor -->
+      <div class="editor uibox" ng-show="activeTransferFunction">
+        <div class="header">
+          Editing {{activeTransferFunction.title}}
+          <button style="float: right" ng-click="closeActiveTransferFunction()">Done Editing</button>
+        </div>
+        <div class="section" style="width: 100%;">
+          <hr/>
+          <div class="section" style="height: 400px; width: 100%;">
+            <svg id="transfer-function-svg"></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- layer editor (Painting) -->
       <div class="editor uibox" ng-show="editedLayer">
         <div class="header">
           Editing {{editedLayer.name}}
@@ -92,31 +114,19 @@
           <button ng-click="drawVegetation(scaleValue.value.vegetation)">Autofill {{scaleValue.name}}</button>
           <button ng-click="clearVegetation(scaleValue.value.vegetation)">Clear {{scaleValue.name}}</button>
         </div>
-
-        <div ng-show="editedLayer.name == 'Water Flow' || editedLayer.name == 'Erosion & Deposit'">
-          <hr/>
-          <div ng-repeat="(key, control) in editedLayer.model.controls">
-            <button ng-click="editedLayer.model.show(key)"
-                    ng-class="{ 'active-button': key == editedLayer.model.curControl }">{{ control.title }}</button>
-          </div>
-        </div>
-
-        <div class="section" style="width: 100%;" ng-show="editedLayer.model.curControl">
-          <hr/>
-          <div class="section" style="height: 400px; width: 100%;">
-            <svg id="transfer-function-svg"></svg>
-          </div>
-        </div>
       </div>
 
-      <div class="top-container">
-        <div class="home uibox" ng-show="elevationLoaded && !editedLayer" ng-click="map.setHomeView()">
+      <!-- container for top navigation -->
+      <div class="top-container" ng-show="elevationLoaded && !editedLayer && !activeTransferFunction">
+        <!-- home button -->
+        <div class="home uibox" ng-click="map.setHomeView()">
             <img src="img/home.png"/>
             <!--button ng-click="scanFlat()">Flat Scan</button><br/>
             <button ng-show="scanFlatDone" ng-click="scanMountain()">Mound Scan</button-->
         </div>
 
-        <div class="layers uibox" ng-show="elevationLoaded && !editedLayer">
+        <!-- layers menu -->
+        <div class="layers uibox">
           <h3 ng-click="showMapLayers=!showMapLayers">Map Layers</h3>
           <div ng-show="showMapLayers">
             <hr/>
@@ -132,7 +142,8 @@
           </div>
         </div>
 
-        <div class="layers uibox" ng-show="elevationLoaded && !editedLayer">
+        <!-- Sensors menu -->
+        <div class="layers uibox">
           <h3 ng-click="addSensor()">Add Sensor</h3>
           <div ng-show="addingSensor" style="padding-bottom: 5px">
             <hr/>
@@ -142,7 +153,8 @@
           </div>
         </div>
 
-        <div class="layers uibox" ng-show="elevationLoaded && !editedLayer">
+        <!-- Models menu -->
+        <div class="layers uibox">
           <h3 ng-click="showModels=!showModels">Models</h3>
           <div ng-show="showModels">
             <hr/>
@@ -181,11 +193,13 @@
             </div>
           </div>
         </div>
-        <div class="layers uibox" ng-show="elevationLoaded && !editedLayer">
+
+        <!-- transfer functions menu -->
+        <div class="layers uibox">
           <h3 ng-click="toggleTransferFunctions()">Transfer Functions</h3>
           <div ng-show="showTransferFunctions">
             <hr/>
-            <div class="tf-title" ng-repeat="tf in transferFunctions">
+            <div class="tf-title" ng-repeat="tf in transferFunctions" ng-click="setActiveTransferFunction(tf)">
               {{ tf.title }}
             </div>
           </div>

@@ -57,7 +57,7 @@ export class ElevationPatchRenderer extends PatchRenderer {
     color(elevation) {
         var range = this.model.max - this.model.min,
             relativeElevation = elevation - this.model.min,
-            metersPerStep = range / colorMap.length,
+            metersPerStep = range / this.colorMap.length,
             idx = Math.floor(relativeElevation / metersPerStep);
 
         return this.colorMap[idx];

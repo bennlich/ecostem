@@ -1,5 +1,6 @@
 
 import {BaseModel} from 'js/BaseModel';
+import {PatchRenderer} from 'js/PatchRenderer';
 
 export class VegetationModel extends BaseModel {
     constructor(xs, ys, bbox, modelSet) {
@@ -24,40 +25,30 @@ VegetationModel.typeToString = function(type) {
     }
 };
 
-export var VegetationPatchRenderer = function(model) {
-    var t = VegetationModel.vegTypes;
+export class VegetationPatchRenderer extends PatchRenderer {
+    constructor(model) {
+        this.model = model;
 
-    var colors = {};
-    colors[t.FIR] = 'rgb(50,99,32)';
-    colors[t.SAGEBRUSH] = 'rgb(55, 105, 93)';
-    colors[t.STEPPE] = 'rgb(214, 173, 84)';
-    colors[t.GRASS] = 'rgb(59, 153, 54)';
-    colors[t.NONE] = 'rgb(255,255,255)';
+        var t = VegetationModel.vegTypes;
 
-    function render(ctx, world, i, j, drawX, drawY, drawWidth, drawHeight) {
-        var patch;
+        var colors = {};
+        colors[t.FIR] = 'rgb(50,99,32)';
+        colors[t.SAGEBRUSH] = 'rgb(55, 105, 93)';
+        colors[t.STEPPE] = 'rgb(214, 173, 84)';
+        colors[t.GRASS] = 'rgb(59, 153, 54)';
+        colors[t.NONE] = 'rgb(255,255,255)';
 
-        if (!world[i] || !(patch = world[i][j])) {
-            return;
-        }
-
-        if (patch.vegetation === t.NONE)
-            return;
-
-        ctx.fillStyle = colors[patch.vegetation];
-        ctx.fillRect(Math.floor(drawX), Math.floor(drawY), Math.ceil(drawWidth), Math.ceil(drawHeight));
+        this.colors = colors;
+        this.scaleValues = [t.FIR, t.SAGEBRUSH, t.STEPPE, t.GRASS, t.NONE];
+        this.zeroValue = t.NONE;
+        this.patchField = 'vegetation';
     }
 
-    var scale = _.map(_.values(t), function(vegType) {
-        return {
-            value: { vegetation: vegType },
-            color: colors[vegType],
-            name: VegetationModel.typeToString(vegType)
-        };
-    });
+    name(v) {
+        return VegetationModel.typeToString(v);
+    }
 
-    return {
-        render: render,
-        scale: scale
-    };
-};
+    color(v) {
+        return this.colors[v];
+    }
+}

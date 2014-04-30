@@ -2,6 +2,7 @@
 import {BaseModel} from 'js/BaseModel';
 import {FireSeverityModel} from 'js/models/FireSeverityModel';
 import {TransferFunctions} from 'js/TransferFunctions';
+import {PatchRenderer} from 'js/PatchRenderer';
 
 /* Water model inherits from BaseModel */
 
@@ -221,53 +222,26 @@ export class WaterModel extends BaseModel {
     }
 }
 
-export var WaterPatchRenderer = function(model) {
-    var colorMap = Gradient.multiGradient(
-        '#9cf',
-        [{color: '#137', steps: 15},
-         {color: '#123', steps: 5}]
-    );
-
-    var maxVolume = 30;
-    var step = colorMap.length / maxVolume;
-
-    function getColor(volume) {
-        var idx = Math.floor(volume * step);
-
-        if (idx >= colorMap.length)
-            idx = colorMap.length-1;
-
-        return colorMap[idx];
+export class WaterPatchRenderer extends PatchRenderer {
+    constructor(model) {
+        this.model = model;
+        this.colorMap = Gradient.multiGradient(
+            '#9cf',
+            [{color: '#137', steps: 15},
+            {color: '#123', steps: 5}]
+        );
+        this.step = this.colorMap.length / 30;
+        this.scaleValues = [5, 10, 20, 30, 0];
+        this.zeroValue = 0;
+        this.patchField = 'volume';
     }
 
-    function render(ctx, world, i, j, drawX, drawY, drawWidth, drawHeight) {
-        var patch;
+    color(volume) {
+        var idx = Math.floor(volume * this.step);
 
-        if (!world[i] || !(patch = world[i][j])) {
-            return;
-        }
+        if (idx >= this.colorMap.length)
+            idx = this.colorMap.length-1;
 
-        if (patch.volume > 0) {
-            ctx.fillStyle = getColor(patch.volume);
-            ctx.fillRect(Math.floor(drawX), Math.floor(drawY), Math.ceil(drawWidth), Math.ceil(drawHeight));
-        }
+        return this.colorMap[idx];
     }
-
-    var scale = _.map([5, 10, 20, 30, 0], function(num) {
-        var name = num;
-
-        if (num === 0)
-            name = 'No Data';
-
-        return {
-            value: { volume: num },
-            color: getColor(num),
-            name: name
-        };
-    });
-
-    return {
-        render: render,
-        scale: scale
-    };
 }

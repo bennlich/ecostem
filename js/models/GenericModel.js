@@ -1,5 +1,6 @@
 
 import {BaseModel} from 'js/BaseModel';
+import {PatchRenderer} from 'js/PatchRenderer';
 
 export class GenericModel extends BaseModel {
     constructor (xs, ys, bbox, modelSet) {
@@ -15,20 +16,11 @@ export class GenericModel extends BaseModel {
     }
 }
 
-export var GenericPatchRenderer = function(model) {
-    function render(ctx, world, i, j, drawX, drawY, drawWidth, drawHeight) {
-        var patch;
-
-        if (!world[i] || !(patch = world[i][j])) {
-            return;
-        }
-
-        ctx.fillStyle = 'red';
-        ctx.fillRect(Math.floor(drawX), Math.floor(drawY), Math.ceil(drawWidth), Math.ceil(drawHeight));
+export class GenericPatchRenderer extends PatchRenderer {
+    constructor(model) {
+        this.model = model;
+        this.scaleValues = [];
     }
 
-    return {
-        render: render,
-        scale: []
-    };
-};
+    color() { return 'red'; }
+}

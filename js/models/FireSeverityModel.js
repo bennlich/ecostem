@@ -1,5 +1,6 @@
 
 import {BaseModel} from 'js/BaseModel';
+import {PatchRenderer} from 'js/PatchRenderer';
 
 /* Fire severity model inherits from DataModel */
 
@@ -27,51 +28,29 @@ FireSeverityModel.typeToString = function(type) {
 
 /* Renderer for a single fire severity patch */
 
-export var FirePatchRenderer = function(model) {
-    var colorHigh = 'rgb(105,82,58)';
-    var colorMedium = 'rgb(173,147,118)';
-    var colorLow = 'rgb(240,217,192)';
-    var colorNone = 'rgb(255,255,255)';
+export class FirePatchRenderer extends PatchRenderer {
+    constructor(model) {
+        this.model = model;
 
-    var t = FireSeverityModel.severityTypes;
+        var colors = {},
+            t = FireSeverityModel.severityTypes;
+        colors[t.HIGH] = 'rgb(105,82,58)';
+        colors[t.MEDIUM] = 'rgb(173,147,118)';
+        colors[t.LOW] = 'rgb(240,217,192)';
+        colors[t.NONE] = 'rgb(255,255,255)';
 
-    function getColor(severity) {
-        switch (severity) {
-        case t.HIGH:
-            return colorHigh;
-        case t.MEDIUM:
-            return colorMedium;
-        case t.LOW:
-            return colorLow;
-        default:
-            return colorNone;
-        }
+        this.colors = colors;
+
+        this.scaleValues = [t.LOW, t.HIGH, t.MEDIUM, t.NONE];
+        this.zeroValue = t.NONE;
+        this.patchField = 'severity';
     }
 
-    function render(ctx, world, i, j, drawX, drawY, drawWidth, drawHeight) {
-        var patch;
-
-        if (!world[i] || !(patch = world[i][j])) {
-            return;
-        }
-
-        if (patch.severity === FireSeverityModel.severityTypes.NONE)
-            return;
-
-        ctx.fillStyle = getColor(patch.severity);
-        ctx.fillRect(Math.floor(drawX), Math.floor(drawY), Math.ceil(drawWidth), Math.ceil(drawHeight));
+    name(value) {
+        return FireSeverityModel.typeToString(value);
     }
 
-    var scale = _.map(_.values(t), function(severity) {
-        return {
-            value: { severity: severity },
-            color: getColor(severity),
-            name: FireSeverityModel.typeToString(severity)
-        };
-    });
-
-    return {
-        render: render,
-        scale: scale
-    };
-};
+    color(value) {
+        return this.colors[value];
+    }
+}

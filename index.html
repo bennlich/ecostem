@@ -77,7 +77,7 @@
           <div class="section">
             <h2>Choose a value:</h2>
             <select ng-model="scaleValue"
-                    ng-options="v.name for v in editedLayer.model.renderer.patchRenderer.scale"
+                    ng-options="v.name for v in scaleValues"
                     ng-change="scaleValueChanged()">
             </select>
           </div>

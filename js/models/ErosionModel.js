@@ -1,5 +1,6 @@
 
 import {BaseModel} from 'js/BaseModel';
+import {PatchRenderer} from 'js/PatchRenderer';
 
 export class ErosionModel extends BaseModel {
     constructor(xs, ys, bbox, modelSet) {
@@ -16,58 +17,25 @@ export class ErosionModel extends BaseModel {
     }
 }
 
-export var ErosionPatchRenderer = function(model) {
-    var gradientSteps = 200,
-        negativeGradient = Gradient.gradient('#ffebeb', '#e03838', gradientSteps),
-        positiveGradient = Gradient.gradient('#dbecff', '#2e7ad1', gradientSteps);
+export class ErosionPatchRenderer extends PatchRenderer {
+    constructor(model) {
+        this.model = model;
 
-    function getColor(value) {
-        var idx = Math.floor(Math.abs(value*100));
+        var gradientSteps = 200;
+        this.negativeGradient = Gradient.gradient('#ffebeb', '#e03838', gradientSteps);
+        this.positiveGradient = Gradient.gradient('#dbecff', '#2e7ad1', gradientSteps);
 
-        if (idx >= negativeGradient.length)
-            idx = negativeGradient.length - 1;
-
-        if (value > 0) {
-            return positiveGradient[idx];
-        }
-
-        if (value < 0) {
-            return negativeGradient[idx];
-        }
-
-        return 'rgb(0,0,0)';
+        this.scaleValues = [-20,-10,-5,0,5,10,20];
+        this.zeroValue = 0;
+        this.patchField = 'erosion';
     }
 
-    function render(ctx, world, i, j, drawX, drawY, drawWidth, drawHeight) {
-        var patch;
+    color(erosion) {
+        var idx = Math.floor(Math.abs(erosion*100));
 
-        if (!world[i] || !(patch = world[i][j])) {
-            return;
-        }
+        if (idx >= this.negativeGradient.length)
+            idx = this.negativeGradient.length - 1;
 
-        if (patch.erosion === 0)
-            return;
-        var color = getColor(patch.erosion);
-
-        ctx.fillStyle = getColor(patch.erosion);
-        ctx.fillRect(Math.floor(drawX), Math.floor(drawY), Math.ceil(drawWidth), Math.ceil(drawHeight));
+        return erosion >= 0 ? this.positiveGradient[idx] : this.negativeGradient[idx];
     }
-
-    var scale = _.map([-20,-10,-5,0,5,10,20], function(n) {
-        var name = n;
-
-        if (n === 0)
-            name = 'No Data';
-
-        return {
-            value: { erosion: n },
-            color: getColor(n),
-            name: name
-        };
-    });
-
-    return {
-        render: render,
-        scale: scale
-    };
-};
+}

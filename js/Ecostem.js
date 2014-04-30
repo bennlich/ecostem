@@ -363,7 +363,8 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
         layer.editing = true;
 
         $scope.editedLayer = layer;
-        $scope.scaleValue = layer.model.renderer.patchRenderer.scale[0];
+        $scope.scaleValues = layer.model.renderer.patchRenderer.scale();
+        $scope.scaleValue = $scope.scaleValues[0];
         layer.model.show();
     };
 

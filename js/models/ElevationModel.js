@@ -1,5 +1,6 @@
 
 import {BaseModel} from 'js/BaseModel';
+import {PatchRenderer} from 'js/PatchRenderer';
 
 export class ElevationModel extends BaseModel {
     constructor (xs, ys, bbox, modelSet) {
@@ -39,43 +40,26 @@ export class ElevationModel extends BaseModel {
     }
 }
 
-export var ElevationPatchRenderer = function(model) {
-    var colorMap = Gradient.multiGradient(
-        '#123',
-        [{color: '#505Fa5', steps: 40},
-         {color: '#D66783', steps: 100},
-         {color: '#fff', steps: 100}]
-    );
-
-    function getColor(elevation) {
-        var range = model.max - model.min;
-        var relativeElevation = elevation - model.min;
-        var metersPerStep = range / colorMap.length;
-        var idx = Math.floor(relativeElevation / metersPerStep);
-
-        return colorMap[idx];
+export class ElevationPatchRenderer extends PatchRenderer {
+    constructor(model) {
+        this.model = model;
+        this.colorMap = Gradient.multiGradient(
+            '#123',
+            [{color: '#505Fa5', steps: 40},
+             {color: '#D66783', steps: 100},
+             {color: '#fff', steps: 100}]
+        );
+        this.scaleValues = [5, 10, 20, 30, 0];
+        this.zeroValue = 0;
+        this.patchField = 'elevation';
     }
 
-    function render(ctx, world, i, j, drawX, drawY, drawWidth, drawHeight) {
-        var patch;
+    color(elevation) {
+        var range = this.model.max - this.model.min,
+            relativeElevation = elevation - this.model.min,
+            metersPerStep = range / colorMap.length,
+            idx = Math.floor(relativeElevation / metersPerStep);
 
-        if (!world[i] || !(patch = world[i][j])) {
-            return;
-        }
-
-        ctx.fillStyle = getColor(patch.elevation);
-        ctx.fillRect(Math.floor(drawX), Math.floor(drawY), Math.ceil(drawWidth), Math.ceil(drawHeight));
+        return this.colorMap[idx];
     }
-
-    var scale = _.map([5, 10, 20, 30, 0], (num) => {
-        var name = num;
-        if (num === 0)
-            name = 'None (Erase)';
-        return { value: { volume: num }, color: getColor(num), name: name };
-    });
-
-    return {
-        render: render,
-        scale: scale
-    };
-};
+}

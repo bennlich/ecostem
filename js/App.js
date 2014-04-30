@@ -236,6 +236,8 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
             vegModel = modelSet.getModel('Vegetation'),
             dataModel = vegModel.dataModel,
             elevationModel = modelSet.getDataModel('Elevation'),
+            /* there is an implicit assumption here that vegType is
+               the same as the transfer function key */
             tf = TransferFunctions.funs[vegType];
 
         for (var i = 0; i < dataModel.xSize; ++i) {

@@ -10,7 +10,7 @@ export class VegetationModel extends BaseModel {
 }
 
 VegetationModel.vegTypes = {
-    FIR: 1, SAGEBRUSH: 2, STEPPE: 3, GRASS: 4, NONE: 0
+    FIR: 'fir', SAGEBRUSH: 'sagebrush', STEPPE: 'steppe', GRASS: 'grass', NONE: 'none'
 };
 
 VegetationModel.typeToString = function(type) {

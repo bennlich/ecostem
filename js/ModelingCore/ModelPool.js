@@ -52,7 +52,6 @@ export class ModelPool {
             },
 
             hide: function() {
-                console.log(this.curControl);
                 if (this.curControl) {
                     this.controls[this.curControl].hide();
                 }

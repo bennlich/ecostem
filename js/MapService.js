@@ -5,6 +5,7 @@ import {ModelBBox} form './ModelingCore/ModelBBox';
 import {Rect} from './Util';
 import {ModelPool} from './ModelingCore/ModelPool';
 import {Animator} from './ModelingCore/Animator';
+import {TransferFunctions} from './ModelingParams/TransferFunctions';
 
 /* Leaflet wrapper */
 export var MapService = ['$location', '$rootScope', '$q', function($location, $rootScope, $q) {
@@ -208,7 +209,7 @@ export var MapService = ['$location', '$rootScope', '$q', function($location, $r
 
         /* editable data layers */
         _makeModelLayers: function(bbox) {
-            // TODO make ModelPool a service?
+            TransferFunctions.init();
             this.modelPool = new ModelPool(map, bbox, $rootScope);
 
             var layers = _.map(_.values(this.modelPool.models), (model) => {

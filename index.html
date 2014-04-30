@@ -40,7 +40,8 @@
     </script>
   </head>
   <body>
-    <div class="container" ng-controller="EcostemCtrl">
+    <div class="splash">Ecostem</div>
+    <div class="container" ng-controller="EcostemCtrl" ng-cloak>
       <div class="cover" ng-show="editedLayer && editedLayer.model.uiOpts.canPaint" drawing-surface></div>
       <div class="uibox loading" ng-show="elevationIsLoading">Loading elevation data...</div>
       <div class="uibox server-popup" ng-show="serverPopupIsOpen">

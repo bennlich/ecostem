@@ -2,8 +2,8 @@
 import {TransferFunctions} from './ModelingParams/TransferFunctions';
 import {FireSeverityModel} from './Models/FireSeverityModel';
 import {VegetationModel} from './Models/VegetationModel';
-import './Directives';
-import './Services';
+import './AppDirectives';
+import './AppServices';
 
 /* leaflet "hack" that forces openPopup() to leave current popups open */
 L.Map = L.Map.extend({

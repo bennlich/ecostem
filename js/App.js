@@ -65,6 +65,24 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
 
     $scope.map = map;
 
+    $scope.showTransferFunctions = false;
+    $scope.transferFunctions = [];
+    $scope.toggleTransferFunctions = function() {
+        if ($scope.transferFunctions.length === 0) {
+            _.each(_.keys(TransferFunctions), (k) => {
+                /* TransferFunctions has an 'init' key that initializes
+                   the object. The rest of the keys are transfer functions */
+                if (k !== 'init') {
+                    $scope.transferFunctions.push({
+                        name: k,
+                        title: TransferFunctions[k].title
+                    })
+                }
+            })
+        }
+        $scope.showTransferFunctions = !$scope.showTransferFunctions;
+    };
+
     $scope.scanFlatDone = false;
 
     $scope.scanFlat = function() {

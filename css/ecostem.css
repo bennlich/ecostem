@@ -167,29 +167,26 @@ a {
 }
 .container .top-container {
     position: absolute;
-    width: 840px;
+    width: 100%;
     top: 0;
-    left: 50%;
-    margin-left: -420px;
+    left: 0;
     text-align: center;
     height: 0;
 }
 .container .top-container .layers {
     position: relative;
-    min-width: 250px;
-    max-width: 250px;
+    min-width: 200px;
+    max-width: 200px;
     margin: 0;
-    margin-right: 5px;
-    margin-left: 5px;
     z-index: 120;
     text-align: left;
     display: inline-block;
     vertical-align: top;
 }
 .container .top-container .home {
-    position: absolute;
-    margin-left: -57px;
+    position: relative;
     width: 50px;
+    display: inline-block;
     cursor: pointer;
 }
 
@@ -204,6 +201,26 @@ a {
     -moz-user-select: none;
     -o-user-select: none;
     user-select: none;
+}
+.container .top-container .layers .tf-title {
+    padding: 4px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #555;
+    font-size: 16px;
+    cursor: pointer;
+}
+.container .top-container .layers .tf-title:active {
+    background: #ace;
+    color: #111;
+}
+.container .top-container .layers .tf-title:first-child {
+    padding-top: 0;
+    margin-top: 0;
+}
+.container .top-container .layers .tf-title:last-child {
+    border: none;
+    margin-bottom: 4px;
 }
 .container .top-container .layers label {
     cursor: pointer;

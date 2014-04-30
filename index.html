@@ -181,6 +181,15 @@
             </div>
           </div>
         </div>
+        <div class="layers uibox" ng-show="elevationLoaded && !editedLayer">
+          <h3 ng-click="toggleTransferFunctions()">Transfer Functions</h3>
+          <div ng-show="showTransferFunctions">
+            <hr/>
+            <div class="tf-title" ng-repeat="tf in transferFunctions">
+              {{ tf.title }}
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="play-controls" ng-show="elevationLoaded">

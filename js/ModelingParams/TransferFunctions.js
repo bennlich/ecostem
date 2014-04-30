@@ -39,7 +39,6 @@ export var TransferFunctions = {
             return steppe;
         }();
 
-
         this.grass = function() {
             var grass = new TransferFunction([0, 4000], 'm', [0, 100], '%', 'Grass Density at Elevation');
             grass.controlPoints = [[0.00,0.00],[1028.57,1.43],[1857.14,23.57],[2500.00,5.00],[3071.43,0.00],[3642.86,0.00]];

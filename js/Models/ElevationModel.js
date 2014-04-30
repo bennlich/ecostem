@@ -1,6 +1,6 @@
 
-import {BaseModel} from 'js/BaseModel';
-import {PatchRenderer} from 'js/PatchRenderer';
+import {BaseModel} from '../ModelingCore/BaseModel';
+import {PatchRenderer} from '../ModelingCore/PatchRenderer';
 
 export class ElevationModel extends BaseModel {
     constructor (xs, ys, bbox, modelSet) {

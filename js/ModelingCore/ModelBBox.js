@@ -1,5 +1,5 @@
 
-import {Rect} from 'js/Util';
+import {Rect} from '../Util';
 
 /* Wrapper for the scenario bounding box. Mainly encapsulates degree-to-pixel
  * translations */

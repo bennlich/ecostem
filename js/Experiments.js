@@ -83,7 +83,7 @@ function doQuad(ctx, sampler, x, y, width, height) {
             console.log(box);
             var modelBBox = new ModelBBox(box, map.leafletMap);
 
-            var model = new GenericModel(h.ncols, h.nrows, modelBBox, map.modelSet.virtualWidth, map.modelSet);
+            var model = new GenericModel(h.ncols, h.nrows, modelBBox, map.modelPool.virtualWidth, map.modelPool);
             model.setWorld(parser.data);
             var tileRenderer = new ModelTileRenderer(map, model, GenericPatchRenderer(model));
             var tileServer = new ModelTileServer(tileRenderer);

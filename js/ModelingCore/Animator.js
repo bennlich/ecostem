@@ -1,7 +1,7 @@
 
 export class Animator {
     constructor(modelSet) {
-        this.modelSet = modelSet;
+        this.modelPool = modelSet;
         this.reset();
     }
 
@@ -21,7 +21,7 @@ export class Animator {
         if (this.isRunning)
             this.stop();
 
-        var models = this.modelSet.getModels();
+        var models = this.modelPool.getModels();
 
         for (var i = 0; i < models.length; ++i) {
             models[i].dataModel.reset();
@@ -35,7 +35,7 @@ export class Animator {
     }
 
     step() {
-        var models = this.modelSet.getModels();
+        var models = this.modelPool.getModels();
 
         for (var i = 0; i < models.length; ++i) {
             var model = models[i].dataModel;
@@ -57,7 +57,7 @@ export class Animator {
 
     _run() {
         if (this.isRunning) {
-            this.modelSet.safeApply(() => this.step());
+            this.modelPool.safeApply(() => this.step());
             this._raf = window.requestAnimationFrame(() => this._run());
         }
     }

@@ -1,10 +1,10 @@
 
 var map;
 
-import {ModelBBox} form 'js/ModelBBox';
-import {Rect} from 'js/Util';
-import {ModelSet} from 'js/ModelSet';
-import {Animator} from 'js/Animator';
+import {ModelBBox} form './ModelingCore/ModelBBox';
+import {Rect} from './Util';
+import {ModelPool} from './ModelingCore/ModelPool';
+import {Animator} from './ModelingCore/Animator';
 
 /* Leaflet wrapper */
 export var MapService = ['$location', '$rootScope', '$q', function($location, $rootScope, $q) {
@@ -208,10 +208,10 @@ export var MapService = ['$location', '$rootScope', '$q', function($location, $r
 
         /* editable data layers */
         _makeModelLayers: function(bbox) {
-            // TODO make modelSet a service?
-            this.modelSet = new ModelSet(map, bbox, $rootScope);
+            // TODO make ModelPool a service?
+            this.modelPool = new ModelPool(map, bbox, $rootScope);
 
-            var layers = _.map(_.values(this.modelSet.models), (model) => {
+            var layers = _.map(_.values(this.modelPool.models), (model) => {
                 return {
                     name: model.name,
                     model: model,
@@ -222,13 +222,13 @@ export var MapService = ['$location', '$rootScope', '$q', function($location, $r
                 };
             });
 
-            this.animator = new Animator(this.modelSet);
+            this.animator = new Animator(this.modelPool);
 
             return layers;
         },
 
         addDataLayer: function(obj) {
-            this.modelSet.models[obj.name] = obj;
+            this.modelPool.models[obj.name] = obj;
             this.modelLayers.push({
                 name: obj.name,
                 model: obj,

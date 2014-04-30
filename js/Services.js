@@ -1,6 +1,6 @@
 
-import {ElevationService} from 'js/ElevationService';
-import {MapService} from 'js/MapService';
+import {ElevationService} from './ElevationService';
+import {MapService} from './MapService';
 
 var Services = angular.module('Services', []);
 Services.service('elevationSampler', ElevationService);

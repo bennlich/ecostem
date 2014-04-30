@@ -1,6 +1,6 @@
 
-import {TransferFunction} from 'js/TransferFunction';
-import {StackedBars} from 'js/StackedBars';
+import {TransferFunction} from './TransferFunction';
+import {StackedBars} from './StackedBars';
 
 export var TransferFunctions = {
     init : function() {

@@ -1,15 +1,15 @@
 
-import {ElevationModel, ElevationPatchRenderer} from 'js/models/ElevationModel';
-import {ErosionModel, ErosionPatchRenderer} from 'js/models/ErosionModel';
-import {FireSeverityModel, FirePatchRenderer} from 'js/models/FireSeverityModel';
-import {VegetationModel, VegetationPatchRenderer} from 'js/models/VegetationModel';
-import {WaterModel, WaterPatchRenderer} from 'js/models/WaterModel';
-import {LeafletCoordSystem} from 'js/LeafletCoordSystem';
-import {ModelTileRenderer} from 'js/ModelTileRenderer';
-import {ModelTileServer} from 'js/ModelTileServer';
-import {TransferFunctions} from 'js/TransferFunctions';
+import {ElevationModel, ElevationPatchRenderer} from '../Models/ElevationModel';
+import {ErosionModel, ErosionPatchRenderer} from '../Models/ErosionModel';
+import {FireSeverityModel, FirePatchRenderer} from '../Models/FireSeverityModel';
+import {VegetationModel, VegetationPatchRenderer} from '../Models/VegetationModel';
+import {WaterModel, WaterPatchRenderer} from '../Models/WaterModel';
+import {LeafletCoordSystem} from './LeafletCoordSystem';
+import {ModelTileRenderer} from './ModelTileRenderer';
+import {ModelTileServer} from '../ModelTileServer';
+import {TransferFunctions} from '../ModelingParams/TransferFunctions';
 
-export class ModelSet {
+export class ModelPool {
     constructor(map, defaultBBox, scope) {
         this.map = map;
         this.scope = scope;

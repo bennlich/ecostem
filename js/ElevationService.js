@@ -1,6 +1,6 @@
 
-import {LocalStorage} from 'js/LocalStorage';
-import {computeQuad} from 'js/Experiments';
+import {LocalStorage} from './LocalStorage';
+import {computeQuad} from './Experiments';
 
 export var ElevationService = ['$rootScope', '$q', function($rootScope, $q) {
     return {

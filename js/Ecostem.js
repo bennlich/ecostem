@@ -1,9 +1,9 @@
 
-import {TransferFunctions} from 'js/TransferFunctions';
-import {FireSeverityModel} from 'js/Models/FireSeverityModel';
-import {VegetationModel} from 'js/Models/VegetationModel';
-import 'js/Directives';
-import 'js/Services';
+import {TransferFunctions} from './ModelingParams/TransferFunctions';
+import {FireSeverityModel} from './Models/FireSeverityModel';
+import {VegetationModel} from './Models/VegetationModel';
+import './Directives';
+import './Services';
 
 /* leaflet "hack" that forces openPopup() to leave current popups open */
 L.Map = L.Map.extend({
@@ -80,14 +80,14 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
     $scope.scanMountain = function() {
         AnySurface.Scan.mountainScan(function(data) {
             var modelName = 'Scan Elevation';
-            var model = map.modelSet.getDataModel(modelName);
+            var model = map.modelPool.getDataModel(modelName);
 
             if (! model) {
                 var w = data.width,
                 h = data.height,
                 bbox = new ModelBBox(map.leafletMap.getBounds(), map.leafletMap);
 
-                model = new ScanElevationModel(w, h, bbox, map.modelSet);
+                model = new ScanElevationModel(w, h, bbox, map.modelPool);
                 model.load(data);
 
                 var tileRenderer = new ModelTileRenderer(map, model, ElevationPatchRenderer(model));
@@ -117,7 +117,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
         console.log(box);
         var modelBBox = new ModelBBox(box, map.leafletMap);
 
-        var model = new GenericModel(h.ncols, h.nrows, modelBBox, map.modelSet.virtualWidth, map.modelSet);
+        var model = new GenericModel(h.ncols, h.nrows, modelBBox, map.modelPool.virtualWidth, map.modelPool);
         model.setWorld(parser.data);
         var tileRenderer = new ModelTileRenderer(map, model, GenericPatchRenderer(model));
         var tileServer = new ModelTileServer(tileRenderer);
@@ -141,10 +141,10 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
         $scope.$apply(function() {
             $scope.addingSensor = false;
 
-            var elev = map.modelSet.models['Elevation'].dataModel;
-            var water = map.modelSet.models['Water Flow'].dataModel;
-            var veg = map.modelSet.models['Vegetation'].dataModel;
-            var sev = map.modelSet.models['Fire Severity'].dataModel;
+            var elev = map.modelPool.models['Elevation'].dataModel;
+            var water = map.modelPool.models['Water Flow'].dataModel;
+            var veg = map.modelPool.models['Vegetation'].dataModel;
+            var sev = map.modelPool.models['Fire Severity'].dataModel;
             var point = e.latlng;
 
             var elevData = elev.sample(point),
@@ -210,7 +210,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
     $scope.drawVegetation = function(vegType) {
         console.log('draw veg', vegType);
 
-        var modelSet = map.modelSet,
+        var modelSet = map.modelPool,
             vegModel = modelSet.getModel('Vegetation'),
             dataModel = vegModel.dataModel,
             elevationModel = modelSet.getDataModel('Elevation'),
@@ -233,7 +233,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
     $scope.clearVegetation = function(vegType) {
         console.log('clear veg', vegType);
 
-        var vegModel = map.modelSet.getModel('Vegetation'),
+        var vegModel = map.modelPool.getModel('Vegetation'),
             vegDataModel = vegModel.dataModel,
             vegTypes = VegetationModel.vegTypes;
 
@@ -321,7 +321,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
                 screenXY.y + $scope.selectedBrushSize
             ]);
 
-            var crs = map.modelSet.crs,
+            var crs = map.modelPool.crs,
                 curModel = $scope.editedLayer.model.dataModel,
                 modelTopLeft = crs.commonCoordToModelCoord(topLeft, curModel),
                 modelBottomRight = crs.commonCoordToModelCoord(bottomRight, curModel);
@@ -413,8 +413,8 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
     $q.all([map.deferred.promise, elevationSampler.deferred.promise]).then(function() {
         $scope.elevationIsLoading = true;
 
-        var elevationModel = map.modelSet.getDataModel('Elevation');
-        var waterModel = map.modelSet.getDataModel('Water Flow');
+        var elevationModel = map.modelPool.getDataModel('Elevation');
+        var waterModel = map.modelPool.getDataModel('Water Flow');
 
         elevationSampler.loadElevationData(elevationModel.geometry, function() {
             /* TODO: Maybe the sampler can be merged into ElevationModel */

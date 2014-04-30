@@ -1,6 +1,6 @@
 
-import {BaseModel} from 'js/BaseModel';
-import {PatchRenderer} from 'js/PatchRenderer';
+import {BaseModel} from '../ModelingCore/BaseModel';
+import {PatchRenderer} from '../ModelingCore/PatchRenderer';
 
 /* Fire severity model inherits from DataModel */
 

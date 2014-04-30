@@ -1,5 +1,5 @@
 
-import {BaseModel} from 'js/BaseModel';
+import {BaseModel} from '../ModelingCore/BaseModel';
 
 export class ScanElevationModel extends BaseModel {
     constructor(xs, ys, bbox, modelSet) {

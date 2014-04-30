@@ -1,5 +1,5 @@
 
-import 'js/Util';
+import './Util';
 
 export class LiveTexture {
     constructor(leafletMap) {

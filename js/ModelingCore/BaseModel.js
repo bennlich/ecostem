@@ -5,7 +5,7 @@ export class BaseModel {
         this.ySize = ys;
         this.geometry = geometry;
         this.timeStep = 1;
-        this.modelSet = modelSet;
+        this.modelPool = modelSet;
         this.world = null;
         this.callbacks = [];
         this.isAnimated = false;
@@ -14,7 +14,7 @@ export class BaseModel {
     init(defaultValue) {
         var world = new Array(this.xSize);
 
-        this.modelSet.safeApply(() => {
+        this.modelPool.safeApply(() => {
             for (var i = 0; i < this.xSize; ++i) {
                 world[i] = new Array(this.ySize);
                 for (var j = 0; j < this.ySize; ++j) {
@@ -41,7 +41,7 @@ export class BaseModel {
         if (y + height > this.ySize)
             height = this.ySize - y;
 
-        this.modelSet.safeApply(() => {
+        this.modelPool.safeApply(() => {
             for (var i = x; i < x + width; ++i) {
                 for (var j = y; j < y + height; ++j) {
                     for (var key in obj) {
@@ -53,7 +53,7 @@ export class BaseModel {
     }
 
     sample(latlng) {
-        var xy = this.modelSet.crs.commonCoordToModelCoord(latlng, this);
+        var xy = this.modelPool.crs.commonCoordToModelCoord(latlng, this);
 
         if (xy.x < 0 || xy.x >= this.xSize || xy.y < 0 || xy.y >= this.ySize) {
             return undefined;
@@ -79,7 +79,7 @@ export class BaseModel {
     step() { this.runCallbacks(); }
 
     runCallbacks() {
-        this.modelSet.safeApply(() => {
+        this.modelPool.safeApply(() => {
             _.each(this.callbacks, (cb) => {
                 setTimeout(() => {
                     cb(this.world);

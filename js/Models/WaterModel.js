@@ -1,8 +1,8 @@
 
-import {BaseModel} from 'js/BaseModel';
-import {FireSeverityModel} from 'js/models/FireSeverityModel';
-import {TransferFunctions} from 'js/TransferFunctions';
-import {PatchRenderer} from 'js/PatchRenderer';
+import {BaseModel} from '../ModelingCore/BaseModel';
+import {FireSeverityModel} from './FireSeverityModel';
+import {TransferFunctions} from '../ModelingParams/TransferFunctions';
+import {PatchRenderer} from '../ModelingCore/PatchRenderer';
 
 /* Water model inherits from BaseModel */
 
@@ -29,14 +29,14 @@ export class WaterModel extends BaseModel {
     }
 
     _erosionModel() {
-        if (!this.erosionModel && this.modelSet.models)
-            this.erosionModel = this.modelSet.getDataModel('Erosion & Deposit');
+        if (!this.erosionModel && this.modelPool.models)
+            this.erosionModel = this.modelPool.getDataModel('Erosion & Deposit');
         return this.erosionModel;
     }
 
     _burnSeverityModel() {
-        if (!this.burnSeverityModel && this.modelSet.models)
-            this.burnSeverityModel = this.modelSet.getDataModel('Fire Severity');
+        if (!this.burnSeverityModel && this.modelPool.models)
+            this.burnSeverityModel = this.modelPool.getDataModel('Fire Severity');
         return this.burnSeverityModel;
     }
 
@@ -71,12 +71,12 @@ export class WaterModel extends BaseModel {
 
         this.patchHeights.reset(this.xSize, this.ySize, new Array(this.xSize*this.ySize));
 
-        var elevationModel = this.modelSet.getDataModel('Elevation');
+        var elevationModel = this.modelPool.getDataModel('Elevation');
 
         for (var i = 0; i < this.xSize; ++i) {
             for (var j = 0; j < this.ySize; ++j) {
                 var curPatch = this.world[i][j];
-                curPatch.elevation = elevationModel.sample(this.modelSet.crs.modelCoordToCommonCoord({x:i, y:j}, this)).elevation;
+                curPatch.elevation = elevationModel.sample(this.modelPool.crs.modelCoordToCommonCoord({x:i, y:j}, this)).elevation;
                 this.patchHeights.setXY(i,j, curPatch.elevation + curPatch.volume);
             }
         }
@@ -91,7 +91,7 @@ export class WaterModel extends BaseModel {
     step() {
         super.step();
 
-        var fireSeverityModel = this.modelSet.getDataModel('Fire Severity');
+        var fireSeverityModel = this.modelPool.getDataModel('Fire Severity');
 
         for (var i = 0; i < this.xSize; ++i) {
             for (var j = 0; j < this.ySize; ++j) {

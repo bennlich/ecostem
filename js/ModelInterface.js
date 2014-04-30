@@ -37,7 +37,7 @@ MyModel.prototype = {
 	step: function() {
 		// Its evolution might be a function of other models,
 		// in which case it should know where to find them.
-		var myOtherModel = this.modelSet.get("myOtherModel");
+		var myOtherModel = this.modelPool.get("myOtherModel");
 
 		for (var i = 0; i < world.length; i++) {
 			for (var j = 0; j < world[i].length; j++) {

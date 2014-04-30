@@ -1,5 +1,5 @@
 
-import {Rect} from 'js/Util';
+import {Rect} from '../Util';
 
 export class ModelTileRenderer {
     constructor(map, model, patchRenderer) {

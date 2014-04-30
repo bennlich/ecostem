@@ -236,7 +236,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
             vegModel = modelSet.getModel('Vegetation'),
             dataModel = vegModel.dataModel,
             elevationModel = modelSet.getDataModel('Elevation'),
-            tf = vegModel.controls[vegType];
+            tf = TransferFunctions.funs[vegType];
 
         for (var i = 0; i < dataModel.xSize; ++i) {
             for (var j = 0; j < dataModel.ySize; ++j) {
@@ -359,9 +359,6 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
     };
 
     $scope.scaleValueChanged = function() {
-        if ($scope.editedLayer.name === 'Vegetation') {
-            $scope.editedLayer.model.show($scope.scaleValue.value.vegetation);
-        }
     },
 
     $scope.editDataLayer = function(layer) {
@@ -387,13 +384,11 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
         $scope.editedLayer = layer;
         $scope.scaleValues = layer.model.renderer.patchRenderer.scale();
         $scope.scaleValue = $scope.scaleValues[0];
-        layer.model.show();
     };
 
     $scope.doneEditingDataLayer = function() {
         $scope.editedLayer.disabled = false;
         $scope.editedLayer.editing = false;
-        $scope.editedLayer.model.hide();
         $scope.editedLayer = null;
     };
 

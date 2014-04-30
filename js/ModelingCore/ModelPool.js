@@ -38,24 +38,7 @@ export class ModelPool {
             dataModel: model,
             renderer: tileRenderer,
             server: tileServer,
-            uiOpts : uiOpts,
-            controls : controls,
-            curControl : _.isEmpty(controls) ? null : _.keys(controls)[0],
-            show: function(key) {
-                this.hide();
-                if (typeof key != 'undefined') {
-                    this.curControl = key;
-                }
-                if (this.curControl) {
-                    this.controls[this.curControl].show();
-                }
-            },
-
-            hide: function() {
-                if (this.curControl) {
-                    this.controls[this.curControl].hide();
-                }
-            }
+            uiOpts : uiOpts
         };
     }
 
@@ -63,29 +46,15 @@ export class ModelPool {
         var bbox = this.defaultBBox;
         return {
             'Elevation'         : this._makeModel('Elevation', ElevationModel, 1024, ElevationPatchRenderer, bbox,
-                                                  { canPaint: false, editable:false }),
+                                                  { canPaint: false }),
             'Fire Severity'     : this._makeModel('Fire Severity', FireSeverityModel, 512, FirePatchRenderer, bbox,
-                                                  { canPaint: true, editable: true }),
+                                                  { canPaint: true }),
             'Vegetation'        : this._makeModel('Vegetation', VegetationModel, 512, VegetationPatchRenderer, bbox,
-                                                  { canPaint: true, editable: true },
-                                                  {
-                                                      1 : TransferFunctions.funs.fir,
-                                                      2 : TransferFunctions.funs.sagebrush,
-                                                      3 : TransferFunctions.funs.steppe,
-                                                      4 : TransferFunctions.funs.grass
-                                                  }),
+                                                  { canPaint: true }),
             'Erosion & Deposit' : this._makeModel('Erosion & Deposit', ErosionModel, 400, ErosionPatchRenderer, bbox,
-                                                  { canPaint: false, editable: true },
-                                                  {
-                                                      velocityToErosion: TransferFunctions.funs.velocityToErosion,
-                                                      velocityToDeposit: TransferFunctions.funs.velocityToDeposit
-                                                  }),
+                                                  { canPaint: false }),
             'Water Flow'        : this._makeModel('Water Flow', WaterModel, 400, WaterPatchRenderer, bbox,
-                                                  { canPaint: true, editable: true },
-                                                  {
-                                                      slopeToVelocity: TransferFunctions.funs.slopeToVelocity,
-                                                      evapInfRunoff: TransferFunctions.funs.evapInfRunoff
-                                                  })
+                                                  { canPaint: true })
         };
     }
 

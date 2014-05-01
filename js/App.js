@@ -73,7 +73,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
     $scope.map = map;
 
     /* The main controller is broken up into "mixins", simply functions that
-       attach functionality to the $scope. Their main purpose is to for organization,
+       attach functionality to the $scope. Their main purpose is for organization,
        to group related functions together and declutter the main controller. */
 
     /* Functionality related to editing transfer functions in the UX */
@@ -111,8 +111,8 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
             $scope.elevationLoaded = true;
 
             /* Turn on the erosion and water layers by default */
-            var erosionLayer = _.find(map.modelLayers, function(l) { return l.name === 'Erosion & Deposit'; });
-            var waterLayer = _.find(map.modelLayers, function(l) { return l.name === 'Water Flow'; });
+            var erosionLayer = _.find(map.modelLayers, (l) => l.name === 'Erosion & Deposit');
+            var waterLayer = _.find(map.modelLayers, (l) => l.name === 'Water Flow');
 
             map.toggleLayer(erosionLayer);
             map.toggleLayer(waterLayer);

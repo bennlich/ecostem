@@ -122,9 +122,9 @@ export function SensorsMixin($scope, $compile, map) {
             var point = e.latlng;
 
             var elevData = elev.sample(point),
-            waterData = water.sample(point),
-            vegData = veg.sample(point),
-            sevData = sev.sample(point);
+                waterData = water.sample(point),
+                vegData = veg.sample(point),
+                sevData = sev.sample(point);
 
             var sensor = {
                 elevData : elevData,
@@ -219,7 +219,7 @@ export function RasterPaintingMixin($scope, map) {
     };
 
     $scope.scaleValueChanged = function() {
-    },
+    };
 
     $scope.editDataLayer = function(layer) {
         var editedLayer = $scope.editedLayer;

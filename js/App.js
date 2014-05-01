@@ -93,6 +93,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
     /* This is kind of the "main" function of ecostem. */
     $q.all([map.deferred.promise, elevationSampler.deferred.promise]).then(function() {
         $scope.elevationIsLoading = true;
+        console.log('elev is loading', $scope.elevationIsLoading);
 
         var elevationModel = map.modelPool.getDataModel('Elevation');
         var waterModel = map.modelPool.getDataModel('Water Flow');

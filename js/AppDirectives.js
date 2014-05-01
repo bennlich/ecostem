@@ -1,6 +1,28 @@
 
 var Directives = angular.module('Directives', ['Services']);
 
+/* This directive shows the main app pane when it's done loading. */
+Directives.directive('mainContainer', ['map', function(map) {
+    return function(scope, element, attrs) {
+        scope.$watch('elevationLoaded', function(val) {
+            if (!!val) {
+                /* hide the splahes before showing the app */
+                $('.splash').hide();
+                /* Kind of a dirty fun trick to get the app to fade in
+                   after loading. The container is kept with visibility:hidden
+                   in the loading phase. While it's not visible, it still
+                   has dimensions, so d3 and leaflet can initialize off-screen.
+                   (As opposed to display:none which would cause both Leaflet
+                   and d3 to not initialize correctly.) Then we hide it
+                   (which does a display:none), change its visibility,
+                   and fade it in (which again affects the 'display' property,
+                   not the visibility). */
+                element.hide().css('visibility','visible').fadeIn();
+            }
+        });
+    };
+}]);
+
 Directives.directive('drawingSurface', ['map', function(map) {
     return function(scope, element, attrs) {
         function mouseHandler(e) {

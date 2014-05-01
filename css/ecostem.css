@@ -3,7 +3,7 @@ body {
     margin: 0;
     background: #333;
 }
-.splash {
+.splash .title {
     z-index: 0;
     position: absolute;
     width: 400px;
@@ -13,6 +13,18 @@ body {
     font-size: 60px;
     color: #eee;
     text-align: center;
+}
+.splash .subtitle {
+    z-index: 0;
+    position: absolute;
+    width: 400px;
+    top: 60%;
+    left: 50%;
+    margin-left: -200px;
+    font-size: 14px;
+    color: #eee;
+    text-align: center;
+    background: #333;
 }
 body, button {
     font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
@@ -52,6 +64,7 @@ a {
     width: 100%;
     height: 100%;
     user-select: none;
+    visibility: hidden;
 }
 .container .cover {
     position: absolute;
@@ -334,4 +347,15 @@ hr {
 
 .leaflet-popup-tip {
     background: rgba(40,40,40,0.9);
+}
+
+.loader {
+    opacity: 0;
+    -webkit-animation: dot 1.3s infinite;
+    -webkit-animation-delay: 0.0s;
+}
+
+@-webkit-keyframes dot {
+     25% { opacity: 0; }
+    100% { opacity: 1; }
 }

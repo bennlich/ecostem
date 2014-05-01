@@ -67,11 +67,7 @@ export var ElevationService = ['$rootScope', '$q', function($rootScope, $q) {
                 /* cached data was found */
 
                 var imageData = this.ctx.createImageData(this.canvas.width, this.canvas.height);
-
-                _.each(data, function(d, idx) {
-                    imageData.data[idx] = d;
-                });
-
+                imageData.data.set(data);
                 this.imageData = data;
                 this.ctx.putImageData(imageData, 0, 0);
 

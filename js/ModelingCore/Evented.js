@@ -26,4 +26,8 @@ export class Evented {
     fire(eventName, argument) {
         _.each(this.events[eventName], (cb) => setTimeout(() => cb(argument)));
     }
+
+    fireAll(argument) {
+        for (var k in this.events) { this.fire(k, argument); }
+    }
 }

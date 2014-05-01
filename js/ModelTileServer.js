@@ -1,6 +1,10 @@
 
-export class ModelTileServer {
+import {Evented} from "./ModelingCore/Evented";
+
+export class ModelTileServer extends Evented {
     constructor(modelTileRenderer) {
+        super();
+
         this.renderer = modelTileRenderer;
         this.fb = new Firebase("https://simtable.firebaseio.com/nnmc/livetiles2");
         this.callbacks = [];
@@ -40,7 +44,8 @@ export class ModelTileServer {
             if (!zxy)
                 return;
 
-            this.uninstallTileUpdateLoop(zxy);
+            this.off(zxy);
+            //this.uninstallTileUpdateLoop(zxy);
             this._layerRef.child(zxy).remove();
         });
     }
@@ -71,11 +76,7 @@ export class ModelTileServer {
     _run() {
         if (this.isRunning) {
             var world = this.renderer.model.world;
-
-            _.each(this.callbacks, (cb) => {
-                setTimeout(() => cb.cb(world), 0);
-            });
-
+            this.fireAll(world);
             setTimeout(() => this._run(), 600);
         }
     }
@@ -96,7 +97,11 @@ export class ModelTileServer {
 
         if (tileClosure) {
             if (this.renderer.model.isAnimated) {
-                this.installTileUpdateLoop(fbHandle, (world) => {
+                /* Maybe this doesn't fit too well with Evented, because
+                   it registers one callback per fbHandle. So this.fireAll()
+                   will fire the events somewhat inefficiently, iterating
+                   a 1-element array for each key. */
+                this.on(fbHandle, (world) => {
                     tileClosure(world);
                     this._layerRef.child(fbHandle).set(canvas.toDataURL());
                 });

@@ -7,14 +7,8 @@ export class ModelTileServer extends Evented {
 
         this.renderer = modelTileRenderer;
         this.fb = new Firebase("https://simtable.firebaseio.com/nnmc/livetiles2");
-        this.callbacks = [];
         this.isRunning = false;
         this._layerRef = null;
-    }
-
-    hasCallback(fbHandle) {
-        var cb = _.find(this.callbacks, (cb) => cb.name === fbHandle);
-        return !!cb;
     }
 
     _init(name) {
@@ -45,20 +39,8 @@ export class ModelTileServer extends Evented {
                 return;
 
             this.off(zxy);
-            //this.uninstallTileUpdateLoop(zxy);
             this._layerRef.child(zxy).remove();
         });
-    }
-
-    installTileUpdateLoop(fbHandle, cb) {
-        this.callbacks.push({
-            name: fbHandle,
-            cb: cb
-        });
-    }
-
-    uninstallTileUpdateLoop(fbHandle) {
-        this.callbacks = _.reject(this.callbacks, (cb) => cb.name === fbHandle);
     }
 
     start(name) {
@@ -70,7 +52,6 @@ export class ModelTileServer extends Evented {
     stop() {
         this.isRunning = false;
         this._layerRef.remove();
-        this.callbacks = [];
     }
 
     _run() {
@@ -82,7 +63,7 @@ export class ModelTileServer extends Evented {
     }
 
     handleTileRequest(fbHandle) {
-        if (this.hasCallback(fbHandle)) {
+        if (this.events.hasOwnProperty(fbHandle)) {
             return;
         }
 

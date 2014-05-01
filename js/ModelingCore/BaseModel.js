@@ -1,6 +1,10 @@
 
-export class BaseModel {
+import {Evented} from "./Evented";
+
+export class BaseModel extends Evented {
     constructor(xs, ys, geometry, modelSet) {
+        super();
+
         this.xSize = xs;
         this.ySize = ys;
         this.geometry = geometry;
@@ -76,25 +80,6 @@ export class BaseModel {
         return n;
     }
 
-    step() { this.runCallbacks(); }
-
-    runCallbacks() {
-        this.modelPool.safeApply(() => {
-            _.each(this.callbacks, (cb) => {
-                setTimeout(() => {
-                    cb(this.world);
-                }, 0);
-            });
-        });
-    }
-
-    onChange(cb) {
-        if (typeof cb === 'function') {
-            this.callbacks.push(cb);
-        }
-    }
-
-    clearCallbacks() {
-        this.callbacks = [];
-    }
+    /* override this */
+    step() { }
 };

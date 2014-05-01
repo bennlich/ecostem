@@ -113,7 +113,7 @@ export class ModelTileRenderer {
         this.canvasLayer.drawTile = (canvas, tilePoint, zoom) => {
             var renderStep = this.getDrawTileClosure(canvas, tilePoint.x, tilePoint.y, zoom);
             if (this.model.isAnimated)
-                this.model.onChange(renderStep);
+                this.model.on('change', renderStep);
             if (!this.model.isAnimated || !this.model.isRunning) {
                 if (renderStep)
                     renderStep(this.model.world);
@@ -121,12 +121,12 @@ export class ModelTileRenderer {
         };
 
         this.map.leafletMap.on('zoomstart', () => {
-            this.model.clearCallbacks();
+            this.model.off('change');
         });
 
         this.map.leafletMap.on('layerremove', (e) => {
             if (e.layer === this.canvasLayer) {
-                this.model.clearCallbacks();
+                this.model.off('change');
             }
         });
 
@@ -136,7 +136,7 @@ export class ModelTileRenderer {
     refreshLayer() {
         if (this.model.isAnimated) {
             if (!this.model.isRunning)
-                this.model.runCallbacks();
+                this.model.fire('change', this.model.world);
         } else if (this.map.leafletMap.hasLayer(this.canvasLayer)) {
             this.canvasLayer.redraw();
         }

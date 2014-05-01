@@ -14,6 +14,7 @@ export class ErosionModel extends BaseModel {
 
     reset() {
         this.putData(0, 0, this.xSize, this.ySize, { erosion: 0 });
+        this.fire('change', this.world);
     }
 }
 

@@ -49,7 +49,6 @@ export class WaterModel extends BaseModel {
 
         if (erosionModel) {
             erosionModel.reset();
-            erosionModel.runCallbacks();
         }
     }
 
@@ -89,8 +88,6 @@ export class WaterModel extends BaseModel {
     }
 
     step() {
-        super.step();
-
         var fireSeverityModel = this.modelPool.getDataModel('Fire Severity');
 
         for (var i = 0; i < this.xSize; ++i) {
@@ -182,6 +179,8 @@ export class WaterModel extends BaseModel {
                 */
             }
         }
+        this.fire('change', this.world);
+        this._erosionModel().fire('change',this._erosionModel().world)
     }
 
     updateSlopeAndAspect(x, y) {

@@ -22,7 +22,7 @@ export class ModelPool {
         this.crs = new LeafletCoordSystem(map.leafletMap);
     }
 
-    _makeModel(name, constructor, width, patchRendererClass, bbox, uiOpts, controls) {
+    _makeModel(name, constructor, width, patchRendererClass, bbox, uiOpts) {
         var ratio = bbox.pixelHeight() / bbox.pixelWidth(),
             height = Math.floor(width * ratio);
 
@@ -30,8 +30,6 @@ export class ModelPool {
             patchRenderer = new patchRendererClass(model),
             tileRenderer = new ModelTileRenderer(this.map, model, patchRenderer),
             tileServer = new ModelTileServer(tileRenderer);
-
-        controls = controls || {};
 
         return {
             name: name,

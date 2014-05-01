@@ -8,9 +8,9 @@ export class Evented {
         if (typeof callback !== 'function')
             return;
         if (! this.events.hasOwnProperty(eventName)) {
-            var e = this.events[eventName] = [];
-            e.push(callback);
+            this.events[eventName] = [];
         }
+        this.events[eventName].push(callback);
     }
 
     off(eventName, callback) {

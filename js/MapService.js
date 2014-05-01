@@ -1,6 +1,4 @@
 
-var map;
-
 import {ModelBBox} form './ModelingCore/ModelBBox';
 import {Rect} from './Util';
 import {ModelPool} from './ModelingCore/ModelPool';
@@ -12,7 +10,7 @@ export var MapService = ['$location', '$rootScope', '$q', function($location, $r
     return {
         deferred: $q.defer(),
         init: function(id) {
-            map = this;
+            window.map = this;
 
             this.leafletMap = new L.Map(id,{ minZoom: 3, maxZoom: 15 });
             this.zIndex = 10;

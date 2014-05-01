@@ -1,13 +1,21 @@
 
 var Directives = angular.module('Directives', ['Services']);
 
+/* Hides the splash screen when elevation is done loading. */
+Directives.directive('splashScreen', [function() {
+    return function(scope, elem, attrs) {
+        scope.$watch('elevationLoaded', function(val) {
+            if (!!val)
+                element.fadeOut();
+        });
+    };
+}]);
+
 /* This directive shows the main app pane when it's done loading. */
-Directives.directive('mainContainer', ['map', function(map) {
+Directives.directive('mainContainer', [function() {
     return function(scope, element, attrs) {
         scope.$watch('elevationLoaded', function(val) {
             if (!!val) {
-                /* hide the splahes before showing the app */
-                $('.splash').hide();
                 /* Kind of a dirty fun trick to get the app to fade in
                    after loading. The container is kept with visibility:hidden
                    in the loading phase. While it's not visible, it still

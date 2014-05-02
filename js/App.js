@@ -1,17 +1,15 @@
+"use strict";
 
 /* This is the application entrypoint. The app is started simply by
    importing this module. */
 
-import {TransferFunctions} from './ModelingParams/TransferFunctions';
-import {FireSeverityModel} from './Models/FireSeverityModel';
-import {VegetationModel} from './Models/VegetationModel';
 import {
-    TransferFunctionsMixin,
-    SandScanMixin,
-    SensorsMixin,
-    RasterPaintingMixin,
-    VegetationAutofillMixin,
-    LayerPublishingMixin
+    transferFunctionsMixin,
+    sandScanMixin,
+    sensorsMixin,
+    rasterPaintingMixin,
+    vegetationAutofillMixin,
+    layerPublishingMixin
 } from './AppMixins';
 import './AppDirectives';
 import './AppServices';
@@ -49,7 +47,7 @@ Ecostem.run(['$rootScope', function($rootScope) {
 
     $rootScope.safeApply = function(fn) {
         var phase = this.$root.$$phase;
-        if(phase == '$apply' || phase == '$digest') {
+        if(phase === '$apply' || phase === '$digest') {
             if(fn && (typeof(fn) === 'function')) {
                 fn();
             }
@@ -77,18 +75,18 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
        to group related functions together and declutter the main controller. */
 
     /* Functionality related to editing transfer functions in the UX */
-    TransferFunctionsMixin($scope);
+    transferFunctionsMixin($scope);
     /* 3D scanning for use with projector/camera interface on the sand table.
        Not yet in use. */
-    SandScanMixin($scope, map);
+    sandScanMixin($scope, map);
     /* Managing sensors on the map. */
-    SensorsMixin($scope, $compile, map);
+    sensorsMixin($scope, $compile, map);
     /* Painting functionality for models that support it. */
-    RasterPaintingMixin($scope, map);
+    rasterPaintingMixin($scope, map);
     /* Autofill/Clear buttons for vegetation transfer functions */
-    VegetationAutofillMixin($scope, map);
+    vegetationAutofillMixin($scope, map);
     /* The "Publish" button; serving dynamic tiles for a layer through Firebase */
-    LayerPublishingMixin($scope);
+    layerPublishingMixin($scope);
 
     /* This is kind of the "main" function of ecostem. */
     $q.all([map.deferred.promise, elevationSampler.deferred.promise]).then(function() {

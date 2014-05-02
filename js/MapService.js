@@ -1,5 +1,6 @@
+"use strict";
 
-import {ModelBBox} form './ModelingCore/ModelBBox';
+import {ModelBBox} from './ModelingCore/ModelBBox';
 import {Rect} from './Util';
 import {ModelPool} from './ModelingCore/ModelPool';
 import {Animator} from './ModelingCore/Animator';
@@ -10,6 +11,7 @@ export var MapService = ['$location', '$rootScope', '$q', function($location, $r
     return {
         deferred: $q.defer(),
         init: function(id) {
+            /* for debugging */
             window.map = this;
 
             this.leafletMap = new L.Map(id,{ minZoom: 3, maxZoom: 15 });
@@ -60,7 +62,7 @@ export var MapService = ['$location', '$rootScope', '$q', function($location, $r
             // set map bounds to bbox argument in url
             var urlParams = $location.search(),
                 bounds = urlParams.bbox && urlParams.bbox.split(',');
-            if (bounds && bounds.length == 4) {
+            if (bounds && bounds.length === 4) {
                 this.leafletMap.fitBounds([
                     [bounds[0], bounds[1]],
                     [bounds[2], bounds[3]]
@@ -208,7 +210,7 @@ export var MapService = ['$location', '$rootScope', '$q', function($location, $r
         /* editable data layers */
         _makeModelLayers: function(bbox) {
             TransferFunctions.init();
-            this.modelPool = new ModelPool(map, bbox, $rootScope);
+            this.modelPool = new ModelPool(this, bbox, $rootScope);
 
             var layers = _.map(_.values(this.modelPool.models), (model) => {
                 return {
@@ -239,7 +241,7 @@ export var MapService = ['$location', '$rootScope', '$q', function($location, $r
         },
 
         _makeGrayLayer:  function() {
-            var opts = {zIndex: this.zIndex++, opacity: .3};
+            var opts = {zIndex: this.zIndex++, opacity: 0.3};
             var layer = L.tileLayer.canvas(opts);
 
             layer.drawTile = (canvas, tilePoint, zoom) => {

@@ -1,3 +1,4 @@
+"use strict";
 
 /* These mixins augment the main application scope. See App.js */
 
@@ -5,7 +6,7 @@ import {TransferFunctions} from './ModelingParams/TransferFunctions';
 import {FireSeverityModel} from './Models/FireSeverityModel';
 import {VegetationModel} from './Models/VegetationModel';
 
-export function TransferFunctionsMixin($scope) {
+export function transferFunctionsMixin($scope) {
     $scope.activeTransferFunction = null;
     $scope.setActiveTransferFunction = function(tf) {
         $scope.activeTransferFunction = tf;
@@ -31,7 +32,7 @@ export function TransferFunctionsMixin($scope) {
     };
 }
 
-export function SandScanMixin($scope, map) {
+export function sandScanMixin($scope, map) {
     $scope.scanFlatDone = false;
 
     $scope.scanFlat = function() {
@@ -40,7 +41,7 @@ export function SandScanMixin($scope, map) {
                 $scope.scanFlatDone = true;
             });
         });
-    }
+    };
 
     $scope.scanMountain = function() {
         AnySurface.Scan.mountainScan(function(data) {
@@ -70,35 +71,9 @@ export function SandScanMixin($scope, map) {
             }
         });
     };
-
-    $scope.mountainScanDone = function() {
-        var h = parser.headers;
-        var width = h.cellsize * h.ncols;
-        var height = h.cellsize * h.nrows;
-
-        var southWest = new L.LatLng(h.yllcorner, h.xllcorner);
-        var northEast = new L.LatLng(h.yllcorner+height, h.xllcorner+width);
-        var box = new L.LatLngBounds(southWest, northEast);
-        console.log(box);
-        var modelBBox = new ModelBBox(box, map.leafletMap);
-
-        var model = new GenericModel(h.ncols, h.nrows, modelBBox, map.modelPool.virtualWidth, map.modelPool);
-        model.setWorld(parser.data);
-        var tileRenderer = new ModelTileRenderer(map, model, GenericPatchRenderer(model));
-        var tileServer = new ModelTileServer(tileRenderer);
-
-        var obj = {
-            name: 'Acequias',
-            dataModel: model,
-            renderer: tileRenderer,
-            server: tileServer
-        };
-
-        map.addDataLayer(obj);
-    };
 }
 
-export function SensorsMixin($scope, $compile, map) {
+export function sensorsMixin($scope, $compile, map) {
     $scope.addingSensor = false;
     $scope.sensorId = 0;
     $scope.sensors = {};
@@ -179,7 +154,7 @@ export function SensorsMixin($scope, $compile, map) {
     };
 }
 
-export function RasterPaintingMixin($scope, map) {
+export function rasterPaintingMixin($scope, map) {
     $scope.editedLayer = null;
     $scope.scaleValue = {};
 
@@ -253,7 +228,7 @@ export function RasterPaintingMixin($scope, map) {
     };
 }
 
-export function VegetationAutofillMixin($scope, map) {
+export function vegetationAutofillMixin($scope, map) {
     $scope.drawVegetation = function(vegType) {
         console.log('draw veg', vegType);
 
@@ -298,7 +273,7 @@ export function VegetationAutofillMixin($scope, map) {
     };
 }
 
-export function LayerPublishingMixin($scope) {
+export function layerPublishingMixin($scope) {
     $scope.serveTiles = function(layer) {
         $scope.serverLayer = layer;
         $scope.serverLayerName = layer.name;
@@ -326,15 +301,15 @@ export function LayerPublishingMixin($scope) {
 }
 
 /* currently inactive */
-function SlopeMixin() {
+function slopeMixin($scope) {
     $scope.toggleSlope = function() {
         if ($scope.showSlope) {
             $scope.showSlope = false;
         }
         else {
             var waterModel = $scope.map.modelLayers[2].model.dataModel;
-            curSlope = waterModel.getSlope();
-            calculatedSlope = waterModel.calculateSlope();
+            var curSlope = waterModel.getSlope();
+            var calculatedSlope = waterModel.calculateSlope();
 
             var curSlopeImage = curSlope.toImage(),
                 calculatedSlopeImage = calculatedSlope.toImage();
@@ -344,7 +319,7 @@ function SlopeMixin() {
             for (var i = 0; i < curSlope.data.length; i++) {
                 slopeDiffData.push(curSlope.data[i] - calculatedSlope.data[i]);
             }
-            slopeDiff = new ABM.DataSet(curSlopeImage.width, curSlopeImage.height, slopeDiffData);
+            var slopeDiff = new ABM.DataSet(curSlopeImage.width, curSlopeImage.height, slopeDiffData);
             var slopeDiffImage = slopeDiff.toImage();
 
             var slopeCanvas1 = document.getElementById('slopeCanvas1'),

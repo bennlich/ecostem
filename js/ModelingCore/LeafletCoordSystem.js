@@ -26,41 +26,41 @@ export class LeafletCoordSystem {
     // bleeding edge 0.8-dev: https://github.com/Leaflet/Leaflet/blob/master/src/geo/crs/CRS.js
 
     commonCoordToModelCoord(latlng, model) {
-    	var zoom = 15,
-    	    bbox = model.geometry,
-    	    point = this.leafletMap.project(latlng, zoom),
-    	    origin = this.leafletMap.project(bbox.bbox.getNorthWest(), zoom),
-    	    bboxWidth = bbox.pixelWidth(zoom),
-    	    bboxHeight = bbox.pixelHeight(zoom);
+        var zoom = 15,
+            bbox = model.geometry,
+            point = this.leafletMap.project(latlng, zoom),
+            origin = this.leafletMap.project(bbox.bbox.getNorthWest(), zoom),
+            bboxWidth = bbox.pixelWidth(zoom),
+            bboxHeight = bbox.pixelHeight(zoom);
 
-    	var pixelX = point.x - origin.x,  // pixel coordinates, relative to origin
-    	    pixelY = point.y - origin.y;
+        var pixelX = point.x - origin.x,  // pixel coordinates, relative to origin
+            pixelY = point.y - origin.y;
 
-    	var patchWidth = bboxWidth / model.xSize, // in pixels
-    	    patchHeight = bboxHeight / model.ySize;
+        var patchWidth = bboxWidth / model.xSize, // in pixels
+            patchHeight = bboxHeight / model.ySize;
 
-    	var x = Math.floor(pixelX / patchWidth),
-    	    y = Math.floor(pixelY / patchHeight);
+        var x = Math.floor(pixelX / patchWidth),
+            y = Math.floor(pixelY / patchHeight);
 
-    	return {x:x, y:y};
+        return {x:x, y:y};
     }
 
     modelCoordToCommonCoord(xy, model) {
-    	var zoom = 15,
-    	    bbox = model.geometry,
-    	    origin = this.leafletMap.project(bbox.bbox.getNorthWest(), zoom),
-    	    bboxWidth = bbox.pixelWidth(zoom),
-    	    bboxHeight = bbox.pixelHeight(zoom);
+        var zoom = 15,
+            bbox = model.geometry,
+            origin = this.leafletMap.project(bbox.bbox.getNorthWest(), zoom),
+            bboxWidth = bbox.pixelWidth(zoom),
+            bboxHeight = bbox.pixelHeight(zoom);
 
-        	var patchWidth = bboxWidth / model.xSize, // in pixels
-    	    patchHeight = bboxHeight / model.ySize;
+        var patchWidth = bboxWidth / model.xSize, // in pixels
+            patchHeight = bboxHeight / model.ySize;
 
-    	var pixelX = xy.x * patchWidth, // pixel coordinates, relative to origin
-    	    pixelY = xy.y * patchHeight;
+        var pixelX = xy.x * patchWidth, // pixel coordinates, relative to origin
+            pixelY = xy.y * patchHeight;
 
-    	var point = new L.Point(origin.x + pixelX, origin.y + pixelY);
+        var point = new L.Point(origin.x + pixelX, origin.y + pixelY);
 
-    	return this.leafletMap.unproject(point, zoom);
+        return this.leafletMap.unproject(point, zoom);
     }
 
     // Ideally, the above functions would look
@@ -98,5 +98,4 @@ export class LeafletCoordSystem {
 
     // 	return crs.unproject(point);
     // }
-
-};
+}

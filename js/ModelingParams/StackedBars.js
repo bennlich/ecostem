@@ -1,3 +1,4 @@
+"use strict";
 
 export function StackedBars(opts) {
     var domain = opts.domain,
@@ -30,27 +31,27 @@ export function StackedBars(opts) {
     }
 
     transfer.show = function() {
-    	$(this.container[0]).show();
-    }
+        $(this.container[0]).show();
+    };
 
     transfer.hide = function() {
-    	$(this.container[0]).hide();
-    }
+        $(this.container[0]).hide();
+    };
 
     transfer.render = function() {
-    	var columns = this.container.selectAll('g.column');
+        var columns = this.container.selectAll('g.column');
 
-    	var controlGroup = columns.selectAll('g.control')
-    		.data(function(d) { return transfer.controls[d]; });
-    	controlGroup.select('rect.control')
-    		.attr('y', function(d) {
-    			return transfer.yScale(d.val);
-    		});
+        var controlGroup = columns.selectAll('g.control')
+            .data(function(d) { return transfer.controls[d]; });
+        controlGroup.select('rect.control')
+            .attr('y', function(d) {
+                return transfer.yScale(d.val);
+            });
 
-    	controlGroup.select('rect.handle')
-    		.attr('y', function(d) {
-    			return transfer.yScale(d.val) - 10;
-    		});
+        controlGroup.select('rect.handle')
+            .attr('y', function(d) {
+                return transfer.yScale(d.val) - 10;
+            });
 
         var barGroup = columns.selectAll('rect.bar')
             .data(function(d) { return transfer.rectangles[d]; })
@@ -77,9 +78,9 @@ export function StackedBars(opts) {
     // these scales convert from the extent of the data to
     // the extent of the svg canvas where we want to draw
     transfer.xScale = d3.scale.ordinal().domain(domain)
-    	.rangeBands([0 + padding, width - padding]);
+        .rangeBands([0 + padding, width - padding]);
     transfer.yScale = d3.scale.linear().domain([0,1])
-    	.rangeRound([0 + padding, height - padding]);
+        .rangeRound([0 + padding, height - padding]);
 
     // init data
     var partitionScale = d3.scale.linear().domain([0,range.length]).range([0,1]);
@@ -111,8 +112,8 @@ export function StackedBars(opts) {
     transfer.controls = {};
     transfer.rectangles = {};
     domain.forEach(function(name) {
-    	transfer.rectangles[name] = newRectangleGroup();
-    	transfer.controls[name] = newControlGroup(transfer.rectangles[name]);
+        transfer.rectangles[name] = newRectangleGroup();
+        transfer.controls[name] = newControlGroup(transfer.rectangles[name]);
     });
 
     // svg container
@@ -121,17 +122,17 @@ export function StackedBars(opts) {
         .attr('class', 'stacked-bars');
 
     var columns = container.selectAll('g.column')
-    	.data(domain).enter()
-    	.append('g')
-    	.attr('class', 'column')
-    	.attr('transform', function(d) {
-    		return 'translate('+transfer.xScale(d)+',0)';
-    	});
+        .data(domain).enter()
+        .append('g')
+        .attr('class', 'column')
+        .attr('transform', function(d) {
+            return 'translate('+transfer.xScale(d)+',0)';
+        });
 
     var barGroup = columns.selectAll('rect.bar')
         .data(function(d) { return transfer.rectangles[d]; }).enter()
         .append('rect')
-        .attr('class', function(d) { return 'bar '+d.class })
+        .attr('class', function(d) { return 'bar '+d.class; })
         .attr('width', transfer.xScale.rangeBand())
         .attr('height', function(d) {
             return transfer.yScale(d.yBottom) - transfer.yScale(d.yTop);
@@ -154,32 +155,32 @@ export function StackedBars(opts) {
         });
 
     var controlGroup = columns.selectAll('g.control')
-    	.data(function(d) { return transfer.controls[d]; }).enter()
-    	.append('g')
-    	.attr('class', 'control')
-    	.call(d3.behavior.drag()
-			.on('drag', function(d,i) {
-				d.val = transfer.yScale.invert(d3.event.y);
+        .data(function(d) { return transfer.controls[d]; }).enter()
+        .append('g')
+        .attr('class', 'control')
+        .call(d3.behavior.drag()
+            .on('drag', function(d) {
+                d.val = transfer.yScale.invert(d3.event.y);
                 d.val = Math.min(d.bottomBar.yBottom, Math.max(d.val, d.topBar.yTop));
                 d.topBar.yBottom = d.bottomBar.yTop = d.val;
-				transfer.render();
-			}));
+                transfer.render();
+            }));
 
     controlGroup.append('rect')
-    	.attr('class', 'control')
-    	.attr('width', transfer.xScale.rangeBand())
-    	.attr('height', 1)
-    	.attr('y', function(d) {
-    		return transfer.yScale(d.val);
-    	});
+        .attr('class', 'control')
+        .attr('width', transfer.xScale.rangeBand())
+        .attr('height', 1)
+        .attr('y', function(d) {
+            return transfer.yScale(d.val);
+        });
 
     controlGroup.append('rect')
-    	.attr('class', 'handle')
-    	.attr('width', transfer.xScale.rangeBand())
-    	.attr('height', 21)
-    	.attr('y', function(d) {
-    		return transfer.yScale(d.val) - 10;
-    	});
+        .attr('class', 'handle')
+        .attr('width', transfer.xScale.rangeBand())
+        .attr('height', 21)
+        .attr('y', function(d) {
+            return transfer.yScale(d.val) - 10;
+        });
 
     // axes
     var xAxis = d3.svg.axis().scale(transfer.xScale);
@@ -187,19 +188,15 @@ export function StackedBars(opts) {
     // yAxis = d3.svg.axis().scale(yAxisScale).orient('left').ticks(2).tickFormat(d3.format("%"));
 
     container.append('g')
-		.attr('class', 'x-axis')
-		.attr('transform', 'translate(0,' + (height - padding) + ')')
-		.call(xAxis);
-  //   container.append('g')
-		// .attr('class', 'y-axis')
-		// .attr('transform', 'translate(' + (padding) + ',0)')
-		// .call(yAxis);
+        .attr('class', 'x-axis')
+        .attr('transform', 'translate(0,' + (height - padding) + ')')
+        .call(xAxis);
 
     // labels
     var title = container.append('text')
-		.attr('class', 'title')
-		.attr('text-anchor', 'middle')
-		.attr('transform', 'translate(' + width / 2 + ',' + (padding - 30) + ')');
+        .attr('class', 'title')
+        .attr('text-anchor', 'middle')
+        .attr('transform', 'translate(' + width / 2 + ',' + (padding - 30) + ')');
     for (var i = 0; i < range.length; i++) {
         title.append('tspan')
             .attr('class', colorClassnames[i])
@@ -208,21 +205,21 @@ export function StackedBars(opts) {
         if (i < range.length - 2) {
             title.append('tspan').text(', ');
         }
-        else if (i == range.length - 2) {
+        else if (i === range.length - 2) {
             title.append('tspan').text(', and ');
         }
     }
 
     container.append('text')
-		.attr('class', 'x-label')
-		.attr('text-anchor', 'middle')
-		.attr('transform', 'translate(' + width / 2 + ',' + (height - padding + 40) + ')')
-		.text(domainTitle);
+        .attr('class', 'x-label')
+        .attr('text-anchor', 'middle')
+        .attr('transform', 'translate(' + width / 2 + ',' + (height - padding + 40) + ')')
+        .text(domainTitle);
     container.append('text')
-		.attr('class', 'y-label')
-		.attr('text-anchor', 'middle')
-		.attr('transform', 'rotate(-90) translate(' + -height / 2 + ',' + (padding - 20) + ')')
-		.text(rangeTitle);
+        .attr('class', 'y-label')
+        .attr('text-anchor', 'middle')
+        .attr('transform', 'rotate(-90) translate(' + -height / 2 + ',' + (padding - 20) + ')')
+        .text(rangeTitle);
 
     $(transfer.container[0]).hide();
 

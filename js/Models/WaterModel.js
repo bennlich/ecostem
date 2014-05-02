@@ -1,6 +1,5 @@
 
 import {BaseModel} from '../ModelingCore/BaseModel';
-import {FireSeverityModel} from './FireSeverityModel';
 import {TransferFunctions} from '../ModelingParams/TransferFunctions';
 import {PatchRenderer} from '../ModelingCore/PatchRenderer';
 
@@ -54,13 +53,11 @@ export class WaterModel extends BaseModel {
     }
 
     start() {
-        /* call superclass */
         super.start();
         this._erosionModel().start();
     }
 
     stop() {
-        /* call superclass */
         super.stop();
         this._erosionModel().stop();
     }
@@ -89,8 +86,6 @@ export class WaterModel extends BaseModel {
     }
 
     step() {
-        var fireSeverityModel = this.modelPool.getDataModel('Fire Severity');
-
         for (var i = 0; i < this.xSize; ++i) {
             for (var j = 0; j < this.ySize; ++j) {
                 var patch = this.world[i][j];
@@ -98,19 +93,11 @@ export class WaterModel extends BaseModel {
                 if (patch.volume === 0)
                     continue;
 
-                // calculate evaporation and infiltration (what's left is runoff)
-                var burnSeverityModel = this._burnSeverityModel(),
-                    patchSeverity = FireSeverityModel.typeToString(burnSeverityModel.world[i][j].severity);
-
-                var evapInfRunoff = TransferFunctions.funs.evapInfRunoff(patchSeverity);
-
-                //patch.volume = patch.volume * evapInfRunoff.Runoff;
-
                 // the amount of water that flows is proportional to the difference in heights
                 // between the current patch and its lowest neighbor
-                var minNeighbor = _.min(this.neighbors(i,j), function(neighbor) {
-                    return neighbor.volume + neighbor.elevation + neighbor.siltDeposit + neighbor.siltFloating;
-                });
+                var minNeighbor = _.min(this.neighbors(i,j), (neighbor) =>
+                    neighbor.volume + neighbor.elevation + neighbor.siltDeposit + neighbor.siltFloating
+                );
 
                 var patchHeight = patch.volume + patch.elevation + patch.siltDeposit + patch.siltFloating;
                 var neighborHeight = minNeighbor.volume + minNeighbor.elevation + minNeighbor.siltDeposit + minNeighbor.siltFloating;
@@ -130,14 +117,13 @@ export class WaterModel extends BaseModel {
 
                 /* Code below deals with erosion and deposit -- silting */
 
-                var erosionModel = this._erosionModel(),
-                    /* soil height to be eroded */
-                    erosionValue = TransferFunctions.funs.velocityToErosion(velocity),
+                /* soil height to be eroded */
+                var erosionValue = TransferFunctions.funs.velocityToErosion(velocity),
                     /* percentage of floating silt to be deposited */
                     depositValue = TransferFunctions.funs.velocityToDeposit(velocity)/100;
 
                 if (erosionValue < 0) {
-                    throw new Error('neg erosion');
+                    throw new Error('negative erosion');
                 }
 
                 /* dislodge silt and make it float */
@@ -181,9 +167,10 @@ export class WaterModel extends BaseModel {
             }
         }
         this.fire('change', this.world);
-        this._erosionModel().fire('change',this._erosionModel().world)
+        this._erosionModel().fire('change',this._erosionModel().world);
     }
 
+    /*
     updateSlopeAndAspect(x, y) {
         // recalculate local slope and aspect around the current patch
         var kernelSize = 3,
@@ -220,6 +207,7 @@ export class WaterModel extends BaseModel {
     calculateSlope() {
         return this.patchHeights.slopeAndAspect().slope;
     }
+    */
 }
 
 export class WaterPatchRenderer extends PatchRenderer {

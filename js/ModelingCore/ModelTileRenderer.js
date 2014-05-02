@@ -22,7 +22,7 @@ export class ModelTileRenderer {
         // the rectangular area of canvas tile that intersects the scenario
         var intersection = canvasRect.intersect(scenarioRect);
 
-        if (intersection == null) {
+        if (intersection === null) {
             // no intersection, nothing to do
             return null;
         }

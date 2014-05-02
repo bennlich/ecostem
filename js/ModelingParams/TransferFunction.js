@@ -1,10 +1,10 @@
+"use strict";
 
-export function TransferFunction(domain, domainUnit, range, rangeUnit, title, svgcanvas_id) {
-
+export function TransferFunction(domain, domainUnit, range, rangeUnit, title, svgcanvasID) {
     var svgcanID = "transfer-function-svg";
 
-    if (svgcanvas_id) {
-		svgcanID = svgcanvas_id;
+    if (svgcanvasID) {
+		svgcanID = svgcanvasID;
     }
 
     transfer.title = title;
@@ -41,11 +41,11 @@ export function TransferFunction(domain, domainUnit, range, rangeUnit, title, sv
     }).left;
 
     transfer.show = function() {
-    	$(this.container[0]).show();
+        $(this.container[0]).show();
     };
 
     transfer.hide = function() {
-    	$(this.container[0]).hide();
+        $(this.container[0]).hide();
     };
 
     transfer.render = function() {
@@ -69,14 +69,15 @@ export function TransferFunction(domain, domainUnit, range, rangeUnit, title, sv
 
 
 		this.indexToXCoord.domain([0, this.pathData.length - 1]);
-		for (var i = 0; i < this.pathData.length; i++) {
+        var i;
+		for (i = 0; i < this.pathData.length; i++) {
 		    this.pathData[i] = this.interpolate(this.indexToXCoord(i));
 		}
 
 		// TODO: Make the lookup table actually a lookup table
 		// (instead of an array of samples to search through for the correct value)
 		this.indexToXCoord.domain([0, this.lookupTable.length - 1]);
-		for (var i = 0; i < this.lookupTable.length; i++) {
+		for (i = 0; i < this.lookupTable.length; i++) {
 		    this.lookupTable[i] = this.interpolate(this.indexToXCoord(i));
 		}
 

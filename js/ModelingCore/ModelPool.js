@@ -7,7 +7,6 @@ import {WaterModel, WaterPatchRenderer} from '../Models/WaterModel';
 import {LeafletCoordSystem} from './LeafletCoordSystem';
 import {ModelTileRenderer} from './ModelTileRenderer';
 import {ModelTileServer} from '../ModelTileServer';
-import {TransferFunctions} from '../ModelingParams/TransferFunctions';
 
 export class ModelPool {
     constructor(map, defaultBBox, scope) {
@@ -22,11 +21,11 @@ export class ModelPool {
         this.crs = new LeafletCoordSystem(map.leafletMap);
     }
 
-    _makeModel(name, constructor, width, patchRendererClass, bbox, uiOpts) {
+    _makeModel(name, modelClass, width, patchRendererClass, bbox, uiOpts) {
         var ratio = bbox.pixelHeight() / bbox.pixelWidth(),
             height = Math.floor(width * ratio);
 
-        var model = new constructor(width, height, bbox, this),
+        var model = new modelClass(width, height, bbox, this),
             patchRenderer = new patchRendererClass(model),
             tileRenderer = new ModelTileRenderer(this.map, model, patchRenderer),
             tileServer = new ModelTileServer(tileRenderer);

@@ -1,3 +1,4 @@
+"use strict";
 
 import {BaseModel} from '../ModelingCore/BaseModel';
 import {PatchRenderer} from '../ModelingCore/PatchRenderer';

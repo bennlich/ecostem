@@ -57,8 +57,8 @@ export class Animator {
 
     _run() {
         if (this.isRunning) {
-            this.modelPool.safeApply(() => this.step());
             this._raf = window.requestAnimationFrame(() => this._run());
+            this.modelPool.safeApply(() => this.step());
         }
     }
 }

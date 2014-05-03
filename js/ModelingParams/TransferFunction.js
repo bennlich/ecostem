@@ -3,15 +3,15 @@
 import {Evented} from "../ModelingCore/Evented";
 
 export class TransferFunction {
-	constructor(opts) {
-		var svgcanID = opts.id || "transfer-function-svg";
-		this.width = $('#' + svgcanID).width();
+    constructor(opts) {
+        var svgcanID = opts.id || "transfer-function-svg";
+        this.width = $('#' + svgcanID).width();
         this.height = $('#' + svgcanID).height();
         this.container = d3.select('#' + svgcanID).append('g');
-	}
+    }
 
-	extendTransferFunc(tFunc) {
-		tFunc.show = function() {
+    extendTransferFunc(tFunc) {
+        tFunc.show = function() {
             $(this.container[0]).show();
         };
 

@@ -4,7 +4,7 @@ import {SplineControl} from './SplineControl';
 import {StackedBarsControl} from './StackedBarsControl';
 
 export var TransferFunctions = {
-    init: function($scope) {
+    init: function() {
         this.activeFunction = null;
         this.funs = {};
 
@@ -36,10 +36,6 @@ export var TransferFunctions = {
                 rangeTitle: '%'
             });
             fir.setControlPoints([[0.00,0.00],[1171.43,0.00],[2028.57,4.29],[2600.00,28.57],[3171.43,3.21],[4000.00,0.00]]);
-            fir.on('dragend', function() {
-                $scope.clearVegetation('fir');
-                $scope.drawVegetation('fir');
-            });
             return fir;
         })();
 
@@ -52,10 +48,6 @@ export var TransferFunctions = {
                 rangeTitle: '%'
             });
             sagebrush.setControlPoints([[0.00,0.00],[1028.57,1.43],[2028.57,2.86],[2600.00,53.93],[3171.43,5.71],[4000.00,0.00]]);
-            sagebrush.on('dragend', function() {
-                $scope.clearVegetation('sagebrush');
-                $scope.drawVegetation('sagebrush');
-            });
             return sagebrush;
         })();
 
@@ -68,10 +60,6 @@ export var TransferFunctions = {
                 rangeTitle: '%'
             });
             steppe.setControlPoints([[0.00,0.00],[1000.00,0.00],[2285.71,0.00],[2857.14,4.29],[3428.57,49.64],[4000.00,0.00]]);
-            steppe.on('dragend', function() {
-                $scope.clearVegetation('steppe');
-                $scope.drawVegetation('steppe');
-            });
             return steppe;
         })();
 
@@ -84,10 +72,6 @@ export var TransferFunctions = {
                 rangeTitle: '%'
             });
             grass.setControlPoints([[0.00,0.00],[1028.57,1.43],[1857.14,23.57],[2500.00,5.00],[3071.43,0.00],[3642.86,0.00]]);
-            grass.on('dragend', function() {
-                $scope.clearVegetation('grass');
-                $scope.drawVegetation('grass');
-            });
             return grass;
         })();
 

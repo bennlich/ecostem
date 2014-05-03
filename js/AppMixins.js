@@ -7,7 +7,14 @@ import {FireSeverityModel} from './Models/FireSeverityModel';
 import {VegetationModel} from './Models/VegetationModel';
 
 export function transferFunctionsMixin($scope) {
-    TransferFunctions.init($scope);
+    TransferFunctions.init();
+    _.each(['fir', 'sagebrush', 'steppe', 'grass'], (typ) => {
+        TransferFunctions.funs[typ].on('dragend', () => {
+            $scope.clearVegetation(typ);
+            $scope.drawVegetation(typ);
+        });
+    });
+
     $scope.activeTransferFunction = null;
     $scope.setActiveTransferFunction = function(tf) {
         $scope.activeTransferFunction = tf;

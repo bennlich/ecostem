@@ -7,6 +7,7 @@ import {FireSeverityModel} from './Models/FireSeverityModel';
 import {VegetationModel} from './Models/VegetationModel';
 
 export function transferFunctionsMixin($scope) {
+    TransferFunctions.init($scope);
     $scope.activeTransferFunction = null;
     $scope.setActiveTransferFunction = function(tf) {
         $scope.activeTransferFunction = tf;

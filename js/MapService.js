@@ -147,8 +147,10 @@ export var MapService = ['$location', '$rootScope', '$q', function($location, $r
 
         _makeBaseLayers: function() {
             var baseLayerSettings = {
-                minZoom: 2, maxZoom: 18,
-                zIndex: 1, zoomAnimation: false
+                minZoom: 2,
+                maxZoom: 18,
+                zIndex: 1,
+                zoomAnimation: false
             };
 
             return [{
@@ -210,16 +212,17 @@ export var MapService = ['$location', '$rootScope', '$q', function($location, $r
         _makeModelLayers: function(bbox) {
             this.modelPool = new ModelPool(this, bbox, $rootScope);
 
-            var layers = _.map(_.values(this.modelPool.models), (model) => {
-                return {
+            var layers = [
+                for (model of _.values(this.modelPool.models))
+                {
                     name: model.name,
                     model: model,
                     on: false,
                     disabled: false,
                     editing: false,
                     leafletLayer: model.renderer.makeLayer({zIndex: this.zIndex++, opacity: 0.85})
-                };
-            });
+                }
+            ];
 
             this.animator = new Animator(this.modelPool);
 
@@ -272,13 +275,7 @@ export var MapService = ['$location', '$rootScope', '$q', function($location, $r
                 });
             };
 
-            this.leafletMap.on('layeradd', function() {
-                layer.redraw();
-            });
-
-            this.leafletMap.on('layerremove', function() {
-                layer.redraw();
-            });
+            this.leafletMap.on('layeradd layerremove', () => layer.redraw());
 
             return layer;
         }

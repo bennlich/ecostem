@@ -5,6 +5,11 @@
 import {TransferFunctions} from './ModelingParams/TransferFunctions';
 import {FireSeverityModel} from './Models/FireSeverityModel';
 import {VegetationModel} from './Models/VegetationModel';
+import {ScanElevationModel} from './Models/ScanElevationModel';
+import {ElevationPatchRenderer} from './Models/ElevationModel';
+import {ModelTileRenderer} from './ModelingCore/ModelTileRenderer';
+import {ModelBBox} from './ModelingCore/ModelBBox';
+import {ModelTileServer} from './ModelTileServer';
 
 export function transferFunctionsMixin($scope) {
     TransferFunctions.init();
@@ -29,12 +34,8 @@ export function transferFunctionsMixin($scope) {
     $scope.transferFunctions = [];
     $scope.toggleTransferFunctions = function() {
         if ($scope.transferFunctions.length === 0) {
-            _.each(_.keys(TransferFunctions.funs), (k) => {
-                $scope.transferFunctions.push({
-                    name: k,
-                    title: TransferFunctions.funs[k].title
-                });
-            });
+            var funs = TransferFunctions.funs;
+            $scope.transferFunctions = [for (k of _.keys(funs)) {name: k, title: funs[k].title}];
         }
         $scope.showTransferFunctions = !$scope.showTransferFunctions;
     };
@@ -64,7 +65,7 @@ export function sandScanMixin($scope, map) {
                 model = new ScanElevationModel(w, h, bbox, map.modelPool);
                 model.load(data);
 
-                var tileRenderer = new ModelTileRenderer(map, model, ElevationPatchRenderer(model));
+                var tileRenderer = new ModelTileRenderer(map, model, new ElevationPatchRenderer(model));
                 var tileServer = new ModelTileServer(tileRenderer);
 
                 var obj = {
@@ -72,7 +73,7 @@ export function sandScanMixin($scope, map) {
                     dataModel: model,
                     renderer: tileRenderer,
                     server: tileServer
-                }
+                };
                 map.addDataLayer(obj);
             } else {
                 model.load(data);

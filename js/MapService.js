@@ -1,7 +1,7 @@
 "use strict";
 
 import {ModelBBox} from './ModelingCore/ModelBBox';
-import {Rect} from './Util';
+import {Rect} from './Util/Rect';
 import {ModelPool} from './ModelingCore/ModelPool';
 import {Animator} from './ModelingCore/Animator';
 

@@ -1,5 +1,5 @@
 
-import './Util';
+import './Util/StringUtil';
 
 export class LiveTexture {
     constructor(leafletMap) {

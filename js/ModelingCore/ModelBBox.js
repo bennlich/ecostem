@@ -1,5 +1,5 @@
 
-import {Rect} from '../Util';
+import {Rect} from '../Util/Rect';
 
 /* Wrapper for the scenario bounding box. Mainly encapsulates degree-to-pixel
  * translations */

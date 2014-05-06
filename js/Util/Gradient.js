@@ -1,36 +1,37 @@
 'use strict';
 
-var Gradient = {
+export var Gradient = {
     /* Taken from here: https://gist.github.com/THEtheChad/1297590 */
-    parseColor : function(color) {    
+    parseColor : function(color) {
         var cache, p = parseInt; // Use p as a byte saving reference to parseInt
-        
+
         color = color.replace(/\s\s*/g,''); // Remove all spaces
-        
+
         // Checks for 6 digit hex and converts string to integer
-        if ((cache = /^#([\da-fA-F]{2})([\da-fA-F]{2})([\da-fA-F]{2})/.exec(color))) 
+        if ((cache = /^#([\da-fA-F]{2})([\da-fA-F]{2})([\da-fA-F]{2})/.exec(color)))
             cache = [p(cache[1], 16), p(cache[2], 16), p(cache[3], 16)];
-        
+
         // Checks for 3 digit hex and converts string to integer
         else if ((cache = /^#([\da-fA-F])([\da-fA-F])([\da-fA-F])/.exec(color)))
             cache = [p(cache[1], 16) * 17, p(cache[2], 16) * 17, p(cache[3], 16) * 17];
-        
+
         // Checks for rgba and converts string to
         // integer/float using unary + operator to save bytes
         else if ((cache = /^rgba\(([\d]+),([\d]+),([\d]+),([\d]+|[\d]*.[\d]+)\)/.exec(color)))
             cache = [+cache[1], +cache[2], +cache[3], +cache[4]];
-        
+
         // Checks for rgb and converts string to
         // integer/float using unary + operator to save bytes
         else if ((cache = /^rgb\(([\d]+),([\d]+),([\d]+)\)/.exec(color)))
             cache = [+cache[1], +cache[2], +cache[3]];
-        
+
         // Otherwise throw an exception to make debugging easier
-        else throw Error('Cannot parse ' + color);
-        
+        else throw new Error('Cannot parse ' + color);
+
         // Performs RGBA conversion by default
-        isNaN(cache[3]) && (cache[3] = 1);
-        
+        if (isNaN(cache[3]))
+            cache[3] = 1;
+
         // Adds or removes 4th value based on rgba support
         // Support is flipped twice to prevent erros if
         // it's not defined
@@ -51,7 +52,7 @@ var Gradient = {
     },
 
     gradient: function(c1, c2, n) {
-        function c(r,g,b) { 
+        function c(r,g,b) {
             return 'rgb({0},{1},{2})'.format(r,g,b);
         }
 
@@ -83,9 +84,20 @@ var Gradient = {
         while (numSteps--) {
             gradient.push(c(Math.round(r1), Math.round(g1), Math.round(b1)));
 
-            rDir ? r1 += rInc : r1 -= rInc;
-            gDir ? g1 += gInc : g1 -= gInc;
-            bDir ? b1 += bInc : b1 -= bInc;
+            if (rDir)
+                r1 += rInc;
+            else
+                r1 -= rInc;
+
+            if (gDir)
+                g1 += gInc;
+            else
+                g1 -= gInc;
+
+            if (bDir)
+                b1 += bInc;
+            else
+                b1 -= bInc;
         }
 
         return gradient;

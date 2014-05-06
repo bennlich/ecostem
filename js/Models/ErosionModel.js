@@ -1,6 +1,7 @@
 
 import {BaseModel} from '../ModelingCore/BaseModel';
 import {PatchRenderer} from '../ModelingCore/PatchRenderer';
+import {Gradient} from '../Util/Gradient';
 
 export class ErosionModel extends BaseModel {
     constructor(xs, ys, bbox, modelSet) {

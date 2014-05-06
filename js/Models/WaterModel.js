@@ -2,6 +2,7 @@
 import {BaseModel} from '../ModelingCore/BaseModel';
 import {TransferFunctions} from '../ModelingParams/TransferFunctions';
 import {PatchRenderer} from '../ModelingCore/PatchRenderer';
+import {Gradient} from '../Util/Gradient';
 
 /* Water model inherits from BaseModel */
 

@@ -1,9 +1,10 @@
+"use strict";
 
 var Directives = angular.module('Directives', ['Services']);
 
 /* Hides the splash screen when elevation is done loading. */
 Directives.directive('splashScreen', [function() {
-    return function(scope, elem, attrs) {
+    return function(scope, element) {
         scope.$watch('elevationLoaded', function(val) {
             if (!!val)
                 element.fadeOut();
@@ -13,7 +14,7 @@ Directives.directive('splashScreen', [function() {
 
 /* This directive shows the main app pane when it's done loading. */
 Directives.directive('mainContainer', [function() {
-    return function(scope, element, attrs) {
+    return function(scope, element) {
         scope.$watch('elevationLoaded', function(val) {
             if (!!val) {
                 /* Kind of a dirty fun trick to get the app to fade in
@@ -31,8 +32,8 @@ Directives.directive('mainContainer', [function() {
     };
 }]);
 
-Directives.directive('drawingSurface', ['map', function(map) {
-    return function(scope, element, attrs) {
+Directives.directive('drawingSurface', [function() {
+    return function(scope, element) {
         function mouseHandler(e) {
             // var b = scope.editedLayer.model.dataModel.bbox,
             //     bx = b.xOffsetFromTopLeft(),
@@ -62,7 +63,7 @@ Directives.directive('mapBody', ['map', function(map) {
 }]);
 
 Directives.directive('elevationCanvas', ['elevationSampler', function(elevationSampler) {
-    return function(scope, element, attrs) {
+    return function(scope, element) {
         elevationSampler.init(element[0]);
     };
 }]);

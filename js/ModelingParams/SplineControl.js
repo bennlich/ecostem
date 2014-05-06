@@ -1,6 +1,6 @@
 "use strict";
 
-import {TransferFunction} from "./TransferFunction"
+import {TransferFunction} from "./TransferFunction";
 
 export class SplineControl extends TransferFunction {
     constructor(opts) {
@@ -10,8 +10,7 @@ export class SplineControl extends TransferFunction {
             domain = opts.domain,
             domainTitle = opts.domainTitle,
             range = opts.range,
-            rangeTitle = opts.rangeTitle,
-            svgcanID = opts.id || "transfer-function-svg";
+            rangeTitle = opts.rangeTitle;
 
         transfer.title = title;
 
@@ -49,10 +48,9 @@ export class SplineControl extends TransferFunction {
         transfer.setControlPoints = function(controlPoints) {
             this.controlPoints = controlPoints;
             this.render();
-        }
+        };
 
         transfer.render = function() {
-
             this.interpolate = Smooth(this.controlPoints, this.interpolatorOpts);
             //
             //  Curve fitting instead of smoother. It outputs a function.

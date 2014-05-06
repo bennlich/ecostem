@@ -1,6 +1,6 @@
 "use strict";
 
-import {TransferFunction} from "./TransferFunction"
+import {TransferFunction} from "./TransferFunction";
 
 export class StackedBarsControl extends TransferFunction {
     constructor(opts) {
@@ -9,8 +9,7 @@ export class StackedBarsControl extends TransferFunction {
         var domain = opts.domain,
             domainTitle = opts.domainTitle,
             range = opts.range,
-            rangeTitle = opts.rangeTitle,
-            svgcanID = opts.id || "transfer-function-svg";
+            rangeTitle = opts.rangeTitle;
 
         transfer.title = range.slice(0,range.length-1).join(", ") + ", and " + range[range.length-1];
 

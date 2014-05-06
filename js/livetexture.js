@@ -122,4 +122,4 @@ export class LiveTexture {
             this._disappearedCallbacks.push(cb);
         }
     }
-};
+}

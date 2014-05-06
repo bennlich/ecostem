@@ -5,7 +5,6 @@ export class LocalStorage {
     }
 
     filerOnError(e) {
-        console.log('Error');
         console.log('Filer Error: ', e.name);
     }
 
@@ -13,14 +12,12 @@ export class LocalStorage {
         var filer = this.filer,
             filerOnError = this.filerOnError;
 
-        filer.init({persistent: false, size: 1024*1024*20}, function(fs) {
+        filer.init({persistent: false, size: 1024*1024*20}, function() {
             callback(filer);
         }, filerOnError);
     }
 
     withDir(dir, callback) {
-        var filerOnError = this.filerOnError;
-
         this.initialized(function(filer) {
             filer.ls(dir, function() {
                 console.log('found dir', dir);
@@ -57,7 +54,7 @@ export class LocalStorage {
         this.initialized(function(filer) {
             filer.open(fileObj.fullPath, function(file) {
                 var reader = new FileReader();
-                reader.onload = function(data) {
+                reader.onload = function() {
                     callback(new Uint8Array(reader.result));
                 };
                 reader.readAsArrayBuffer(file);

@@ -1,3 +1,4 @@
+"use strict";
 
 import {LocalStorage} from './LocalStorage';
 import {computeQuad} from './Experiments';
@@ -23,7 +24,7 @@ export var ElevationService = ['$rootScope', '$q', function($rootScope, $q) {
         },
 
         hasData: function() {
-            return this.imageData != null;
+            return this.imageData !== null;
         },
 
         _bboxToString: function(bbox) {

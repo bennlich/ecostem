@@ -1,3 +1,4 @@
+"use strict";
 
 export class AscParser {
     constructor() {
@@ -101,8 +102,10 @@ export class AscParser {
 
 export class Rect {
     constructor(left,top,width,height) {
-        this.left = left, this.top = top,
-        this.width = width, this.height = height;
+        this.left = left;
+        this.top = top;
+        this.width = width;
+        this.height = height;
     }
 
     intersect(rect) {
@@ -160,5 +163,3 @@ if (typeof String.prototype.startsWith !== 'function') {
         return this.lastIndexOf(str, 0) === 0;
     };
 }
-
-export default {};

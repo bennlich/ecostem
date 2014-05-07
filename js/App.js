@@ -70,6 +70,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'mapSvc'
        been loaded. This makes sure that the mixins can do initialization assuming that
        the map has been initialized and all the models and layers are in place. */
     $q.all([mapSvc.deferred.promise, elevationSvc.deferred.promise]).then(function() {
+        /* mainSvc depends on mapSvc having loaded */
         mainSvc.init();
 
         window.sc = $scope;
@@ -82,7 +83,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'mapSvc'
         /* The main controller is broken up into "mixins", simply functions that
            attach functionality to the $scope. Their main purpose is for organization,
            to group related functions together and declutter the main controller. */
-        console.log('here');
+
         /* Functionality related to editing transfer functions in the UX */
         transferFunctionsMixin($scope, mainSvc.main, mapSvc.map);
         /* 3D scanning for use with projector/camera interface on the sand table.

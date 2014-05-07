@@ -50,7 +50,7 @@ export class Main {
     }
 
     _makeGrayLayer() {
-        var opts = {zIndex: this.zIndex++, opacity: 0.3};
+        var opts = {zIndex: this.map.zIndex++, opacity: 0.3};
         var layer = L.tileLayer.canvas(opts);
 
         layer.drawTile = (canvas, tilePoint, zoom) => {

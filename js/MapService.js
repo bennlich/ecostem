@@ -1,6 +1,6 @@
 "use strict";
 
-import {Leaflet} from './Leaflet';
+import {Leaflet} from '../st-api/Leaflet';
 
 /* Leaflet wrapper */
 export var MapService = ['$location', '$rootScope', '$q', function($location, $rootScope, $q) {
@@ -15,7 +15,7 @@ export var MapService = ['$location', '$rootScope', '$q', function($location, $r
             }
 
             this.map.addLayers();
-            console.log('here');
+
             this.deferred.resolve(this);
         },
 

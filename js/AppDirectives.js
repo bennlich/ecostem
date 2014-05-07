@@ -85,7 +85,7 @@ Directives.directive('checkedBaseLayer', ['mapSvc', function(mapSvc) {
 Directives.directive('checkedLayer', ['mapSvc', function(mapSvc) {
     return function(scope, element, attrs) {
         var layer = scope.$eval(attrs.checkedLayer);
-        console.log(layer);
+
         element.change(function() {
             mapSvc.map.toggleLayer(layer);
         });

@@ -11,9 +11,7 @@ Services.service('mainSvc', ['$rootScope', '$q', 'mapSvc', function($rootScope, 
     "use strict";
     return {
         main: null,
-        deferred: $q.defer(),
         init: function() {
-            console.log('herex',mapSvc);
             this.main = new Main(mapSvc.map);
 
             /* The following two statements are a way for the angular world to get
@@ -30,8 +28,6 @@ Services.service('mainSvc', ['$rootScope', '$q', 'mapSvc', function($rootScope, 
             });
 
             this.main.animator.wrapStep((fn) => $rootScope.safeApply(fn));
-
-            this.deferred.resolve(this);
         }
     };
 }]);

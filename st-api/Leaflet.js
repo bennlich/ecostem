@@ -1,6 +1,6 @@
 "use strict";
 
-import {ModelBBox} from '../st-api/ModelingCore/ModelBBox';
+import {ModelBBox} from './ModelingCore/ModelBBox';
 
 export class Leaflet {
     constructor(id, bbox) {

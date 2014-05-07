@@ -56,38 +56,38 @@ Directives.directive('drawingSurface', [function() {
     };
 }]);
 
-Directives.directive('mapBody', ['map', function(map) {
+Directives.directive('mapBody', ['mapSvc', function(mapSvc) {
     return function(scope, element, attrs) {
-        map.init(attrs.id);
+        mapSvc.init(attrs.id);
     };
 }]);
 
-Directives.directive('elevationCanvas', ['elevationSampler', function(elevationSampler) {
+Directives.directive('elevationCanvas', ['elevationSvc', function(elevationSvc) {
     return function(scope, element) {
-        elevationSampler.init(element[0]);
+        elevationSvc.init(element[0]);
     };
 }]);
 
-Directives.directive('checkedBaseLayer', ['map', function(map) {
+Directives.directive('checkedBaseLayer', ['mapSvc', function(mapSvc) {
     return function(scope, element, attrs) {
         var layer = scope.$eval(attrs.checkedBaseLayer);
 
         /* make sure currently selected base layer is checked */
-        element.prop('checked', map.isBaseLayer(layer));
+        element.prop('checked', mapSvc.map.isBaseLayer(layer));
 
         /* when radio button changes, trigger layer change on underlying map */
         element.change(function() {
-            map.setBaseLayer(layer);
+            mapSvc.map.setBaseLayer(layer);
         });
     };
 }]);
 
-Directives.directive('checkedLayer', ['map', function(map) {
+Directives.directive('checkedLayer', ['mapSvc', function(mapSvc) {
     return function(scope, element, attrs) {
         var layer = scope.$eval(attrs.checkedLayer);
 
         element.change(function() {
-            map.toggleLayer(layer);
+            mapSvc.map.toggleLayer(layer);
         });
     };
 }]);

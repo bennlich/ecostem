@@ -63,47 +63,47 @@ Ecostem.run(['$rootScope', function($rootScope) {
    assign every HTML snippet to a different controller. In that case we
    would have to solve inter-controller communication, usually done
    through events. */
-Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', 'elevationSampler',
-                          function( $scope,   $q,   $compile,   $http,   map,   elevationSampler)
+Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'mapSvc', 'elevationSvc',
+                          function( $scope,   $q,   $compile,   $http,   mapSvc,   elevationSvc)
 {
-    window.sc = $scope;
-    $scope.showElevation = false;
-    $scope.elevationLoaded = false;
-    $scope.elevationIsLoading = false;
-    $scope.map = map;
-
     /* This is kind of the "main" function of ecostem. It only runs after the services have
        been loaded. This makes sure that the mixins can do initialization assuming that
        the map has been initialized and all the models and layers are in place. */
-    $q.all([map.deferred.promise, elevationSampler.deferred.promise]).then(function() {
+    $q.all([mapSvc.deferred.promise, elevationSvc.deferred.promise]).then(function() {
+        window.sc = $scope;
+        $scope.showElevation = false;
+        $scope.elevationLoaded = false;
+        $scope.elevationIsLoading = false;
+        $scope.map = mapSvc.map;
+
         /* The main controller is broken up into "mixins", simply functions that
            attach functionality to the $scope. Their main purpose is for organization,
            to group related functions together and declutter the main controller. */
 
         /* Functionality related to editing transfer functions in the UX */
-        transferFunctionsMixin($scope, map);
+        transferFunctionsMixin($scope, mapSvc.map);
         /* 3D scanning for use with projector/camera interface on the sand table.
         Not yet in use. */
-        sandScanMixin($scope, map);
+        sandScanMixin($scope, mapSvc.map);
         /* Managing sensors on the map. */
-        sensorsMixin($scope, $compile, map);
+        sensorsMixin($scope, $compile, mapSvc.map);
         /* Painting functionality for models that support it. */
-        rasterPaintingMixin($scope, map);
+        rasterPaintingMixin($scope, mapSvc.map);
         /* Autofill/Clear buttons for vegetation transfer functions */
-        vegetationAutofillMixin($scope, map);
+        vegetationAutofillMixin($scope, mapSvc.map);
         /* The "Publish" button; serving dynamic tiles for a layer through Firebase */
         layerPublishingMixin($scope);
 
         $scope.elevationIsLoading = true;
 
-        var elevationModel = map.modelPool.getDataModel('Elevation');
-        var waterModel = map.modelPool.getDataModel('Water Flow');
+        var elevationModel = mapSvc.map.modelPool.getDataModel('Elevation');
+        var waterModel = mapSvc.map.modelPool.getDataModel('Water Flow');
 
         /* load the elevation raster from the redfish elevation server */
-        elevationSampler.loadElevationData(elevationModel.geometry, function() {
+        elevationSvc.loadElevationData(elevationModel.geometry, function() {
             /* When done loading, copy the elevation data into the Ecostem
                elevation model. */
-            elevationModel.loadElevation(elevationSampler);
+            elevationModel.loadElevation(elevationSvc);
             /* Load elevation once and for all into the water model. We could
                alternately sample elevation dynamically, or cache on the fly. */
             waterModel.sampleElevation();
@@ -112,14 +112,13 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
             $scope.elevationLoaded = true;
 
             /* Turn on the erosion and water layers by default */
-            var erosionLayer = _.find(map.modelLayers, (l) => l.name === 'Erosion & Deposit');
-            var waterLayer = _.find(map.modelLayers, (l) => l.name === 'Water Flow');
+            var erosionLayer = _.find(mapSvc.map.modelLayers, (l) => l.name === 'Erosion & Deposit');
+            var waterLayer = _.find(mapSvc.map.modelLayers, (l) => l.name === 'Water Flow');
 
-            map.toggleLayer(erosionLayer);
-            map.toggleLayer(waterLayer);
+            mapSvc.map.toggleLayer(erosionLayer);
+            mapSvc.map.toggleLayer(waterLayer);
         });
     });
-
 }]);
 
 /* Boot the application manually instead of using an ng-app attribute in

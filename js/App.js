@@ -72,28 +72,29 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'map', '
     $scope.elevationIsLoading = false;
     $scope.map = map;
 
-    /* The main controller is broken up into "mixins", simply functions that
-       attach functionality to the $scope. Their main purpose is for organization,
-       to group related functions together and declutter the main controller. */
-
-    /* Functionality related to editing transfer functions in the UX */
-    transferFunctionsMixin($scope);
-    /* 3D scanning for use with projector/camera interface on the sand table.
-       Not yet in use. */
-    sandScanMixin($scope, map);
-    /* Managing sensors on the map. */
-    sensorsMixin($scope, $compile, map);
-    /* Painting functionality for models that support it. */
-    rasterPaintingMixin($scope, map);
-    /* Autofill/Clear buttons for vegetation transfer functions */
-    vegetationAutofillMixin($scope, map);
-    /* The "Publish" button; serving dynamic tiles for a layer through Firebase */
-    layerPublishingMixin($scope);
-
-    /* This is kind of the "main" function of ecostem. */
+    /* This is kind of the "main" function of ecostem. It only runs after the services have
+       been loaded. This makes sure that the mixins can do initialization assuming that
+       the map has been initialized and all the models and layers are in place. */
     $q.all([map.deferred.promise, elevationSampler.deferred.promise]).then(function() {
+        /* The main controller is broken up into "mixins", simply functions that
+           attach functionality to the $scope. Their main purpose is for organization,
+           to group related functions together and declutter the main controller. */
+
+        /* Functionality related to editing transfer functions in the UX */
+        transferFunctionsMixin($scope, map);
+        /* 3D scanning for use with projector/camera interface on the sand table.
+        Not yet in use. */
+        sandScanMixin($scope, map);
+        /* Managing sensors on the map. */
+        sensorsMixin($scope, $compile, map);
+        /* Painting functionality for models that support it. */
+        rasterPaintingMixin($scope, map);
+        /* Autofill/Clear buttons for vegetation transfer functions */
+        vegetationAutofillMixin($scope, map);
+        /* The "Publish" button; serving dynamic tiles for a layer through Firebase */
+        layerPublishingMixin($scope);
+
         $scope.elevationIsLoading = true;
-        console.log('elev is loading', $scope.elevationIsLoading);
 
         var elevationModel = map.modelPool.getDataModel('Elevation');
         var waterModel = map.modelPool.getDataModel('Water Flow');

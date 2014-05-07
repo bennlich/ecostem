@@ -243,6 +243,10 @@ export var MapService = ['$location', '$rootScope', '$q', function($location, $r
             return layers;
         },
 
+        getModelLayer: function(name) {
+            return _.find(this.modelLayers, (l) => l.name === name);
+        },
+
         addDataLayer: function(obj) {
             this.modelPool.models[obj.name] = obj;
             this.modelLayers.push({

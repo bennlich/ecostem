@@ -11,10 +11,14 @@ import {ModelTileRenderer} from '../st-api/ModelingCore/ModelTileRenderer';
 import {ModelBBox} from '../st-api/ModelingCore/ModelBBox';
 import {ModelTileServer} from '../st-api/ModelTileServer';
 
-export function transferFunctionsMixin($scope) {
+export function transferFunctionsMixin($scope, map) {
     TransferFunctions.init();
+
+    var vegLayer = map.getModelLayer("Vegetation");
     _.each(['fir', 'sagebrush', 'steppe', 'grass'], (typ) => {
         TransferFunctions.funs[typ].on('dragend', () => {
+            if (! map.leafletMap.hasLayer(vegLayer.leafletLayer))
+                map.toggleLayer(vegLayer);
             $scope.clearVegetation(typ);
             $scope.drawVegetation(typ);
         });
@@ -83,6 +87,11 @@ export function sandScanMixin($scope, map) {
 }
 
 export function sensorsMixin($scope, $compile, map) {
+    /* TODO: The sensor implementation below is a hardcoded hack. A better sensor
+       implementation would be sensitive to the addition/removal of models
+       without having to edit this code every time. Also, the sensor HTML
+       should be in a template and probably implemented as a directive. */
+
     $scope.addingSensor = false;
     $scope.sensorId = 0;
     $scope.sensors = {};
@@ -174,8 +183,9 @@ export function rasterPaintingMixin($scope, map) {
         $scope.selectedBrushSize = s;
     };
 
-    // when clicking in the scenario box and we're editing,
-    // put data on the map at that location
+    /* when clicking in the scenario box and we're editing,
+       put data on the map at that location.
+       TODO: fishy stuff with brush sizes. Brushes are way too big. */
     $scope.drawAt = function(screenXY) {
         if ($scope.editedLayer) {
             var topLeft = map.leafletMap.containerPointToLatLng([
@@ -245,17 +255,28 @@ export function vegetationAutofillMixin($scope, map) {
             vegModel = modelSet.getModel('Vegetation'),
             dataModel = vegModel.dataModel,
             elevationModel = modelSet.getDataModel('Elevation'),
-            /* there is an implicit assumption here that vegType is
+            /* TODO: there is an implicit assumption here that vegType is
                the same as the transfer function key */
             tf = TransferFunctions.funs[vegType];
 
+        /* TODO: This loop is pretty slow. I suspect it's because the sampling
+           is very slow. A better approach would be to build a sampler object
+           that precomputes a lot of the stuff that goes on in LeafletCoordinateSystem
+           so the sample() function is simple arithmetic computations. I imagine:
+
+              var s = new Sampler(vegDataModel, elevationModel);
+              elevValue = s.sample(i, j).elevation;
+
+           The sampler constructor will have precomputed the two models' positions
+           relative to each other in the coordinate system.
+        */
         for (var i = 0; i < dataModel.xSize; ++i) {
             for (var j = 0; j < dataModel.ySize; ++j) {
                 var elevationValue = elevationModel.sample(modelSet.crs.modelCoordToCommonCoord({x:i, y:j}, dataModel)).elevation;
                 var density = tf(elevationValue) / 100;
 
                 if (Math.random() <= density) {
-                    dataModel.putData(i, j, 1, 1, {vegetation: vegType});
+                    dataModel.world[i][j].vegetation = vegType;
                 }
             }
         }

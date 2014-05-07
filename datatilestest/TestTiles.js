@@ -1,5 +1,10 @@
+"use strict";
+
+import '../st-api/Util/StringUtil';
+import {Gradient} from '../st-api/Util/Gradient';
+
 var colorMap = Gradient.multiGradient(
-    '#123', 
+    '#123',
     [{color: '#505Fa5', steps: 40},
      {color: '#D66783', steps: 100},
      {color: '#fff', steps: 100}]
@@ -142,4 +147,3 @@ function updateZoom() {
 $(document).ready(function() {
     setup(location.hash === '#fixed');
 });
-

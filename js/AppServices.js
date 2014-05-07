@@ -1,14 +1,27 @@
+"use strict";
 
-import {ElevationService} from './ElevationService';
+import {RemoteBBoxSampler} from '../st-api/RemoteBBoxSampler';
 import {MapService} from './MapService';
 import {Main} from './Main';
 
 var Services = angular.module('Services', []);
-Services.service('elevationSvc', ElevationService);
+
+/* the map service is in a separate file because it's large enough... */
 Services.service('mapSvc', MapService);
 
+Services.service('elevationSvc', ['$q', function($q) {
+    return {
+        deferred: $q.defer(),
+        url: "http://node.redfish.com/cgi-bin/elevation.py?bbox={s},{w},{n},{e}&res={width},{height}",
+        sampler: null,
+        init: function(canvas) {
+            this.sampler = new RemoteBBoxSampler(canvas, this.url);
+            this.deferred.resolve(this);
+        }
+    };
+}]);
+
 Services.service('mainSvc', ['$rootScope', '$q', 'mapSvc', function($rootScope, $q, mapSvc) {
-    "use strict";
     return {
         main: null,
         init: function() {

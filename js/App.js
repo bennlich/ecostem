@@ -15,6 +15,7 @@ import {
 } from './AppMixins';
 import './AppDirectives';
 import './AppServices';
+import {computeQuad} from './Experiments';
 
 /* Leaflet "hack" that forces openPopup() to leave current popups open.
    This is used for sensors. We want multiple sensors to be opened together. */
@@ -112,6 +113,8 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'mapSvc'
         /* load the elevation raster from the redfish elevation server */
         elevationSvc.sampler.loadRemoteData(elevationModel.geometry, () => {
             $scope.safeApply(() => {
+                /* quad tree demo */
+                computeQuad(elevationSvc.sampler);
                 /* When done loading, copy the elevation data into the Ecostem
                    elevation model. */
                 elevationModel.loadElevation(elevationSvc.sampler);

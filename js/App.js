@@ -3,6 +3,8 @@
 /* This is the application entrypoint. The app is started simply by
    importing this module. */
 
+/* modifies the String prototype with some useful methods */
+import "../st-api/Util/StringUtil";
 import {
     transferFunctionsMixin,
     sandScanMixin,

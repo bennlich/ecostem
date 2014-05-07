@@ -1,6 +1,6 @@
 "use strict";
 
-import {LocalStorage} from './LocalStorage';
+import {LocalStorage} from '../st-api/LocalStorage';
 import {computeQuad} from './Experiments';
 
 export var ElevationService = ['$rootScope', '$q', function($rootScope, $q) {

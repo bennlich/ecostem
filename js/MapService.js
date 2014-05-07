@@ -1,9 +1,9 @@
 "use strict";
 
-import {ModelBBox} from './ModelingCore/ModelBBox';
-import {Rect} from './Util/Rect';
-import {ModelPool} from './ModelingCore/ModelPool';
-import {Animator} from './ModelingCore/Animator';
+import {ModelBBox} from '../st-api/ModelingCore/ModelBBox';
+import {Rect} from '../st-api/Util/Rect';
+import {ModelPool} from '../st-api/ModelingCore/ModelPool';
+import {Animator} from '../st-api/ModelingCore/Animator';
 
 /* Leaflet wrapper */
 export var MapService = ['$location', '$rootScope', '$q', function($location, $rootScope, $q) {

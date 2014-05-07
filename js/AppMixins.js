@@ -2,14 +2,14 @@
 
 /* These mixins augment the main application scope. See App.js */
 
-import {TransferFunctions} from './ModelingParams/TransferFunctions';
-import {FireSeverityModel} from './Models/FireSeverityModel';
-import {VegetationModel} from './Models/VegetationModel';
-import {ScanElevationModel} from './Models/ScanElevationModel';
-import {ElevationPatchRenderer} from './Models/ElevationModel';
-import {ModelTileRenderer} from './ModelingCore/ModelTileRenderer';
-import {ModelBBox} from './ModelingCore/ModelBBox';
-import {ModelTileServer} from './ModelTileServer';
+import {TransferFunctions} from '../st-api/ModelingParams/TransferFunctions';
+import {FireSeverityModel} from '../st-api/Models/FireSeverityModel';
+import {VegetationModel} from '../st-api/Models/VegetationModel';
+import {ScanElevationModel} from '../st-api/Models/ScanElevationModel';
+import {ElevationPatchRenderer} from '../st-api/Models/ElevationModel';
+import {ModelTileRenderer} from '../st-api/ModelingCore/ModelTileRenderer';
+import {ModelBBox} from '../st-api/ModelingCore/ModelBBox';
+import {ModelTileServer} from '../st-api/ModelTileServer';
 
 export function transferFunctionsMixin($scope) {
     TransferFunctions.init();

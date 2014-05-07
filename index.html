@@ -120,13 +120,6 @@
             </select>
           </div>
         </div>
-
-        <!-- <div class="section" style="width: 100%"
-             ng-show="editedLayer.name == 'Vegetation' && scaleValue.value.vegetation != 0">
-          <hr/>
-          <button ng-click="drawVegetation(scaleValue.value.vegetation)">Autofill {{scaleValue.name}}</button>
-          <button ng-click="clearVegetation(scaleValue.value.vegetation)">Clear {{scaleValue.name}}</button>
-        </div> -->
       </div>
 
       <!-- container for top navigation -->
@@ -171,7 +164,7 @@
           <h3 ng-click="showModels=!showModels">Models</h3>
           <div ng-show="showModels">
             <hr/>
-            <div class="layer-container" ng-repeat="layer in map.modelLayers">
+            <div class="layer-container" ng-repeat="layer in main.modelLayers">
               <input id="dl{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
               <label for="dl{{$index}}">{{ layer.name }}</label>
               <br/>
@@ -199,10 +192,6 @@
                 <span ng-show="showQuad">Hide Quad</span>
               </a>
               <br/>
-              <a ng-click="toggleSlope()" ng-show="elevationLoaded && map.modelLayers[2].model.dataModel.patchHeights.data.length > 0">
-                <span ng-show="!showSlope">Show Slopes</span>
-                <span ng-show="showSlope">Hide Slopes</span>
-              </a>
             </div>
           </div>
         </div>
@@ -220,12 +209,12 @@
       </div>
 
       <div class="play-controls" ng-show="elevationLoaded">
-        <div class="uibox time">{{map.animator.hours | timeformat}} : {{map.animator.minutes | timeformat}}</div>
+        <div class="uibox time">{{main.animator.hours | timeformat}} : {{main.animator.minutes | timeformat}}</div>
         <div class="controls">
-          <img ng-show="!map.animator.isRunning" ng-click="map.animator.start()" src="img/play.png"/>
-          <img ng-show="map.animator.isRunning" ng-click="map.animator.stop()" src="img/pause.png"/>
-          <img ng-show="!map.animator.isRunning" ng-click="map.animator.step()" src="img/play1.png"/>
-          <img ng-click="map.animator.reset()" src="img/stop.png"/>
+          <img ng-show="!main.animator.isRunning" ng-click="main.animator.start()" src="img/play.png"/>
+          <img ng-show="main.animator.isRunning" ng-click="main.animator.stop()" src="img/pause.png"/>
+          <img ng-show="!main.animator.isRunning" ng-click="main.animator.step()" src="img/play1.png"/>
+          <img ng-click="main.animator.reset()" src="img/stop.png"/>
         </div>
       </div>
     </div>

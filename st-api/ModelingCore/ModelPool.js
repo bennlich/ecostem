@@ -9,11 +9,10 @@ import {ModelTileRenderer} from './ModelTileRenderer';
 import {ModelTileServer} from '../ModelTileServer';
 
 export class ModelPool {
-    constructor(map, defaultBBox) {
+    constructor(map) {
         this.map = map;
 
-        // hack for now
-        this.defaultBBox = defaultBBox;
+        this.defaultBBox = map.homeBBox;
 
         this.models = this._makeModels();
 

@@ -15,22 +15,7 @@ export var MapService = ['$location', '$rootScope', '$q', function($location, $r
             }
 
             this.map.addLayers();
-
-            /* The following two statements are a way for the angular world to get
-               live updates when the animator steps and when a model changes due to
-               its putData method being called -- which normally happens when
-               painting.
-
-               This is an arguably cleaner way for angular to get updates, compared
-               to passing the $rootScope into the non-angular API, which would not
-               make sense when the API is used from a non-angular world. */
-
-            _.each(_.values(this.map.modelPool.models), (m) => {
-                m.dataModel.wrapUpdate((fn) => $rootScope.safeApply(fn));
-            });
-
-            this.map.animator.wrapStep((fn) => $rootScope.safeApply(fn));
-
+            console.log('here');
             this.deferred.resolve(this);
         },
 

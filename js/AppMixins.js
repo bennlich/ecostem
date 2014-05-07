@@ -11,10 +11,10 @@ import {ModelTileRenderer} from '../st-api/ModelingCore/ModelTileRenderer';
 import {ModelBBox} from '../st-api/ModelingCore/ModelBBox';
 import {ModelTileServer} from '../st-api/ModelTileServer';
 
-export function transferFunctionsMixin($scope, map) {
+export function transferFunctionsMixin($scope, main, map) {
     TransferFunctions.init();
 
-    var vegLayer = map.getModelLayer("Vegetation");
+    var vegLayer = main.getModelLayer("Vegetation");
     _.each(['fir', 'sagebrush', 'steppe', 'grass'], (typ) => {
         TransferFunctions.funs[typ].on('dragend', () => {
             if (! map.leafletMap.hasLayer(vegLayer.leafletLayer))
@@ -45,7 +45,7 @@ export function transferFunctionsMixin($scope, map) {
     };
 }
 
-export function sandScanMixin($scope, map) {
+export function sandScanMixin($scope, main, map) {
     $scope.scanFlatDone = false;
 
     $scope.scanFlat = function() {
@@ -59,14 +59,14 @@ export function sandScanMixin($scope, map) {
     $scope.scanMountain = function() {
         AnySurface.Scan.mountainScan(function(data) {
             var modelName = 'Scan Elevation';
-            var model = map.modelPool.getDataModel(modelName);
+            var model = main.modelPool.getDataModel(modelName);
 
             if (! model) {
                 var w = data.width,
                 h = data.height,
                 bbox = new ModelBBox(map.leafletMap.getBounds(), map.leafletMap);
 
-                model = new ScanElevationModel(w, h, bbox, map.modelPool);
+                model = new ScanElevationModel(w, h, bbox, main.modelPool);
                 model.load(data);
 
                 var tileRenderer = new ModelTileRenderer(map, model, new ElevationPatchRenderer(model));
@@ -86,7 +86,7 @@ export function sandScanMixin($scope, map) {
     };
 }
 
-export function sensorsMixin($scope, $compile, map) {
+export function sensorsMixin($scope, $compile, main, map) {
     /* TODO: The sensor implementation below is a hardcoded hack. A better sensor
        implementation would be sensitive to the addition/removal of models
        without having to edit this code every time. Also, the sensor HTML
@@ -108,10 +108,10 @@ export function sensorsMixin($scope, $compile, map) {
         $scope.$apply(function() {
             $scope.addingSensor = false;
 
-            var elev = map.modelPool.models['Elevation'].dataModel;
-            var water = map.modelPool.models['Water Flow'].dataModel;
-            var veg = map.modelPool.models['Vegetation'].dataModel;
-            var sev = map.modelPool.models['Fire Severity'].dataModel;
+            var elev = main.modelPool.models['Elevation'].dataModel;
+            var water = main.modelPool.models['Water Flow'].dataModel;
+            var veg = main.modelPool.models['Vegetation'].dataModel;
+            var sev = main.modelPool.models['Fire Severity'].dataModel;
             var point = e.latlng;
 
             var elevData = elev.sample(point),
@@ -172,7 +172,7 @@ export function sensorsMixin($scope, $compile, map) {
     };
 }
 
-export function rasterPaintingMixin($scope, map) {
+export function rasterPaintingMixin($scope, main, map) {
     $scope.editedLayer = null;
     $scope.scaleValue = {};
 
@@ -197,7 +197,7 @@ export function rasterPaintingMixin($scope, map) {
                 screenXY.y + $scope.selectedBrushSize
             ]);
 
-            var crs = map.modelPool.crs,
+            var crs = main.modelPool.crs,
                 curModel = $scope.editedLayer.model.dataModel,
                 modelTopLeft = crs.commonCoordToModelCoord(topLeft, curModel),
                 modelBottomRight = crs.commonCoordToModelCoord(bottomRight, curModel);
@@ -247,11 +247,11 @@ export function rasterPaintingMixin($scope, map) {
     };
 }
 
-export function vegetationAutofillMixin($scope, map) {
+export function vegetationAutofillMixin($scope, main) {
     $scope.drawVegetation = function(vegType) {
         console.log('draw veg', vegType);
 
-        var modelSet = map.modelPool,
+        var modelSet = main.modelPool,
             vegModel = modelSet.getModel('Vegetation'),
             dataModel = vegModel.dataModel,
             elevationModel = modelSet.getDataModel('Elevation'),
@@ -287,7 +287,7 @@ export function vegetationAutofillMixin($scope, map) {
     $scope.clearVegetation = function(vegType) {
         console.log('clear veg', vegType);
 
-        var vegModel = map.modelPool.getModel('Vegetation'),
+        var vegModel = main.modelPool.getModel('Vegetation'),
             vegDataModel = vegModel.dataModel,
             vegTypes = VegetationModel.vegTypes;
 
@@ -328,42 +328,4 @@ export function layerPublishingMixin($scope) {
     };
 
     $scope.initStartServer();
-}
-
-/* currently inactive */
-function slopeMixin($scope) {
-    $scope.toggleSlope = function() {
-        if ($scope.showSlope) {
-            $scope.showSlope = false;
-        }
-        else {
-            var waterModel = $scope.map.modelLayers[2].model.dataModel;
-            var curSlope = waterModel.getSlope();
-            var calculatedSlope = waterModel.calculateSlope();
-
-            var curSlopeImage = curSlope.toImage(),
-                calculatedSlopeImage = calculatedSlope.toImage();
-
-
-            var slopeDiffData = [];
-            for (var i = 0; i < curSlope.data.length; i++) {
-                slopeDiffData.push(curSlope.data[i] - calculatedSlope.data[i]);
-            }
-            var slopeDiff = new ABM.DataSet(curSlopeImage.width, curSlopeImage.height, slopeDiffData);
-            var slopeDiffImage = slopeDiff.toImage();
-
-            var slopeCanvas1 = document.getElementById('slopeCanvas1'),
-                slopeCanvas2 = document.getElementById('slopeCanvas2'),
-                slopeCanvas3 = document.getElementById('slopeCanvas3');
-
-            slopeCanvas1.width = slopeCanvas2.width = slopeCanvas3.width = 2*curSlopeImage.width;
-            slopeCanvas1.height = slopeCanvas2.height = slopeCanvas3.height = 2*curSlopeImage.height;
-
-            slopeCanvas1.getContext('2d').drawImage(curSlopeImage, 0, 0, slopeCanvas1.width, slopeCanvas1.height);
-            slopeCanvas2.getContext('2d').drawImage(calculatedSlopeImage, 0, 0, slopeCanvas1.width, slopeCanvas1.height);
-            slopeCanvas3.getContext('2d').drawImage(slopeDiffImage, 0, 0, slopeCanvas1.width, slopeCanvas1.height);
-
-            $scope.showSlope = true;
-        }
-    };
 }

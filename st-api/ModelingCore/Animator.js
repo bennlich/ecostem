@@ -63,6 +63,9 @@ export class Animator {
         }
     }
 
+    /* Set that wraps the step function. You could do for example:
+       animator.wrapStep((fn) => { myNumSteps++; fn(); });
+     */
     wrapStep(fn) {
         if (typeof fn === 'function')
             this.wrapStepFunction = fn;

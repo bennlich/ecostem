@@ -32,8 +32,11 @@ export class BaseModel extends Evented {
         this.world = world;
     }
 
+    /* override this optionally */
     reset() { }
 
+    /* Set a wrapper that intercepts model updates via putData. E.g.:
+       model.wrapUpdate((fn) => { console.log('calling update'); fn(); }); */
     wrapUpdate(fn) {
         if (typeof fn === 'function')
             this.wrapUpdateFunction = fn;
@@ -85,6 +88,6 @@ export class BaseModel extends Evented {
         return n;
     }
 
-    /* override this */
+    /* override this if the model is animated */
     step() { }
 }

@@ -2,6 +2,7 @@
 export class Animator {
     constructor(modelSet) {
         this.modelPool = modelSet;
+        this.wrapStepFunction = (fn) => fn();
         this.reset();
     }
 
@@ -58,7 +59,12 @@ export class Animator {
     _run() {
         if (this.isRunning) {
             this._raf = window.requestAnimationFrame(() => this._run());
-            this.step();
+            this.wrapStepFunction(() => this.step());
         }
+    }
+
+    wrapStep(fn) {
+        if (typeof fn === 'function')
+            this.wrapStepFunction = fn;
     }
 }

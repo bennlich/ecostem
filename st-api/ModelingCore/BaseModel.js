@@ -13,6 +13,8 @@ export class BaseModel extends Evented {
         this.world = null;
         this.callbacks = [];
         this.isAnimated = false;
+
+        this.wrapUpdateFunction = (fn) => fn();
     }
 
     init(defaultValue) {
@@ -32,24 +34,31 @@ export class BaseModel extends Evented {
 
     reset() { }
 
+    wrapUpdate(fn) {
+        if (typeof fn === 'function')
+            this.wrapUpdateFunction = fn;
+    }
+
     putData(x,y,width,height,obj) {
         if (x < 0)
-        x = 0;
+            x = 0;
         if (x + width > this.xSize)
-        width = this.xSize - x;
+            width = this.xSize - x;
 
         if (y < 0)
-        y = 0;
+            y = 0;
         if (y + height > this.ySize)
-        height = this.ySize - y;
+            height = this.ySize - y;
 
-        for (var i = x; i < x + width; ++i) {
-            for (var j = y; j < y + height; ++j) {
-                for (var key in obj) {
-                    this.world[i][j][key] = obj[key];
+        this.wrapUpdateFunction(() => {
+            for (var i = x; i < x + width; ++i) {
+                for (var j = y; j < y + height; ++j) {
+                    for (var key in obj) {
+                        this.world[i][j][key] = obj[key];
+                    }
                 }
             }
-        }
+        });
     }
 
     sample(latlng) {

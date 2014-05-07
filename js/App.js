@@ -73,7 +73,13 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'mapSvc'
         /* mainSvc depends on mapSvc having loaded */
         mainSvc.init();
 
+        /* debugging */
         window.sc = $scope;
+        window.elevationSvc = elevationSvc;
+        window.mapSvc = mapSvc;
+        window.mainSvc = mainSvc;
+        /* end debugging */
+
         $scope.showElevation = false;
         $scope.elevationLoaded = false;
         $scope.elevationIsLoading = false;
@@ -104,23 +110,25 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'mapSvc'
         var waterModel = mainSvc.main.modelPool.getDataModel('Water Flow');
 
         /* load the elevation raster from the redfish elevation server */
-        elevationSvc.loadElevationData(elevationModel.geometry, function() {
-            /* When done loading, copy the elevation data into the Ecostem
-               elevation model. */
-            elevationModel.loadElevation(elevationSvc);
-            /* Load elevation once and for all into the water model. We could
-               alternately sample elevation dynamically, or cache on the fly. */
-            waterModel.sampleElevation();
+        elevationSvc.sampler.loadRemoteData(elevationModel.geometry, () => {
+            $scope.safeApply(() => {
+                /* When done loading, copy the elevation data into the Ecostem
+                   elevation model. */
+                elevationModel.loadElevation(elevationSvc.sampler);
+                /* Load elevation once and for all into the water model. We could
+                   alternately sample elevation dynamically, or cache on the fly. */
+                waterModel.sampleElevation();
 
-            $scope.elevationIsLoading = false;
-            $scope.elevationLoaded = true;
+                $scope.elevationIsLoading = false;
+                $scope.elevationLoaded = true;
 
-            /* Turn on the erosion and water layers by default */
-            var erosionLayer = _.find(mainSvc.main.modelLayers, (l) => l.name === 'Erosion & Deposit');
-            var waterLayer = _.find(mainSvc.main.modelLayers, (l) => l.name === 'Water Flow');
+                /* Turn on the erosion and water layers by default */
+                var erosionLayer = _.find(mainSvc.main.modelLayers, (l) => l.name === 'Erosion & Deposit');
+                var waterLayer = _.find(mainSvc.main.modelLayers, (l) => l.name === 'Water Flow');
 
-            mapSvc.map.toggleLayer(erosionLayer);
-            mapSvc.map.toggleLayer(waterLayer);
+                mapSvc.map.toggleLayer(erosionLayer);
+                mapSvc.map.toggleLayer(waterLayer);
+            });
         });
     });
 }]);

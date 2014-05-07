@@ -17,7 +17,7 @@ export class ElevationModel extends BaseModel {
     }
 
     sampleElevationXY(sampler, x,y) {
-        var sampleSpacing = sampler.samplingWidth / this.xSize;
+        var sampleSpacing = sampler.width / this.xSize;
 
         var offset = (p) => p * sampleSpacing + Math.floor(sampleSpacing/2);
 

@@ -9,9 +9,8 @@ import {ModelTileRenderer} from './ModelTileRenderer';
 import {ModelTileServer} from '../ModelTileServer';
 
 export class ModelPool {
-    constructor(map, defaultBBox, scope) {
+    constructor(map, defaultBBox) {
         this.map = map;
-        this.scope = scope;
 
         // hack for now
         this.defaultBBox = defaultBBox;
@@ -67,9 +66,5 @@ export class ModelPool {
         var model = this.getModel(name);
 
         return model ? model.dataModel : null;
-    }
-
-    safeApply(fn) {
-        this.scope.safeApply(fn);
     }
 }

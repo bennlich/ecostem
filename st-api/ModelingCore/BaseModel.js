@@ -18,16 +18,14 @@ export class BaseModel extends Evented {
     init(defaultValue) {
         var world = new Array(this.xSize);
 
-        this.modelPool.safeApply(() => {
-            for (var i = 0; i < this.xSize; ++i) {
-                world[i] = new Array(this.ySize);
-                for (var j = 0; j < this.ySize; ++j) {
-                    world[i][j] = { x: i, y: j };
-                    /* make sure we make a copy of the default value */
-                    _.extend(world[i][j], defaultValue);
-                }
+        for (var i = 0; i < this.xSize; ++i) {
+            world[i] = new Array(this.ySize);
+            for (var j = 0; j < this.ySize; ++j) {
+                world[i][j] = { x: i, y: j };
+                /* make sure we make a copy of the default value */
+                _.extend(world[i][j], defaultValue);
             }
-        });
+        }
 
         this.world = world;
     }
@@ -36,24 +34,22 @@ export class BaseModel extends Evented {
 
     putData(x,y,width,height,obj) {
         if (x < 0)
-            x = 0;
+        x = 0;
         if (x + width > this.xSize)
-            width = this.xSize - x;
+        width = this.xSize - x;
 
         if (y < 0)
-            y = 0;
+        y = 0;
         if (y + height > this.ySize)
-            height = this.ySize - y;
+        height = this.ySize - y;
 
-        this.modelPool.safeApply(() => {
-            for (var i = x; i < x + width; ++i) {
-                for (var j = y; j < y + height; ++j) {
-                    for (var key in obj) {
-                        this.world[i][j][key] = obj[key];
-                    }
+        for (var i = x; i < x + width; ++i) {
+            for (var j = y; j < y + height; ++j) {
+                for (var key in obj) {
+                    this.world[i][j][key] = obj[key];
                 }
             }
-        });
+        }
     }
 
     sample(latlng) {

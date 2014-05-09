@@ -70,7 +70,7 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'mapSvc'
     /* This is kind of the "main" function of ecostem. It only runs after the services have
        been loaded. This makes sure that the mixins can do initialization assuming that
        the map has been initialized and all the models and layers are in place. */
-    $q.all([mapSvc.deferred.promise, elevationSvc.deferred.promise]).then(function() {
+    $q.all([mapSvc.promise, elevationSvc.promise]).then(function() {
         /* mainSvc depends on mapSvc having loaded */
         mainSvc.init();
 

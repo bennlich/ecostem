@@ -10,13 +10,14 @@ var Services = angular.module('Services', []);
 Services.service('mapSvc', MapService);
 
 Services.service('elevationSvc', ['$q', function($q) {
+    var deferred = $q.defer();
     return {
-        deferred: $q.defer(),
+        promise: deferred.promise,
         url: "http://node.redfish.com/cgi-bin/elevation.py?bbox={s},{w},{n},{e}&res={width},{height}",
         sampler: null,
         init: function(canvas) {
             this.sampler = new RemoteBBoxSampler(canvas, this.url);
-            this.deferred.resolve(this);
+            deferred.resolve(this);
         }
     };
 }]);
@@ -37,10 +38,10 @@ Services.service('mainSvc', ['$rootScope', '$q', 'mapSvc', function($rootScope, 
                make sense when the API is used from a non-angular world. */
 
             _.each(_.values(this.main.modelPool.models), (m) => {
-                m.dataModel.wrapUpdate((fn) => $rootScope.safeApply(fn));
+                m.dataModel.on('change', () => $rootScope.safeApply());
             });
 
-            this.main.animator.wrapStep((fn) => $rootScope.safeApply(fn));
+            this.main.animator.on('step', () => $rootScope.safeApply());
         }
     };
 }]);

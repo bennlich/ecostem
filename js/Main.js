@@ -27,9 +27,7 @@ export class Main {
                 leafletLayer: model.renderer.makeLayer({zIndex: this.map.zIndex++, opacity: 0.85})
             }
         ];
-
-        this.animator = new Animator(this.modelPool);
-
+        
         return layers;
     }
 

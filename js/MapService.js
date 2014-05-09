@@ -4,9 +4,10 @@ import {Leaflet} from '../st-api/Leaflet';
 
 /* Leaflet wrapper */
 export var MapService = ['$location', '$rootScope', '$q', function($location, $rootScope, $q) {
+    var deferred = $q.defer();
     return {
         map: null,
-        deferred: $q.defer(),
+        promise: deferred.promise,
         init: function(id) {
             this.map = new Leaflet(id, this._makeHomeBBox());
 
@@ -16,7 +17,7 @@ export var MapService = ['$location', '$rootScope', '$q', function($location, $r
 
             this.map.addLayers();
 
-            this.deferred.resolve(this);
+            deferred.resolve(this);
         },
 
         _handleBBoxUrl: function() {

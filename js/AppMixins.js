@@ -206,8 +206,6 @@ export function rasterPaintingMixin($scope, main, map) {
                 height = modelBottomRight.y - modelTopLeft.y;
 
             $scope.editedLayer.model.dataModel.putData(modelTopLeft.x, modelTopLeft.y, width, height, $scope.scaleValue.value);
-            $scope.editedLayer.model.renderer.refreshLayer();
-
             // $scope.editedLayer.model.renderer.putData(point, $scope.selectedBrushSize, $scope.scaleValue.value);
         }
     };
@@ -253,7 +251,7 @@ export function vegetationAutofillMixin($scope, main) {
 
         var modelSet = main.modelPool,
             vegModel = modelSet.getModel('Vegetation'),
-            dataModel = vegModel.dataModel,
+            vegDataModel = vegModel.dataModel,
             elevationModel = modelSet.getDataModel('Elevation'),
             /* TODO: there is an implicit assumption here that vegType is
                the same as the transfer function key */
@@ -270,18 +268,18 @@ export function vegetationAutofillMixin($scope, main) {
            The sampler constructor will have precomputed the two models' positions
            relative to each other in the coordinate system.
         */
-        for (var i = 0; i < dataModel.xSize; ++i) {
-            for (var j = 0; j < dataModel.ySize; ++j) {
-                var elevationValue = elevationModel.sample(modelSet.crs.modelCoordToCommonCoord({x:i, y:j}, dataModel)).elevation;
+        for (var i = 0; i < vegDataModel.xSize; ++i) {
+            for (var j = 0; j < vegDataModel.ySize; ++j) {
+                var elevationValue = elevationModel.sample(modelSet.crs.modelCoordToCommonCoord({x:i, y:j}, vegDataModel)).elevation;
                 var density = tf(elevationValue) / 100;
 
                 if (Math.random() <= density) {
-                    dataModel.world[i][j].vegetation = vegType;
+                    vegDataModel.world[i][j].vegetation = vegType;
                 }
             }
         }
 
-        vegModel.renderer.refreshLayer();
+        vegDataModel.fire('change', vegDataModel.world);
     };
 
     $scope.clearVegetation = function(vegType) {
@@ -299,7 +297,7 @@ export function vegetationAutofillMixin($scope, main) {
             }
         }
 
-        vegModel.renderer.refreshLayer();
+        vegDataModel.fire('change', vegDataModel.world);
     };
 }
 

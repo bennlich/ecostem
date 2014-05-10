@@ -13,10 +13,9 @@ Services.service('elevationSvc', ['$q', function($q) {
     var deferred = $q.defer();
     return {
         promise: deferred.promise,
-        url: "http://node.redfish.com/cgi-bin/elevation.py?bbox={s},{w},{n},{e}&res={width},{height}",
         sampler: null,
         init: function(canvas) {
-            this.sampler = new RemoteBBoxSampler(canvas, this.url);
+            this.sampler = new RemoteBBoxSampler(canvas);
             deferred.resolve(this);
         }
     };

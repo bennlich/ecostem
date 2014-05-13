@@ -11,7 +11,8 @@ import {
     sensorsMixin,
     rasterPaintingMixin,
     vegetationAutofillMixin,
-    layerPublishingMixin
+    layerPublishingMixin,
+    menuMixin
 } from './AppMixins';
 import './AppDirectives';
 import './AppServices';
@@ -30,7 +31,7 @@ L.Map = L.Map.extend({
 });
 
 /* Angular application */
-var Ecostem = angular.module('Ecostem', ['Directives', 'Services']);
+var Ecostem = angular.module('Ecostem', ['ngTouch', 'ngAnimate', 'Directives', 'Services']);
 
 /* A few filters to be used in HTML */
 Ecostem.filter('format', [function() {
@@ -104,6 +105,8 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'mapSvc'
         vegetationAutofillMixin($scope, mainSvc.main);
         /* The "Publish" button; serving dynamic tiles for a layer through Firebase */
         layerPublishingMixin($scope);
+        /* Functions for controlling menus */
+        menuMixin($scope);
 
         $scope.elevationIsLoading = true;
 

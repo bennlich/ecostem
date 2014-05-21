@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="lib/leaflet/leaflet.css"/>
     <link rel="stylesheet" type="text/css" href="css/ecostem.css"/>
     <link rel="stylesheet" type="text/css" href="css/svg.css"/>
+    <link rel="stylesheet" type="text/css" href="css/icomoon.css"/>
 
     <!-- traceur compiler -->
     <script src="lib/traceur/traceur.js"></script>
@@ -26,6 +27,9 @@
     <script src="lib/leaflet/leaflet-src.js"></script>
     <script src="lib/angular/angular.js"></script>
     <script src="lib/angular/angular-route.js"></script>
+    <script src="lib/angular/angular-touch.js"></script>
+    <script src="lib/angular/angular-animate.js"></script>
+
     <script src="lib/d3.js"></script>
     <script src="lib/Smooth-0.1.7.js"></script>
     <script src="lib/curveFit.js"></script>
@@ -125,31 +129,14 @@
       <!-- container for top navigation -->
       <div class="top-container" ng-show="elevationLoaded && !editedLayer && !activeTransferFunction">
         <!-- home button -->
-        <div class="home uibox" ng-click="map.setHomeView()">
-            <img src="img/home.png"/>
+        <!-- <div class="home uibox" ng-click="map.setHomeView()">
+            <img src="img/home.png"/> -->
             <!--button ng-click="scanFlat()">Flat Scan</button><br/>
             <button ng-show="scanFlatDone" ng-click="scanMountain()">Mound Scan</button-->
-        </div>
-
-        <!-- layers menu -->
-        <div class="layers uibox">
-          <h3 ng-click="showMapLayers=!showMapLayers">Map Layers</h3>
-          <div ng-show="showMapLayers">
-            <hr/>
-            <div class="layer-container" ng-repeat="layer in map.baseLayers">
-              <input id="bl{{$index}}" name="baseLayer" type="radio" checked-base-layer="layer"></input>
-              <label for="bl{{$index}}">{{ layer.name }}</label><br/>
-            </div>
-            <hr/>
-            <div class="layer-container"  ng-repeat="layer in map.layers">
-              <input id="l{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
-              <label for="l{{$index}}">{{ layer.name }}</label><br/>
-            </div>
-          </div>
-        </div>
+        <!-- </div> -->
 
         <!-- Sensors menu -->
-        <div class="layers uibox">
+        <!-- <div class="layers uibox">
           <h3 ng-click="addSensor()">Add Sensor</h3>
           <div ng-show="addingSensor" style="padding-bottom: 5px">
             <hr/>
@@ -157,14 +144,58 @@
             <hr/>
             <button ng-click="cancelAddingSensor()">Cancel</button>
           </div>
-        </div>
+        </div> -->
+      </div>
 
-        <!-- Models menu -->
-        <div class="layers uibox">
-          <h3 ng-click="showModels=!showModels">Models</h3>
-          <div ng-show="showModels">
+      <div class="play-controls" ng-show="elevationLoaded">
+        <div class="uibox time">{{main.animator.hours | timeformat}} : {{main.animator.minutes | timeformat}}</div>
+        <div class="controls">
+          <img ng-show="!main.animator.isRunning" ng-click="main.animator.start()" src="img/play.png"/>
+          <img ng-show="main.animator.isRunning" ng-click="main.animator.stop()" src="img/pause.png"/>
+          <img ng-show="!main.animator.isRunning" ng-click="main.animator.step()" src="img/play1.png"/>
+          <img ng-click="main.animator.reset()" src="img/stop.png"/>
+        </div>
+      </div>
+
+      <!-- mode indicator -->
+      <div id="interaction-indicator">
+        <div ng-class="{ 'icon-brush': true }"></div>
+      </div>
+
+      <!-- menu -->
+      <div class="menu">
+
+        <div class="level-1" ng-show="menuVisible">
+          <div class="generic-menu-layout">
+            <div class="main-menu-item" ng-class="{ toggled: curMenu == 'layers' }" ng-click="toggleSubMenu('layers')">
+              <span>Base Layers</span>
+            </div>
+            <div class="main-menu-item" ng-class="{ toggled: curMenu == 'models' }" ng-click="toggleSubMenu('models')">
+              <span>Models</span>
+            </div>
+            <div class="main-menu-item" ng-class="{ toggled: curMenu == 'tfuncs' }" ng-click="toggleTransferFunctions()">
+              <span>Transfer Functions</span>
+            </div>
+          </div>
+        </div>
+      
+        <div class="level-2" ng-show="menuVisible && curMenu">
+          <!-- base layer menu -->
+          <div class="generic-menu-layout" ng-show="curMenu == 'layers'">
+            <div class="generic-menu-item" ng-repeat="layer in map.baseLayers">
+              <input id="bl{{$index}}" name="baseLayer" type="radio" checked-base-layer="layer"></input>
+              <label for="bl{{$index}}">{{ layer.name }}</label>
+            </div>
             <hr/>
-            <div class="layer-container" ng-repeat="layer in main.modelLayers">
+            <div class="generic-menu-item"  ng-repeat="layer in map.layers">
+              <input id="l{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
+              <label for="l{{$index}}">{{ layer.name }}</label>
+            </div>
+          </div>
+
+          <!-- models menu -->
+          <div class="generic-menu-layout" ng-show="curMenu == 'models'">
+            <div class="generic-menu-item" ng-repeat="layer in main.modelLayers">
               <input id="dl{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
               <label for="dl{{$index}}">{{ layer.name }}</label>
               <br/>
@@ -181,7 +212,7 @@
               <br/>
             </div>
             <hr/>
-            <div class="simulation">
+            <div class="generic-menu-item">
               <a ng-click="showElevation=!showElevation" ng-show="elevationLoaded">
                 <span ng-show="!showElevation">Show Raw Elevation</span>
                 <span ng-show="showElevation">Hide Raw Elevation</span>
@@ -192,31 +223,29 @@
                 <span ng-show="showQuad">Hide Quad</span>
               </a>
               <br/>
+              <a ng-click="toggleSlope()" ng-show="elevationLoaded && map.modelLayers[2].model.dataModel.patchHeights.data.length > 0">
+                <span ng-show="!showSlope">Show Slopes</span>
+                <span ng-show="showSlope">Hide Slopes</span>
+              </a>
             </div>
           </div>
-        </div>
 
-        <!-- transfer functions menu -->
-        <div class="layers uibox">
-          <h3 ng-click="toggleTransferFunctions()">Transfer Functions</h3>
-          <div ng-show="showTransferFunctions">
-            <hr/>
-            <div class="tf-title" ng-repeat="tf in transferFunctions" ng-click="setActiveTransferFunction(tf)">
+          <!-- transfer functions menu -->
+          <div class="generic-menu-layout" ng-show="curMenu == 'tfuncs'">
+            <div class="generic-menu-item" ng-repeat="tf in transferFunctions" ng-click="setActiveTransferFunction(tf)">
               {{ tf.title }}
             </div>
           </div>
+
         </div>
+
+        <!-- menu toggle arrow -->
+        <div class="menu-toggle-wrapper" ng-click="toggleMainMenu()" ng-swipe-left="toggleMainMenu()" ng-swipe-right="toggleMainMenu()">
+          <div class="menu-toggle" ng-class="{ 'icon-triangle-left': !menuVisible, 'icon-triangle-right': menuVisible, 'toggled': menuVisible }"></div>
+        </div>
+
       </div>
 
-      <div class="play-controls" ng-show="elevationLoaded">
-        <div class="uibox time">{{main.animator.hours | timeformat}} : {{main.animator.minutes | timeformat}}</div>
-        <div class="controls">
-          <img ng-show="!main.animator.isRunning" ng-click="main.animator.start()" src="img/play.png"/>
-          <img ng-show="main.animator.isRunning" ng-click="main.animator.stop()" src="img/pause.png"/>
-          <img ng-show="!main.animator.isRunning" ng-click="main.animator.step()" src="img/play1.png"/>
-          <img ng-click="main.animator.reset()" src="img/stop.png"/>
-        </div>
-      </div>
     </div>
   </body>
 </html>

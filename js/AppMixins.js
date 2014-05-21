@@ -28,10 +28,12 @@ export function transferFunctionsMixin($scope, main, map) {
     $scope.setActiveTransferFunction = function(tf) {
         $scope.activeTransferFunction = tf;
         TransferFunctions.show(tf.name);
+        $scope.hideMainMenu();
     };
     $scope.closeActiveTransferFunction = function() {
         $scope.activeTransferFunction = null;
         TransferFunctions.hide();
+        $scope.showMainMenu();
     };
 
     $scope.showTransferFunctions = false;
@@ -41,7 +43,7 @@ export function transferFunctionsMixin($scope, main, map) {
             var funs = TransferFunctions.funs;
             $scope.transferFunctions = [for (k of _.keys(funs)) {name: k, title: funs[k].title}];
         }
-        $scope.showTransferFunctions = !$scope.showTransferFunctions;
+        $scope.toggleSubMenu('tfuncs');
     };
 }
 
@@ -236,13 +238,38 @@ export function rasterPaintingMixin($scope, main, map) {
         $scope.editedLayer = layer;
         $scope.scaleValues = layer.model.renderer.patchRenderer.scale();
         $scope.scaleValue = $scope.scaleValues[0];
+        $scope.hideMainMenu();
     };
 
     $scope.doneEditingDataLayer = function() {
         $scope.editedLayer.disabled = false;
         $scope.editedLayer.editing = false;
         $scope.editedLayer = null;
+        $scope.showMainMenu();
     };
+}
+
+export function menuMixin($scope) {
+    $scope.toggleMainMenu = function() {
+        $scope.menuVisible = !$scope.menuVisible;
+    }
+
+    $scope.hideMainMenu = function() {
+        $scope.menuVisible = false;
+    }
+
+    $scope.showMainMenu = function() {
+        $scope.menuVisible = true;
+    }
+
+    $scope.toggleSubMenu = function(menuName) {
+        if ($scope.curMenu == menuName) {
+            $scope.curMenu = null;
+        }
+        else {
+            $scope.curMenu = menuName;
+        }
+    }
 }
 
 export function vegetationAutofillMixin($scope, main) {

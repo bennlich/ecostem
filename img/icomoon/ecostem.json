@@ -8,12 +8,64 @@
 		{
 			"selection": [
 				{
+					"order": 7,
+					"id": 1,
+					"prevSize": 32,
+					"code": 58883,
+					"name": "triangle-right",
+					"tempChar": "",
+					"ligatures": ""
+				},
+				{
+					"order": 8,
+					"id": 0,
+					"prevSize": 32,
+					"code": 58884,
+					"name": "triangle-left",
+					"tempChar": "",
+					"ligatures": ""
+				}
+			],
+			"id": 5,
+			"metadata": {
+				"name": "Untitled Set"
+			},
+			"height": 1024,
+			"prevSize": 32,
+			"icons": [
+				{
+					"id": 1,
+					"paths": [
+						"M353.294 150.725l402.706 367.107-402.706 367.104z"
+					],
+					"grid": 0,
+					"tags": [
+						"triangle-right"
+					],
+					"width": 1008
+				},
+				{
+					"id": 0,
+					"paths": [
+						"M660 884.938l-402.706-367.106 402.706-367.106z"
+					],
+					"grid": 0,
+					"tags": [
+						"triangle-left"
+					]
+				}
+			],
+			"invisible": false
+		},
+		{
+			"selection": [
+				{
 					"order": 1,
 					"id": 0,
 					"prevSize": 32,
 					"code": 58882,
 					"name": "brush",
-					"tempChar": "",
+					"tempChar": "",
 					"ligatures": ""
 				}
 			],
@@ -897,11 +949,11 @@
 				},
 				{
 					"id": 213,
-					"order": 2,
+					"order": 3,
 					"prevSize": 20,
 					"code": 58880,
 					"name": "arrow-left",
-					"tempChar": "",
+					"tempChar": "",
 					"ligatures": ""
 				},
 				{
@@ -914,11 +966,11 @@
 				},
 				{
 					"id": 216,
-					"order": 1,
+					"order": 2,
 					"prevSize": 20,
 					"code": 58881,
 					"name": "arrow-right",
-					"tempChar": "",
+					"tempChar": "",
 					"ligatures": ""
 				},
 				{
@@ -16810,7 +16862,8 @@
 		},
 		"historySize": 100,
 		"showCodes": true,
-		"search": ""
+		"search": "",
+		"gridSize": 16
 	},
 	"externalSets": []
 }

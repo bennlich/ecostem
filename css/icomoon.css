@@ -26,11 +26,15 @@
 .icon-arrow-right:before {
     content: "\e601";
 }
-
 .icon-arrow-left:before {
     content: "\e600";
 }
-
 .icon-brush:before {
     content: "\e602";
+}
+.icon-triangle-right:before {
+    content: "\e603";
+}
+.icon-triangle-left:before {
+    content: "\e604";
 }

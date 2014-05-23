@@ -12,7 +12,8 @@ import {
     rasterPaintingMixin,
     vegetationAutofillMixin,
     layerPublishingMixin,
-    menuMixin
+    menuMixin,
+    roomsMixin
 } from './AppMixins';
 import './AppDirectives';
 import './AppServices';
@@ -65,8 +66,8 @@ Ecostem.run(['$rootScope', function($rootScope) {
    assign every HTML snippet to a different controller. In that case we
    would have to solve inter-controller communication, usually done
    through events. */
-Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'mapSvc', 'elevationSvc', 'mainSvc',
-                          function( $scope,   $q,   $compile,   $http,   mapSvc,   elevationSvc,   mainSvc)
+Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'mapSvc', 'elevationSvc', 'mainSvc', 'roomsSvc',
+                          function( $scope,   $q,   $compile,   $http,   mapSvc,   elevationSvc,   mainSvc,   roomsSvc)
 {
     /* This is kind of the "main" function of ecostem. It only runs after the services have
        been loaded. This makes sure that the mixins can do initialization assuming that
@@ -107,6 +108,8 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'mapSvc'
         layerPublishingMixin($scope);
         /* Functions for controlling menus */
         menuMixin($scope);
+        /* Show/hide rooms interface */
+        roomsMixin($scope, roomsSvc);
 
         $scope.elevationIsLoading = true;
 

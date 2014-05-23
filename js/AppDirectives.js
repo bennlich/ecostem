@@ -2,6 +2,94 @@
 
 var Directives = angular.module('Directives', ['Services']);
 
+Directives.directive('roomsWidget', ['roomsSvc', '$timeout', function(roomsSvc, $timeout) {
+    return {
+        // TODO: probably move the template into its own file?
+        template:
+            "<div id='rooms-widget' ng-show='roomsVisible'>"+
+                "<div ng-hide='roomsSvc.isLoggedIn()'>"+
+                    "<button class='inline' ng-click='loginAsGuest()'>Login as a guest</button>"+
+                "</div>"+
+                "<div ng-show='roomsSvc.isLoggedIn()'>"+
+                    "<div>Logged in as <span>{{ getUserDisplayName() }}</span><button class='inline' ng-click='logout()'>Log out</button></div>"+
+                    "<br>"+
+                    "<div ng-hide='roomsSvc.isInARoom()'>"+
+                        "<input type='text' ng-model='roomName'>"+
+                        "<button class='inline' ng-click='joinRoom(roomName)'>Join room</button>"+
+                    "</div>"+
+                    "<div ng-show='roomsSvc.isInARoom()'>"+
+                        "In room <span>{{ roomsSvc.getRoomName() }}</span>"+
+                        "<button class='inline' ng-click='leave()'>Leave room</button>"+
+                    "</div>"+
+                "</div>"+
+                "<br>"+
+                "<button ng-click='hideRooms()'>Close</button>"+
+            "</div>",
+        replace: true,
+        link: function(scope, element, attrs) {
+            scope.roomsSvc = roomsSvc;
+
+            // TODO: The following functions should probably belong to the roomsSvc
+            // instead of to the roomsWidget, so that other components can take advantage of them.
+            // I elected to make the roomsSvc a dead-simple wrapper around RoomClient, but the
+            // (better) alternative would be to make the roomsWidget a dead-simple wrapper around
+            // the roomsSvc.
+
+            scope.getUserDisplayName = function() {
+                if (!roomsSvc.user)
+                    return;
+
+                return roomsSvc.user.displayName ? roomsSvc.user.displayName : 'a guest';
+            }
+
+            scope.loginAsGuest = function() {
+                roomsSvc.loginAsGuest().then(function() {
+                    $timeout(function() {
+                        console.log('Successfully logged in as guest')
+                    });
+                }, function(err) {
+                    $timeout(function() {
+                        console.log('Failed to log in as guest', err);
+                    });
+                });
+            }
+
+            scope.logout = function() {
+                roomsSvc.logout().then(function() {
+                    $timeout(function() {
+                        console.log('Successfully logged out')
+                    });
+                }, function() {
+                    $timeout(function() {
+                        console.log('Failed to log out', err);
+                    });
+                });
+            }
+
+            scope.joinRoom = function(roomName) {
+                roomsSvc.join(roomName)
+                    .then(function() {
+                        $timeout(function() {
+                            // success! bind to room state here
+                            console.log('success!');
+                            // GOTCHA: This widget depends on the roomsMixin for the
+                            // following two functions. Should this dependency be made more obvious?
+                            scope.hideRooms();
+                            scope.bindToRoom();
+                        });
+                    }, function(err) {
+                        // fail
+                        console.log('fail!', err);
+                    });
+            };
+
+            scope.leave = function() {
+                // TODO
+            }
+        }
+    }
+}]);
+
 /* Hides the splash screen when elevation is done loading. */
 Directives.directive('splashScreen', [function() {
     return function(scope, element) {

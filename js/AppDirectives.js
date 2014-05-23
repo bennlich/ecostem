@@ -156,26 +156,26 @@ Directives.directive('elevationCanvas', ['elevationSvc', function(elevationSvc) 
     };
 }]);
 
-Directives.directive('checkedBaseLayer', ['mapSvc', function(mapSvc) {
+Directives.directive('setBaseLayer', ['mapSvc', function(mapSvc) {
     return function(scope, element, attrs) {
-        var layer = scope.$eval(attrs.checkedBaseLayer);
-
-        /* make sure currently selected base layer is checked */
-        element.prop('checked', mapSvc.map.isBaseLayer(layer));
-
-        /* when radio button changes, trigger layer change on underlying map */
-        element.change(function() {
+        var layer = scope.$eval(attrs.setBaseLayer);
+        element.css('background', 'url(img/preview/{0}.png)'.format(encodeURI(layer.name.toLowerCase())));
+        element.click(function() {
             mapSvc.map.setBaseLayer(layer);
+            scope.safeApply();
         });
     };
 }]);
 
-Directives.directive('checkedLayer', ['mapSvc', function(mapSvc) {
+Directives.directive('toggleLayer', ['mapSvc', function(mapSvc) {
     return function(scope, element, attrs) {
-        var layer = scope.$eval(attrs.checkedLayer);
-
-        element.change(function() {
+        var layer = scope.$eval(attrs.toggleLayer);
+        console.log('setting up for', layer.name)
+        element.css('background', 'url(img/preview/{0}.png)'.format(encodeURI(layer.name.toLowerCase())));
+        element.click(function() {
+            console.log('click', layer);
             mapSvc.map.toggleLayer(layer);
+            scope.safeApply();
         });
     };
 }]);

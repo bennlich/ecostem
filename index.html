@@ -18,6 +18,7 @@
     <script src="lib/traceur/bootstrap.js"></script>
 
     <script src="https://cdn.firebase.com/js/client/1.0.2/firebase.js"></script>
+    <script src='https://cdn.firebase.com/js/simple-login/1.4.1/firebase-simple-login.js'></script>
 
     <script src="lib/agentscript.js"></script>
     <script src="lib/data.js"></script>
@@ -162,6 +163,9 @@
         <div ng-class="{ 'icon-brush': true }"></div>
       </div>
 
+      <!-- rooms widget -->
+      <div rooms-widget></div>
+
       <!-- menu -->
       <div class="menu">
 
@@ -173,8 +177,11 @@
             <div class="main-menu-item" ng-class="{ toggled: curMenu == 'models' }" ng-click="toggleSubMenu('models')">
               <span>Models</span>
             </div>
-            <div class="main-menu-item" ng-class="{ toggled: curMenu == 'tfuncs' }" ng-click="toggleTransferFunctions()">
+            <div class="main-menu-item" ng-class="{ toggled: curMenu == 'tfuncs' }" ng-click="toggleSubMenu('tfuncs')">
               <span>Transfer Functions</span>
+            </div>
+            <div class="main-menu-item" ng-click="showRooms()">
+              <span>Join a Room</span>
             </div>
           </div>
         </div>

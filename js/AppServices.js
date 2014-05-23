@@ -2,12 +2,21 @@
 
 import {RemoteBBoxSampler} from '../st-api/RemoteBBoxSampler';
 import {MapService} from './MapService';
+import {RoomClient} from '../st-api/RoomClient';
 import {Main} from './Main';
 
 var Services = angular.module('Services', []);
 
 /* the map service is in a separate file because it's large enough... */
 Services.service('mapSvc', MapService);
+
+Services.service('roomsSvc', [function() {
+
+    // see roomsWidget TODO
+
+    var fbUrl = 'https://ecostem.firebaseio.com';
+    return new RoomClient(fbUrl);
+}]);
 
 Services.service('elevationSvc', ['$q', function($q) {
     var deferred = $q.defer();

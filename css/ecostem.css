@@ -46,6 +46,9 @@ button:active, .active-button {
     outline: 0;
     background: #eca;
 }
+button.inline {
+    margin: 0px 10px;
+}
 a {
     color: #8ad;
     cursor: pointer;
@@ -437,17 +440,19 @@ hr {
 }
 
 .main-menu-item {
-    margin: 2px;
+    display: flex;
+    align-items: center;
     background: rgba(40,40,40,0.9);
     color: #eee;
+    margin: 2px;
     font-size: 18px;
     width: 100%;
 }
 
 .main-menu-item span {
     display: block;
-    margin-top: 55%;
     text-align: center;
+    width: 100%;
 }
 
 .main-menu-item.toggled span {
@@ -473,6 +478,19 @@ hr {
 
 #interaction-indicator:hover > div {
     color: #6A9CCD;
+}
+
+/* rooms widget */
+#rooms-widget {
+    background: rgba(40,40,40,0.9);
+    color: #eee;
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    width: 250px;
+    margin-left: -125px;
+    padding: 20px;
+    text-align: center;
 }
 
 @-webkit-keyframes dot {

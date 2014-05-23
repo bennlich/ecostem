@@ -24,26 +24,18 @@ export function transferFunctionsMixin($scope, main, map) {
         });
     });
 
+    $scope.transferFunctions = TransferFunctions.funs;
+    
     $scope.activeTransferFunction = null;
     $scope.setActiveTransferFunction = function(tf) {
         $scope.activeTransferFunction = tf;
-        TransferFunctions.show(tf.name);
+        TransferFunctions.show(tf);
         $scope.hideMainMenu();
     };
     $scope.closeActiveTransferFunction = function() {
         $scope.activeTransferFunction = null;
         TransferFunctions.hide();
         $scope.showMainMenu();
-    };
-
-    $scope.showTransferFunctions = false;
-    $scope.transferFunctions = [];
-    $scope.toggleTransferFunctions = function() {
-        if ($scope.transferFunctions.length === 0) {
-            var funs = TransferFunctions.funs;
-            $scope.transferFunctions = [for (k of _.keys(funs)) {name: k, title: funs[k].title}];
-        }
-        $scope.toggleSubMenu('tfuncs');
     };
 }
 
@@ -353,4 +345,37 @@ export function layerPublishingMixin($scope) {
     };
 
     $scope.initStartServer();
+}
+
+export function roomsMixin($scope, roomsSvc) {
+    $scope.showRooms = function() {
+        $scope.hideMainMenu();
+        $scope.roomsVisible = true;
+    }
+
+    $scope.hideRooms = function() {
+        $scope.roomsVisible = false;
+    }
+
+    $scope.bindToRoom = function() {
+        var stateRef = roomsSvc.getFbRef();
+        
+        // bind transfer functions
+        stateRef.child('transferFunctions').on('child_added', function(snap) {
+            var tfunc = $scope.transferFunctions[snap.name()];
+
+            if (!tfunc)
+                return; // could create a new tfunc if it doesn't exist?
+
+            // listen for changes to the tfunc's control point data
+            snap.ref().child('controlPoints').on('value', function(snap) {
+                var newCtrlPts = snap.val();
+                if (newCtrlPts) {
+                    tfunc.setControlPoints(newCtrlPts);
+                }
+            });
+        });
+
+        // bind other stuff
+    }
 }

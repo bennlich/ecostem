@@ -185,41 +185,45 @@
             </div>
           </div>
         </div>
-      
+
         <div class="level-2" ng-show="menuVisible && curMenu">
           <!-- base layer menu -->
           <div class="generic-menu-layout" ng-show="curMenu == 'layers'">
-            <div class="generic-menu-item" ng-repeat="layer in map.baseLayers">
-              <input id="bl{{$index}}" name="baseLayer" type="radio" checked-base-layer="layer"></input>
-              <label for="bl{{$index}}">{{ layer.name }}</label>
+            <div class="generic-menu-item" ng-repeat="layer in map.baseLayers" set-base-layer="layer">
+              <div ng-class="{'menu-item-header':true, 'menu-item-active': map.isBaseLayer(layer)}">
+                {{ layer.name }}
+              </div>
             </div>
             <hr/>
-            <div class="generic-menu-item"  ng-repeat="layer in map.layers">
-              <input id="l{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
-              <label for="l{{$index}}">{{ layer.name }}</label>
+            <div class="generic-menu-item"  ng-repeat="layer in map.layers" toggle-layer="layer">
+              <div ng-class="{'menu-item-header':true, 'menu-item-active': layer.on}">
+                {{ layer.name }}
+              </div>
             </div>
           </div>
 
           <!-- models menu -->
           <div class="generic-menu-layout" ng-show="curMenu == 'models'">
-            <div class="generic-menu-item" ng-repeat="layer in main.modelLayers">
-              <input id="dl{{$index}}" type="checkbox" checked-layer="layer" ng-model="layer.on" ng-disabled="layer.disabled"></input>
-              <label for="dl{{$index}}">{{ layer.name }}</label>
-              <br/>
-              <div class="action-buttons">
-                <button ng-show="layer.model.uiOpts.canPaint"
-                        ng-class="{'active-button':layer.editing}"
-                        ng-click="editDataLayer(layer)"><img src="img/icons/pencil.png"/> Paint</button>
-                <button class="active-button"
-                        ng-show="layer.model.server.isRunning"
-                        ng-click="stopServingTiles(layer)"><img src="img/icons/share.png"/> Unpublish</button>
-                <button ng-show="! layer.model.server.isRunning"
-                        ng-click="serveTiles(layer)"><img src="img/icons/share.png"/> Publish</button>
+            <div class="generic-menu-item" ng-repeat="layer in main.modelLayers" toggle-layer="layer">
+              <div ng-class="{'menu-item-header':true, 'menu-item-active': layer.on}">
+                {{ layer.name }}
+              </div>
+              <div class="menu-item-content">
+                <div class="item-action"
+                     ng-show="layer.model.uiOpts.canPaint"
+                     ng-class="{'active-button':layer.editing}"
+                     ng-click="editDataLayer(layer); $event.stopPropagation()">Paint</div>
+                <div class="item-action menu-item-active"
+                     ng-show="layer.model.server.isRunning"
+                     ng-click="stopServingTiles(layer); $event.stopPropagation()">Unpublish</div>
+                <div class="item-action"
+                     ng-show="! layer.model.server.isRunning"
+                     ng-click="serveTiles(layer); $event.stopPropagation()">Publish</div>
               </div>
               <br/>
             </div>
             <hr/>
-            <div class="generic-menu-item">
+            <!--div class="generic-menu-item">
               <a ng-click="showElevation=!showElevation" ng-show="elevationLoaded">
                 <span ng-show="!showElevation">Show Raw Elevation</span>
                 <span ng-show="showElevation">Hide Raw Elevation</span>
@@ -229,12 +233,7 @@
                 <span ng-show="!showQuad">Show Quad</span>
                 <span ng-show="showQuad">Hide Quad</span>
               </a>
-              <br/>
-              <a ng-click="toggleSlope()" ng-show="elevationLoaded && map.modelLayers[2].model.dataModel.patchHeights.data.length > 0">
-                <span ng-show="!showSlope">Show Slopes</span>
-                <span ng-show="showSlope">Hide Slopes</span>
-              </a>
-            </div>
+           </div-->
           </div>
 
           <!-- transfer functions menu -->

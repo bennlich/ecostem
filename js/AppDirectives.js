@@ -156,26 +156,45 @@ Directives.directive('elevationCanvas', ['elevationSvc', function(elevationSvc) 
     };
 }]);
 
-Directives.directive('setBaseLayer', ['mapSvc', function(mapSvc) {
+Directives.directive('ecoBackground', [function() {
     return function(scope, element, attrs) {
-        var layer = scope.$eval(attrs.setBaseLayer);
+        var layer = scope.$eval(attrs.ecoBackground);
         element.css('background', 'url(img/preview/{0}.png)'.format(encodeURI(layer.name.toLowerCase())));
-        element.click(function() {
-            mapSvc.map.setBaseLayer(layer);
-            scope.safeApply();
-        });
     };
 }]);
 
-Directives.directive('toggleLayer', ['mapSvc', function(mapSvc) {
+Directives.directive('ecoIcon', [function() {
+    var modelIconClasses = {
+        'Elevation': 'mountain',
+        'Fire Severity': 'fire',
+        'Vegetation': 'leaf',
+        'Erosion & Deposit': 'erosion',
+        'Water Flow': 'droplet'
+    };
+
     return function(scope, element, attrs) {
-        var layer = scope.$eval(attrs.toggleLayer);
-        console.log('setting up for', layer.name)
-        element.css('background', 'url(img/preview/{0}.png)'.format(encodeURI(layer.name.toLowerCase())));
-        element.click(function() {
-            console.log('click', layer);
-            mapSvc.map.toggleLayer(layer);
-            scope.safeApply();
-        });
+        element.addClass('icon-'+modelIconClasses[attrs.ecoIcon]);
+        element.addClass('generic-menu-item-icon');
     };
 }]);
+
+// Directives.directive('setBaseLayer', ['mapSvc', function(mapSvc) {
+//     return function(scope, element, attrs) {
+//         var layer = scope.$eval(attrs.setBaseLayer);
+//         element.css('background', 'url(img/preview/{0}.png)'.format(encodeURI(layer.name.toLowerCase())));
+//         element.click(function() {
+//             mapSvc.map.setBaseLayer(layer);
+//             scope.safeApply();
+//         });
+//     };
+// }]);
+
+// Directives.directive('toggleLayer', ['mapSvc', function(mapSvc) {
+//     return function(scope, element, attrs) {
+//         var layer = scope.$eval(attrs.toggleLayer);
+//         element.click(function() {
+//             mapSvc.map.toggleLayer(layer);
+//             scope.safeApply();
+//         });
+//     };
+// }]);

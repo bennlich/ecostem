@@ -13,7 +13,8 @@ import {
     vegetationAutofillMixin,
     layerPublishingMixin,
     menuMixin,
-    roomsMixin
+    roomsMixin,
+    layersMixin
 } from './AppMixins';
 import './AppDirectives';
 import './AppServices';
@@ -110,6 +111,8 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'mapSvc'
         menuMixin($scope);
         /* Show/hide rooms interface */
         roomsMixin($scope, roomsSvc);
+        /* Show/hide layers interface */
+        layersMixin($scope, mapSvc.map);
 
         $scope.elevationIsLoading = true;
 

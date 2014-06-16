@@ -29,7 +29,6 @@ body {
 body, button {
     font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
     "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-    text-shadow: 1px 1px rgba(40,40,40,0.4);
     font-size: 16px;
 }
 button {
@@ -389,14 +388,14 @@ hr {
 
 .menu-toggle {
     position: relative;
-    left: 14px;
+    left: 10px;
     font-size: 45px;
     color: #eee;
     margin-top: -50%;
 }
 
 .menu-toggle.toggled {
-    color: #49bdec;
+    /*color: #49bdec;*/
 }
 
 .menu {
@@ -417,7 +416,7 @@ hr {
 .level-2 {
     width: 200px;
     overflow: hidden;
-    padding-left: 6px;
+    padding-left: 2px;
 }
 
 .level-2.ng-hide-add, .level-2.ng-hide-remove,
@@ -443,8 +442,31 @@ hr {
     background-color: rgba(30,30,30,0.7);
 }
 
-.menu-item-active {
+/*.menu-item-active {
     background-color: #49bdec !important;
+}*/
+
+.menu-item-active .menu-item-header:after {
+    font-family: 'icomoon';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+    /* check-mark */
+    content: "\e116";
+    padding-left: 5px;
+    color: #49bdec;
+}
+
+.menu-item-active .generic-menu-item-icon {
+    color: #49bdec;
 }
 
 .menu-item-content {
@@ -470,7 +492,6 @@ hr {
     display: block;
     width: 100%;
     background: rgba(40,40,40,0.9);
-    box-shadow: 0px 1px 4px #111;
     /* padding: 12px 16px; */
     margin: 2px 0px;
     cursor: pointer;
@@ -478,11 +499,19 @@ hr {
     vertical-align: middle;
 }
 
+.generic-menu-item-icon {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    text-align: center;
+    font-size: 40px;
+    margin-top: -20px;
+}
+
 .main-menu-item {
     display: flex;
     align-items: center;
     background: rgba(40,40,40,0.9);
-    box-shadow: 0px 1px 4px #111;
     color: #eee;
     margin: 2px;
     font-size: 18px;
@@ -493,11 +522,16 @@ hr {
 .main-menu-item span {
     display: block;
     text-align: center;
-    width: 100%;
+    margin: 0px auto;
+    border-bottom: 2px solid rgba(0,0,0,0);
 }
 
-.main-menu-item.toggled {
+/*.main-menu-item.toggled {
     background-color: #49bdec;
+}*/
+
+.main-menu-item.toggled span {
+    border-bottom: 2px solid #28B1E9;
 }
 
 #interaction-indicator {

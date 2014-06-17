@@ -55,11 +55,8 @@ a {
 }
 .uibox {
     background: rgba(40,40,40,0.9);
-    padding: 0;
-    padding-left: 5px;
-    padding-right: 5px;
-    /* border-radius: 5px; */
-    box-shadow: 0px 1px 4px #111;
+    padding: 0px 5px;
+    /*box-shadow: 0px 1px 4px #111;*/
     color: #eee;
 }
 .container {

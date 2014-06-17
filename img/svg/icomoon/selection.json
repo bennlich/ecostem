@@ -20,7 +20,7 @@
 				"name": "mountain",
 				"ligatures": ""
 			},
-			"setIdx": 0,
+			"setIdx": 1,
 			"iconIdx": 0
 		},
 		{
@@ -47,7 +47,7 @@
 				"name": "erosion",
 				"ligatures": ""
 			},
-			"setIdx": 0,
+			"setIdx": 1,
 			"iconIdx": 1
 		},
 		{
@@ -69,7 +69,7 @@
 				"name": "triangle-right",
 				"ligatures": ""
 			},
-			"setIdx": 0,
+			"setIdx": 1,
 			"iconIdx": 2
 		},
 		{
@@ -90,7 +90,7 @@
 				"name": "triangle-left",
 				"ligatures": ""
 			},
-			"setIdx": 0,
+			"setIdx": 1,
 			"iconIdx": 3
 		},
 		{
@@ -108,7 +108,7 @@
 				"name": "brush",
 				"ligatures": ""
 			},
-			"setIdx": 1,
+			"setIdx": 2,
 			"iconIdx": 0
 		},
 		{
@@ -132,7 +132,7 @@
 				"name": "leaf",
 				"ligatures": ""
 			},
-			"setIdx": 2,
+			"setIdx": 3,
 			"iconIdx": 50
 		},
 		{
@@ -155,7 +155,7 @@
 				"name": "droplet",
 				"ligatures": ""
 			},
-			"setIdx": 2,
+			"setIdx": 3,
 			"iconIdx": 66
 		},
 		{
@@ -178,7 +178,7 @@
 				"name": "arrow-left",
 				"ligatures": ""
 			},
-			"setIdx": 2,
+			"setIdx": 3,
 			"iconIdx": 213
 		},
 		{
@@ -196,7 +196,7 @@
 				"name": "arrow-right",
 				"ligatures": ""
 			},
-			"setIdx": 2,
+			"setIdx": 3,
 			"iconIdx": 216
 		},
 		{
@@ -218,7 +218,7 @@
 				"name": "check",
 				"ligatures": ""
 			},
-			"setIdx": 3,
+			"setIdx": 4,
 			"iconIdx": 116
 		},
 		{
@@ -242,7 +242,7 @@
 				"name": "fire",
 				"ligatures": ""
 			},
-			"setIdx": 5,
+			"setIdx": 6,
 			"iconIdx": 164
 		}
 	],

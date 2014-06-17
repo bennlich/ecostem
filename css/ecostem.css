@@ -460,9 +460,12 @@ hr {
     -moz-osx-font-smoothing: grayscale;
     
     /* check-mark */
-    content: "\e116";
-    padding-left: 5px;
+    position: absolute;
+    top: 6px;
+    font-size: 22px;
     color: #49bdec;
+    padding-left: 9px;
+    content: "\e116";
 }
 
 .menu-item-active .generic-menu-item-icon {
@@ -496,7 +499,7 @@ hr {
     cursor: pointer;
     align: center;
     vertical-align: middle;
-    border-bottom: 1px solid rgba(30,30,30,0.7);
+    border: 1px solid rgba(30,30,30,0.7);
 }
 
 .generic-menu-item-icon {

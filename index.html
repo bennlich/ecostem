@@ -10,7 +10,8 @@
     <link rel="stylesheet" type="text/css" href="lib/leaflet/leaflet.css"/>
     <link rel="stylesheet" type="text/css" href="css/ecostem.css"/>
     <link rel="stylesheet" type="text/css" href="css/svg.css"/>
-    <link rel="stylesheet" type="text/css" href="css/icomoon.css"/>
+    <!-- <link rel="stylesheet" type="text/css" href="css/icomoon.css"/> -->
+    <link rel="stylesheet" type="text/css" href="img/svg/icomoon/style.css">
 
     <!-- traceur compiler -->
     <script src="lib/traceur/traceur.js"></script>
@@ -189,14 +190,14 @@
         <div class="level-2" ng-show="menuVisible && curMenu">
           <!-- base layer menu -->
           <div class="generic-menu-layout" ng-show="curMenu == 'layers'">
-            <div class="generic-menu-item" ng-repeat="layer in map.baseLayers" set-base-layer="layer">
-              <div ng-class="{'menu-item-header':true, 'menu-item-active': map.isBaseLayer(layer)}">
+            <div class="generic-menu-item" ng-repeat="layer in map.baseLayers" ng-class="{'menu-item-active': map.isBaseLayer(layer)}" eco-background="layer" ng-click="setBaseLayer(layer)">
+              <div class="menu-item-header">
                 {{ layer.name }}
               </div>
             </div>
-            <hr/>
-            <div class="generic-menu-item"  ng-repeat="layer in map.layers" toggle-layer="layer">
-              <div ng-class="{'menu-item-header':true, 'menu-item-active': layer.on}">
+            <!-- <hr/> -->
+            <div class="generic-menu-item"  ng-repeat="layer in map.layers" ng-class="{'menu-item-active': layer.on}" eco-background="layer" ng-click="toggleLayer(layer)">
+              <div class="menu-item-header">
                 {{ layer.name }}
               </div>
             </div>
@@ -204,10 +205,13 @@
 
           <!-- models menu -->
           <div class="generic-menu-layout" ng-show="curMenu == 'models'">
-            <div class="generic-menu-item" ng-repeat="layer in main.modelLayers" toggle-layer="layer">
-              <div ng-class="{'menu-item-header':true, 'menu-item-active': layer.on}">
+            <div class="generic-menu-item" ng-class="{'menu-item-active': layer.on}" ng-repeat="layer in main.modelLayers" ng-click="toggleLayer(layer)">
+              <div class="menu-item-header">
                 {{ layer.name }}
               </div>
+
+              <div eco-icon='{{ layer.name }}'></div>
+
               <div class="menu-item-content">
                 <div class="item-action"
                      ng-show="layer.model.uiOpts.canPaint"
@@ -222,7 +226,7 @@
               </div>
               <br/>
             </div>
-            <hr/>
+            <!-- <hr/> -->
             <!--div class="generic-menu-item">
               <a ng-click="showElevation=!showElevation" ng-show="elevationLoaded">
                 <span ng-show="!showElevation">Show Raw Elevation</span>
@@ -239,7 +243,9 @@
           <!-- transfer functions menu -->
           <div class="generic-menu-layout" ng-show="curMenu == 'tfuncs'">
             <div class="generic-menu-item" ng-repeat="tf in transferFunctions" ng-click="setActiveTransferFunction(tf)">
-              {{ tf.title }}
+              <div class="menu-item-header">
+                {{ tf.title }}
+              </div>
             </div>
           </div>
 

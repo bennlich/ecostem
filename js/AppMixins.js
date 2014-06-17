@@ -11,6 +11,16 @@ import {ModelTileRenderer} from '../st-api/ModelingCore/ModelTileRenderer';
 import {ModelBBox} from '../st-api/ModelingCore/ModelBBox';
 import {ModelTileServer} from '../st-api/ModelTileServer';
 
+export function layersMixin($scope, map) {
+    $scope.toggleLayer = function(layer) {
+        map.toggleLayer(layer);
+    }
+
+    $scope.setBaseLayer = function(layer) {
+        map.setBaseLayer(layer);
+    }
+}
+
 export function transferFunctionsMixin($scope, main, map) {
     TransferFunctions.init();
 

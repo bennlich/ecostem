@@ -16,7 +16,7 @@ export function transferFunctionsMixin($scope, main, map) {
 
     var vegLayer = main.getModelLayer("Vegetation");
     _.each(['fir', 'sagebrush', 'steppe', 'grass'], (typ) => {
-        TransferFunctions.funs[typ].on('dragend', () => {
+        TransferFunctions.funs[typ].on('change', () => {
             if (! map.leafletMap.hasLayer(vegLayer.leafletLayer))
                 map.toggleLayer(vegLayer);
             $scope.clearVegetation(typ);
@@ -24,7 +24,7 @@ export function transferFunctionsMixin($scope, main, map) {
         });
     });
 
-    $scope.transferFunctions = TransferFunctions.funs;
+    $scope.transferFunctions = TransferFunctions.ctrls;
     
     $scope.activeTransferFunction = null;
     $scope.setActiveTransferFunction = function(tf) {
@@ -290,7 +290,7 @@ export function vegetationAutofillMixin($scope, main) {
         for (var i = 0; i < vegDataModel.xSize; ++i) {
             for (var j = 0; j < vegDataModel.ySize; ++j) {
                 var elevationValue = elevationModel.sample(modelSet.crs.modelCoordToCommonCoord({x:i, y:j}, vegDataModel)).elevation;
-                var density = tf(elevationValue) / 100;
+                var density = tf.sample(elevationValue) / 100;
 
                 if (Math.random() <= density) {
                     vegDataModel.world[i][j].vegetation = vegType;
@@ -362,7 +362,8 @@ export function roomsMixin($scope, roomsSvc) {
         
         // bind transfer functions
         stateRef.child('transferFunctions').on('child_added', function(snap) {
-            var tfunc = $scope.transferFunctions[snap.name()];
+            var tfunc = TransferFunctions.funs[snap.name()];
+            var tfuncCtrl = TransferFunctions.ctrls[snap.name()];
 
             if (!tfunc)
                 return; // could create a new tfunc if it doesn't exist?
@@ -372,6 +373,7 @@ export function roomsMixin($scope, roomsSvc) {
                 var newCtrlPts = snap.val();
                 if (newCtrlPts) {
                     tfunc.setControlPoints(newCtrlPts);
+                    tfuncCtrl.setControlPoints(newCtrlPts);
                 }
             });
         });

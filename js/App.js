@@ -7,7 +7,6 @@
 import "../st-api/Util/StringUtil";
 import {
     transferFunctionsMixin,
-    sandScanMixin,
     sensorsMixin,
     rasterPaintingMixin,
     vegetationAutofillMixin,
@@ -96,9 +95,6 @@ Ecostem.controller('EcostemCtrl', ['$scope', '$q', '$compile', '$http', 'mapSvc'
 
         /* Functionality related to editing transfer functions in the UX */
         transferFunctionsMixin($scope, mainSvc.main, mapSvc.map);
-        /* 3D scanning for use with projector/camera interface on the sand table.
-        Not yet in use. */
-        sandScanMixin($scope, mainSvc.main, mapSvc.map);
         /* Managing sensors on the map. */
         sensorsMixin($scope, $compile, mainSvc.main, mapSvc.map);
         /* Painting functionality for models that support it. */

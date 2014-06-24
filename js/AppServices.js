@@ -45,9 +45,9 @@ Services.service('mainSvc', ['$rootScope', '$q', 'mapSvc', function($rootScope, 
                to passing the $rootScope into the non-angular API, which would not
                make sense when the API is used from a non-angular world. */
 
-            _.each(_.values(this.main.modelPool.models), (m) => {
+            for (var m of _.values(this.main.modelPool.models)) {
                 m.dataModel.on('change', () => $rootScope.safeApply());
-            });
+            }
 
             this.main.animator.on('step', () => $rootScope.safeApply());
         }

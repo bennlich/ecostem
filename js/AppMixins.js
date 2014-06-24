@@ -20,14 +20,15 @@ export function transferFunctionsMixin($scope, main, map) {
     TransferFunctions.init();
 
     var vegLayer = main.getModelLayer("Vegetation");
-    _.each(['fir', 'sagebrush', 'steppe', 'grass'], (typ) => {
+
+    for (var typ of ['fir', 'sagebrush', 'steppe', 'grass']) {
         TransferFunctions.funs[typ].on('change', () => {
             if (! map.leafletMap.hasLayer(vegLayer.leafletLayer))
                 map.toggleLayer(vegLayer);
             $scope.clearVegetation(typ);
             $scope.drawVegetation(typ);
         });
-    });
+    }
 
     $scope.transferFunctions = TransferFunctions.ctrls;
 

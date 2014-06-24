@@ -27,7 +27,6 @@ export class Main {
                 leafletLayer: model.renderer.makeLayer({zIndex: this.map.zIndex++, opacity: 0.85})
             }
         ];
-        
         return layers;
     }
 
@@ -62,16 +61,16 @@ export class Main {
 
             var canvasRect = new Rect(tileX, tileY, canvas.width, canvas.height);
 
-            _.each(this.modelLayers, (l) => {
+            for (var l of this.modelLayers) {
                 if (! this.map.leafletMap.hasLayer(l.leafletLayer)) {
-                    return;
+                    continue;
                 }
 
                 var modelRect = l.model.dataModel.geometry.toRect(zoom);
                 var i = canvasRect.intersect(modelRect);
 
                 if (! i) {
-                    return;
+                    continue;
                 }
 
                 var x = Math.round(i.left - canvasRect.left),
@@ -80,7 +79,7 @@ export class Main {
                 height = Math.round(i.height);
 
                 ctx.clearRect(x, y, width, height);
-            });
+            }
         };
 
         this.map.leafletMap.on('layeradd layerremove', () => layer.redraw());

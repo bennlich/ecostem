@@ -5,11 +5,6 @@
 import {TransferFunctions} from '../st-api/ModelingParams/TransferFunctions';
 import {FireSeverityModel} from '../st-api/Models/FireSeverityModel';
 import {VegetationModel} from '../st-api/Models/VegetationModel';
-import {ScanElevationModel} from '../st-api/Models/ScanElevationModel';
-import {ElevationPatchRenderer} from '../st-api/Models/ElevationModel';
-import {ModelTileRenderer} from '../st-api/ModelingCore/ModelTileRenderer';
-import {ModelBBox} from '../st-api/ModelingCore/ModelBBox';
-import {ModelTileServer} from '../st-api/ModelTileServer';
 
 export function layersMixin($scope, map) {
     $scope.toggleLayer = function(layer) {
@@ -25,17 +20,18 @@ export function transferFunctionsMixin($scope, main, map) {
     TransferFunctions.init();
 
     var vegLayer = main.getModelLayer("Vegetation");
-    _.each(['fir', 'sagebrush', 'steppe', 'grass'], (typ) => {
+
+    for (var typ of ['fir', 'sagebrush', 'steppe', 'grass']) {
         TransferFunctions.funs[typ].on('change', () => {
             if (! map.leafletMap.hasLayer(vegLayer.leafletLayer))
                 map.toggleLayer(vegLayer);
             $scope.clearVegetation(typ);
             $scope.drawVegetation(typ);
         });
-    });
+    }
 
     $scope.transferFunctions = TransferFunctions.ctrls;
-    
+
     $scope.activeTransferFunction = null;
     $scope.setActiveTransferFunction = function(tf) {
         $scope.activeTransferFunction = tf;
@@ -46,47 +42,6 @@ export function transferFunctionsMixin($scope, main, map) {
         $scope.activeTransferFunction = null;
         TransferFunctions.hide();
         $scope.showMainMenu();
-    };
-}
-
-export function sandScanMixin($scope, main, map) {
-    $scope.scanFlatDone = false;
-
-    $scope.scanFlat = function() {
-        AnySurface.Scan.flatScan(function() {
-            $scope.safeApply(function() {
-                $scope.scanFlatDone = true;
-            });
-        });
-    };
-
-    $scope.scanMountain = function() {
-        AnySurface.Scan.mountainScan(function(data) {
-            var modelName = 'Scan Elevation';
-            var model = main.modelPool.getDataModel(modelName);
-
-            if (! model) {
-                var w = data.width,
-                h = data.height,
-                bbox = new ModelBBox(map.leafletMap.getBounds(), map.leafletMap);
-
-                model = new ScanElevationModel(w, h, bbox, main.modelPool);
-                model.load(data);
-
-                var tileRenderer = new ModelTileRenderer(map, model, new ElevationPatchRenderer(model));
-                var tileServer = new ModelTileServer(tileRenderer);
-
-                var obj = {
-                    name: modelName,
-                    dataModel: model,
-                    renderer: tileRenderer,
-                    server: tileServer
-                };
-                map.addDataLayer(obj);
-            } else {
-                model.load(data);
-            }
-        });
     };
 }
 
@@ -275,7 +230,9 @@ export function menuMixin($scope) {
 }
 
 export function vegetationAutofillMixin($scope, main) {
-    $scope.drawVegetation = function(vegType) {
+    $scope.drawVegetation = function(typeName) {
+        var vegType = VegetationModel.vegTypes[typeName.toUpperCase()];
+
         console.log('draw veg', vegType);
 
         var modelSet = main.modelPool,
@@ -284,7 +241,7 @@ export function vegetationAutofillMixin($scope, main) {
             elevationModel = modelSet.getDataModel('Elevation'),
             /* TODO: there is an implicit assumption here that vegType is
                the same as the transfer function key */
-            tf = TransferFunctions.funs[vegType];
+            tf = TransferFunctions.funs[typeName];
 
         /* TODO: This loop is pretty slow. I suspect it's because the sampling
            is very slow. A better approach would be to build a sampler object
@@ -297,13 +254,13 @@ export function vegetationAutofillMixin($scope, main) {
            The sampler constructor will have precomputed the two models' positions
            relative to each other in the coordinate system.
         */
-        for (var i = 0; i < vegDataModel.xSize; ++i) {
-            for (var j = 0; j < vegDataModel.ySize; ++j) {
+        for (var i = 0; i < vegDataModel.width; ++i) {
+            for (var j = 0; j < vegDataModel.height; ++j) {
                 var elevationValue = elevationModel.sample(modelSet.crs.modelCoordToCommonCoord({x:i, y:j}, vegDataModel)).elevation;
                 var density = tf.sample(elevationValue) / 100;
 
                 if (Math.random() <= density) {
-                    vegDataModel.world[i][j].vegetation = vegType;
+                    vegDataModel.world.vegetation[vegDataModel.toIndex(i,j)] = vegType;
                 }
             }
         }
@@ -311,19 +268,17 @@ export function vegetationAutofillMixin($scope, main) {
         vegDataModel.fire('change', vegDataModel.world);
     };
 
-    $scope.clearVegetation = function(vegType) {
+    $scope.clearVegetation = function(typeName) {
+        var vegType = VegetationModel.vegTypes[typeName.toUpperCase()];
         console.log('clear veg', vegType);
 
         var vegModel = main.modelPool.getModel('Vegetation'),
             vegDataModel = vegModel.dataModel,
             vegTypes = VegetationModel.vegTypes;
 
-        for (var i = 0; i < vegDataModel.xSize; ++i) {
-            for (var j = 0; j < vegDataModel.ySize; ++j) {
-                if (vegDataModel.world[i][j].vegetation === vegType) {
-                    vegDataModel.world[i][j].vegetation = vegTypes.NONE;
-                }
-            }
+        for (var i = 0; i < vegDataModel.size; ++i) {
+            if (vegDataModel.world.vegetation[i] === vegType)
+                vegDataModel.world.vegetation[i] = vegTypes.NONE;
         }
 
         vegDataModel.fire('change', vegDataModel.world);
@@ -369,7 +324,7 @@ export function roomsMixin($scope, roomsSvc) {
 
     $scope.bindToRoom = function() {
         var stateRef = roomsSvc.getFbRef();
-        
+
         // bind transfer functions
         stateRef.child('transferFunctions').on('child_added', function(snap) {
             var tfunc = TransferFunctions.funs[snap.name()];
